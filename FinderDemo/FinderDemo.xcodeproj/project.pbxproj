@@ -409,6 +409,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = yeah.FinderDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -420,6 +421,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = yeah.FinderDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
@@ -492,6 +494,7 @@
 				1B2FA25F1C4026010050F1F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1B2FA2601C4026010050F1F8 /* Build configuration list for PBXNativeTarget "FinderDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -500,6 +503,7 @@
 				1B2FA2621C4026010050F1F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1B2FA2631C4026010050F1F8 /* Build configuration list for PBXNativeTarget "FinderDemoUITests" */ = {
 			isa = XCConfigurationList;
@@ -508,6 +512,7 @@
 				1B2FA2651C4026010050F1F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
