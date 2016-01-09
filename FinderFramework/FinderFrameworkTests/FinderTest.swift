@@ -19,7 +19,7 @@ typealias PF = AstarFinder<FinderPoint2D>
 func pathFinderTest(markVisited: Bool = true, markPath: Bool = true, isDiagnal: Bool = false, multiGoals: Bool = false) {
     let size = 50;
     let mp = size - 1;
-    var conf = Array2D<Int?>(columns: size, rows: size, repeatValue: 1);
+    var conf = Array2D<Int>(columns: size, rows: size, repeatValue: 1);
     var hinder = [FinderPoint2D]();
     for i in 10...49{
         if i < 30{
@@ -91,7 +91,7 @@ func pathFinderTest(markVisited: Bool = true, markPath: Bool = true, isDiagnal: 
 }
 
 struct TestFinderDataSource{
-    let config: Array2D<Int?>;
+    let config: Array2D<Int>;
     
     let model: FinderModel;
     
@@ -99,7 +99,7 @@ struct TestFinderDataSource{
     
     typealias Point = FinderPoint2D;
     
-    init(conf: Array2D<Int?>, _ model: FinderModel = .Straight, _ h2d: FinderHeuristic2D){
+    init(conf: Array2D<Int>, _ model: FinderModel = .Straight, _ h2d: FinderHeuristic2D){
         self.config = conf;
         self.model = model;
         self.heuristic = h2d;

@@ -112,11 +112,11 @@
 		1B2FA2111C4024310050F1F8 /* finder */ = {
 			isa = PBXGroup;
 			children = (
-				1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */,
 				1B2FA2131C40246A0050F1F8 /* Finder.swift */,
+				1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */,
+				1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */,
 				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
 				1B2FA2151C40246A0050F1F8 /* Collection2D.swift */,
-				1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */,
 			);
 			name = finder;
 			sourceTree = "<group>";
@@ -443,6 +443,7 @@
 				1B2FA20D1C4023FC0050F1F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1B2FA20E1C4023FC0050F1F8 /* Build configuration list for PBXNativeTarget "FinderFrameworkTests" */ = {
 			isa = XCConfigurationList;
@@ -451,6 +452,7 @@
 				1B2FA2101C4023FC0050F1F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

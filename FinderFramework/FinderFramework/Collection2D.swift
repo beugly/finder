@@ -97,26 +97,28 @@ extension Collection2DType where Self: CustomDebugStringConvertible
 //MARK: struct array 2d
 public struct Array2D<T>
 {
-    public typealias Element = T;
+    public typealias Element = T?;
     
     //source
-    private var source: [T];
+    private var source: [Element];
     private(set) public var columns, rows:Int;
     
-    public init(columns:Int, rows:Int, repeatValue: T, values: [T]? = nil)
+    
+    /// Construct a Array2D of `count` elements, each initialized to
+    /// `repeatedValue`.
+    public init(columns:Int, rows:Int, repeatValue: T)
     {
         self.columns = columns;
         self.rows = rows;
         let c = columns * rows
-        guard let vs = values else{
-            self.source = Array<T>(count: c, repeatedValue: repeatValue);
-            return;
-        }
-        var temp = Array<T>(vs.prefix(c));
-        if temp.count < c{
-            temp += Array<T>(count: c - temp.count, repeatedValue: repeatValue);
-        }
-        self.source = temp;
+        self.source = Array<Element>(count: c, repeatedValue: repeatValue);
+    }
+    
+    public init(columns:Int, rows:Int, values: [Element]? = nil)
+    {
+        self.columns = columns;
+        self.rows = rows;
+        self.source = values ?? [];
     }
 }
 extension Array2D where T: NilLiteralConvertible
@@ -130,12 +132,14 @@ extension Array2D where T: NilLiteralConvertible
 extension Array2D: Collection2DType
 {
     //subscript
-    public subscript(column:Int, row:Int) -> T {
+    public subscript(column:Int, row:Int) -> Element {
         set{
+            guard isValid(column, row) else {return;}
             let index = self.indexAt(column, row)
             self.source[index] = newValue;
         }
         get{
+            guard isValid(column, row) else {return .None;}
             let index = self.indexAt(column, row);
             return self.source[index];
         }
@@ -144,6 +148,6 @@ extension Array2D: Collection2DType
     /// collection
     public var startIndex: Int {return 0}
     public var endIndex: Int {return self.source.count;}
-    public subscript(i: Int) -> T{return self.source[i]}
+    public subscript(i: Int) -> Element{return self.source[i]}
 }
 extension Array2D: CustomDebugStringConvertible{}

@@ -34,11 +34,7 @@ func collectionNDTest()
     }
     print(nd, p);
 //    nd = Array2D<Int>(columns: nd.columns, rows: nd.rows, repeatValue: 0, values: [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]);
-    nd = Array2D<Int>(columns: nd.columns, rows: nd.rows, repeatValue: 0, values: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+    nd = Array2D<Int>(columns: nd.columns, rows: nd.rows, values: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
     nd[3,2] = 99;
     print(nd);
-    
-    
-    let a = Array<Int>(nd);
-    print(a);
 }
