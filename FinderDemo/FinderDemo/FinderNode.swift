@@ -32,12 +32,21 @@ class FinderNode: SKSpriteNode {
     
     let column, row: Int;
     
+    //arrow
+    let arrow = SKLabelNode();
+    
     init(column: Int, row: Int, terrain: FinderTerrain = .Plian){
         self.terrain = terrain;
         self.column = column;
         self.row = row;
         super.init(texture: .None, color: UIColor.redColor(), size: CGSize(width: nodeSize, height: nodeSize));
         updateSkinByTerrain();
+        
+        
+        let p1 = FinderPoint2D(x: 0, y: 0);
+        let p2 = FinderPoint2D(x: 1, y: 1);
+        let d = FinderData(point: p1, g: 0, h: 0, backward: p2);
+        updateBy(d);
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -62,5 +71,17 @@ class FinderNode: SKSpriteNode {
         case .Obstacle:
             self.color = UIColor.redColor();
         }
+    }
+    
+    func updateBy(data: FinderData){
+        if arrow.parent == .None{
+            arrow.fontSize = 10;
+            self.addChild(arrow);
+        }
+        
+        
+        let point = data.point;
+        guard let parentpoint = data.backward else {return;}
+        arrow.text = FinderArrow.getArrow(point.x, y1: point.y, x2: parentpoint.x, y2: parentpoint.y).description;
     }
 }
