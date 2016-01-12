@@ -9,21 +9,10 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    
+    
+    
     override func didMoveToView(view: SKView) {
-        
-        
-        
-        /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "✅⬀✅";
-        myLabel.fontSize = 12;
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
-        
-        let v = SKShapeNode(rect: CGRect(origin: CGPoint.zero, size: CGSize(width: 100, height: 100)));
-        v.fillColor = SKColor.blueColor();
-        v.strokeColor = SKColor.redColor();
-        v.addChild(myLabel)
-        self.addChild(v)
     }
     
 //    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

@@ -11,25 +11,69 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
+    
+    weak var gameScene: GameScene!;
+    weak var finderMap: FinderMap!;
+    
+    @IBOutlet weak var isMultiGoals: UISwitch!;
+    @IBOutlet weak var allowDiagoanl: UISwitch!;
+    
     override func viewDidLoad() {
-        super.viewDidLoad()
-
-        if let scene = GameScene(fileNamed:"GameScene") {
-            // Configure the view.
-            let skView = self.view as! SKView
-            skView.showsFPS = true
-            skView.showsNodeCount = true
-            
-            /* Sprite Kit applies additional optimizations to improve rendering performance */
-            skView.ignoresSiblingOrder = true
-            
-            /* Set the scale mode to scale to fit the window */
-            scene.scaleMode = .AspectFill
-            
-            skView.presentScene(scene)
-        }
+        super.viewDidLoad();
+        
+        let skView = self.view as! SKView;
+        skView.showsFPS = true;
+        skView.showsNodeCount = true;
+        skView.ignoresSiblingOrder = true;
+        
+        let gs = GameScene();
+        gs.size = self.view.bounds.size;
+        gs.scaleMode = .AspectFill;
+        skView.presentScene(gs);
+        self.gameScene = gs;
+        
+        let mp = FinderMap();
+        mp.findCallBack = self.find;
+        mp.position = CGPoint(x: nodeSize, y: nodeSize);
+        gs.addChild(mp);
+        self.finderMap = mp;
+        
+        
+        findModelChanged();
+        goalsChanged();
     }
-
+    
+    @IBAction func findModelChanged(sender: UISwitch? = .None) {
+        self.finderMap.model = !allowDiagoanl.on ? .Straight : .Diagonal;
+        print(self.finderMap.model);
+    }
+    
+    @IBAction func goalsChanged(sender: AnyObject? = .None) {
+        self.finderMap.setGoalsType(!isMultiGoals.on);
+        print(self.finderMap.isMutiGoal);
+    }
+    
+    private func find(){
+        print("start find path")
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     override func shouldAutorotate() -> Bool {
         return true
     }

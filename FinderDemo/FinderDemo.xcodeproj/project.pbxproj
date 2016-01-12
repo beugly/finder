@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1B2FA2351C4026010050F1F8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2341C4026010050F1F8 /* AppDelegate.swift */; };
-		1B2FA2371C4026010050F1F8 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B2FA2361C4026010050F1F8 /* GameScene.sks */; };
 		1B2FA2391C4026010050F1F8 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2381C4026010050F1F8 /* GameScene.swift */; };
 		1B2FA23B1C4026010050F1F8 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA23A1C4026010050F1F8 /* GameViewController.swift */; };
 		1B2FA23E1C4026010050F1F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1B2FA23C1C4026010050F1F8 /* Main.storyboard */; };
@@ -40,7 +39,6 @@
 /* Begin PBXFileReference section */
 		1B2FA2311C4026010050F1F8 /* FinderDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinderDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B2FA2341C4026010050F1F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1B2FA2361C4026010050F1F8 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		1B2FA2381C4026010050F1F8 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		1B2FA23A1C4026010050F1F8 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		1B2FA23D1C4026010050F1F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -107,7 +105,6 @@
 			children = (
 				1B5EE5B31C416B58005F00FC /* components */,
 				1B2FA2341C4026010050F1F8 /* AppDelegate.swift */,
-				1B2FA2361C4026010050F1F8 /* GameScene.sks */,
 				1B2FA2381C4026010050F1F8 /* GameScene.swift */,
 				1B2FA23A1C4026010050F1F8 /* GameViewController.swift */,
 				1B2FA23C1C4026010050F1F8 /* Main.storyboard */,
@@ -249,7 +246,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B2FA2371C4026010050F1F8 /* GameScene.sks in Resources */,
 				1B2FA2431C4026010050F1F8 /* LaunchScreen.storyboard in Resources */,
 				1B2FA2401C4026010050F1F8 /* Assets.xcassets in Resources */,
 				1B2FA23E1C4026010050F1F8 /* Main.storyboard in Resources */,
@@ -425,7 +421,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = yeah.FinderDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -437,7 +433,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = yeah.FinderDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
