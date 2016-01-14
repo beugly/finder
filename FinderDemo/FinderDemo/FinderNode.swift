@@ -10,23 +10,10 @@ import Foundation
 import SpriteKit;
 import FinderFramework;
 
-///finder data
-typealias FinderData = FinderElement<FinderPoint2D>;
 
-//MARK: == FinderTerrain ==
-enum FinderTerrain: Int {
-    case Plian = 0, River = 10, Mountain = 20, Obstacle = -10
-    
-    ///next
-    mutating func next(){
-        let nextRaw = self.rawValue + 10;
-        let maxRaw = FinderTerrain.Mountain.rawValue;
-        self = nextRaw > maxRaw ? .Obstacle : FinderTerrain(rawValue: nextRaw)!;
-    }
-}
 
 //MARK: == FinderNode ==
-class FinderNode: SKSpriteNode {
+class FinderNode: SKShapeNode {
     
     var terrain: FinderTerrain;
     
@@ -35,24 +22,26 @@ class FinderNode: SKSpriteNode {
     //arrow
     let arrow = SKLabelNode();
     
-    init(column: Int, row: Int, terrain: FinderTerrain = .Plian){
+    init(column: Int, row: Int, p: CGPath, terrain: FinderTerrain = .Plian){
         self.terrain = terrain;
         self.column = column;
         self.row = row;
-        super.init(texture: .None, color: UIColor.redColor(), size: CGSize(width: nodeSize, height: nodeSize));
+        super.init();
+        self.path = p;
+        
         updateSkinByTerrain();
         
-        
-        let p1 = FinderPoint2D(x: 0, y: 0);
-        let p2 = FinderPoint2D(x: 1, y: 1);
+        let p1 = FinderPoint2D(x: random(), y: random());
+        let p2 = FinderPoint2D(x: random(), y: random());
         let d = FinderData(point: p1, g: 0, h: 0, backward: p2);
-        updateBy(d);
+        self.data = d;
+        updateByData();
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     ///
     func changeToNextTerrain(){
         self.terrain.next();
@@ -60,28 +49,40 @@ class FinderNode: SKSpriteNode {
     }
     
     private func updateSkinByTerrain(){
-        print(self.terrain.rawValue)
         switch self.terrain{
         case .Mountain:
-            self.color = UIColor.blackColor();
+            self.fillColor = UIColor.blackColor();
         case .River:
-            self.color = UIColor.blueColor();
+            self.fillColor = UIColor.blueColor();
         case .Plian:
-            self.color = UIColor.yellowColor();
+            self.fillColor = UIColor.yellowColor();
         case .Obstacle:
-            self.color = UIColor.redColor();
+            self.fillColor = UIColor.redColor();
         }
     }
     
-    func updateBy(data: FinderData){
+    ///
+    func asPath(){
+        self.strokeColor = UIColor.greenColor();
+    }
+    
+    var data: FinderData?{
+        didSet{
+            updateByData();
+        }
+    }
+    
+    private func updateByData(){
+        guard let temp = data else{return;}
         if arrow.parent == .None{
-            arrow.fontSize = 10;
+            arrow.fontSize = 12;
+            arrow.fontColor = UIColor.whiteColor();
+//            arrow.position = CGPoint(x: 0, y: (self.frame.size.height - arrow.frame.size.height)/2);
+            arrow.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Center;
             self.addChild(arrow);
         }
-        
-        
-        let point = data.point;
-        guard let parentpoint = data.backward else {return;}
-        arrow.text = FinderArrow.getArrow(point.x, y1: point.y, x2: parentpoint.x, y2: parentpoint.y).description;
+        let point = temp.point;
+        guard let parentpoint = temp.backward else {return;}
+        arrow.text = FinderIcon.getIcon(point.x, y1: point.y, x2: parentpoint.x, y2: parentpoint.y).description;
     }
 }

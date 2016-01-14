@@ -17,7 +17,9 @@
 		1B2FA2591C4026010050F1F8 /* FinderDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2581C4026010050F1F8 /* FinderDemoUITests.swift */; };
 		1B5EE5B51C416B9B005F00FC /* FinderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5EE5B41C416B9B005F00FC /* FinderNode.swift */; };
 		1B5EE5B71C417306005F00FC /* FinderMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5EE5B61C417306005F00FC /* FinderMap.swift */; };
-		650C4BE71C45098E006AC943 /* FinderArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650C4BE61C45098E006AC943 /* FinderArrow.swift */; };
+		650C4BE71C45098E006AC943 /* FinderIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650C4BE61C45098E006AC943 /* FinderIcon.swift */; };
+		65D039CF1C465FC10059436B /* FModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D039CE1C465FC10059436B /* FModel.swift */; };
+		65F5B55A1C4787A60036EC18 /* common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F5B5591C4787A60036EC18 /* common.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +56,9 @@
 		1B2FA25A1C4026010050F1F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1B5EE5B41C416B9B005F00FC /* FinderNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderNode.swift; sourceTree = "<group>"; };
 		1B5EE5B61C417306005F00FC /* FinderMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderMap.swift; sourceTree = "<group>"; };
-		650C4BE61C45098E006AC943 /* FinderArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderArrow.swift; sourceTree = "<group>"; };
+		650C4BE61C45098E006AC943 /* FinderIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderIcon.swift; sourceTree = "<group>"; };
+		65D039CE1C465FC10059436B /* FModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FModel.swift; sourceTree = "<group>"; };
+		65F5B5591C4787A60036EC18 /* common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = common.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +109,7 @@
 		1B2FA2331C4026010050F1F8 /* FinderDemo */ = {
 			isa = PBXGroup;
 			children = (
-				1B5EE5B31C416B58005F00FC /* components */,
+				1B5EE5B31C416B58005F00FC /* finder */,
 				1B2FA2341C4026010050F1F8 /* AppDelegate.swift */,
 				1B2FA2381C4026010050F1F8 /* GameScene.swift */,
 				1B2FA23A1C4026010050F1F8 /* GameViewController.swift */,
@@ -135,14 +139,16 @@
 			path = FinderDemoUITests;
 			sourceTree = "<group>";
 		};
-		1B5EE5B31C416B58005F00FC /* components */ = {
+		1B5EE5B31C416B58005F00FC /* finder */ = {
 			isa = PBXGroup;
 			children = (
 				1B5EE5B41C416B9B005F00FC /* FinderNode.swift */,
 				1B5EE5B61C417306005F00FC /* FinderMap.swift */,
-				650C4BE61C45098E006AC943 /* FinderArrow.swift */,
+				650C4BE61C45098E006AC943 /* FinderIcon.swift */,
+				65D039CE1C465FC10059436B /* FModel.swift */,
+				65F5B5591C4787A60036EC18 /* common.swift */,
 			);
-			name = components;
+			name = finder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -277,11 +283,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B2FA2391C4026010050F1F8 /* GameScene.swift in Sources */,
+				65D039CF1C465FC10059436B /* FModel.swift in Sources */,
 				1B5EE5B71C417306005F00FC /* FinderMap.swift in Sources */,
 				1B5EE5B51C416B9B005F00FC /* FinderNode.swift in Sources */,
 				1B2FA23B1C4026010050F1F8 /* GameViewController.swift in Sources */,
+				65F5B55A1C4787A60036EC18 /* common.swift in Sources */,
 				1B2FA2351C4026010050F1F8 /* AppDelegate.swift in Sources */,
-				650C4BE71C45098E006AC943 /* FinderArrow.swift in Sources */,
+				650C4BE71C45098E006AC943 /* FinderIcon.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

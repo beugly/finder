@@ -9,11 +9,11 @@
 import Foundation
 
 
-enum FinderArrow
+enum FinderIcon
 {
     case L, R, T, B, TL, TR, BL, BR
 }
-extension FinderArrow:CustomStringConvertible
+extension FinderIcon: CustomStringConvertible
 {
     var description:String{
         switch self{
@@ -36,7 +36,7 @@ extension FinderArrow:CustomStringConvertible
         }
     }
     
-    static func getArrow(x1: Int, y1: Int, x2: Int, y2: Int) -> FinderArrow{
+    static func getIcon(x1: Int, y1: Int, x2: Int, y2: Int) -> FinderIcon{
         switch(x1 - x2, y1 - y2){
         case let (dx, dy) where dx == 0 && dy < 0:
             return .T;

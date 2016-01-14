@@ -38,7 +38,6 @@ class GameViewController: UIViewController {
         gs.addChild(mp);
         self.finderMap = mp;
         
-        
         findModelChanged();
         goalsChanged();
     }
@@ -49,7 +48,7 @@ class GameViewController: UIViewController {
     }
     
     @IBAction func goalsChanged(sender: AnyObject? = .None) {
-        self.finderMap.setGoalsType(!isMultiGoals.on);
+        self.finderMap.setGoalsType(!isMultiGoals.on, fmodel);
         print(self.finderMap.isMutiGoal);
     }
     
