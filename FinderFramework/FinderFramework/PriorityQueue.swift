@@ -87,6 +87,15 @@ extension PriorityQueue {
             trunkIndex = shiftIndex;
         }while true;
     }
+    
+    ///shift element at index
+    mutating func shiftAt(index: Int) {
+        guard let tindex = trunkIndexOf(index)else{
+            self.shiftDown(index);
+            return;
+        }
+        self.isOrderedBefore(source[index], source[tindex]) ? shiftUp(index) : shiftDown(index);
+    }
 }
 ///extension public
 extension PriorityQueue{
@@ -110,12 +119,7 @@ extension PriorityQueue{
     ///replace element at index
     mutating public func replace(element: T, at index: Int) {
         self.source[index] = element;
-        guard let tindex = trunkIndexOf(index)else{
-            self.shiftDown(index);
-            return;
-        }
-        let telement = source[tindex];
-        self.isOrderedBefore(element, telement) ? shiftUp(index) : shiftDown(index);
+        self.shiftAt(index);
     }
     
     ///build source
@@ -146,13 +150,11 @@ extension PriorityQueue where T: Comparable {
 extension PriorityQueue: CollectionType {
     public var startIndex: Int{return self.source.startIndex;}
     public var endIndex: Int{return self.source.endIndex;}
+    public var count: Int{return self.source.count;}
     public subscript(position: Int) -> T{
         return self.source[position];
     }
 }
-
-
-
 
 
 
