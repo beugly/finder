@@ -18,7 +18,7 @@ public protocol Collection2DType: CollectionType
     var rows: Int{get}
     
     //subscript
-    subscript(column:Int, row:Int) -> Self.Generator.Element {get set}
+    subscript(column:Int, row:Int) -> Self.Generator.Element? {get set}
 }
 //MARK: extension public
 public extension Collection2DType
@@ -86,7 +86,11 @@ extension Collection2DType where Self: CustomDebugStringConvertible
         {
             for c in 0..<self.columns
             {
-                text += "\(self[c, r]) ";
+                guard let e = self[c, r] else{
+                    text += "nil";
+                    continue;
+                }
+                text += "\(e) ";
             }
             text += "\n";
         }
@@ -95,44 +99,39 @@ extension Collection2DType where Self: CustomDebugStringConvertible
 }
 
 //MARK: struct array 2d
-public struct Array2D<T>
-{
-    public typealias Element = T?;
-    
+public struct Array2D<Element> {
     //source
-    private var source: [Element];
+    private var source: [Element?];
     private(set) public var columns, rows:Int;
     
     
     /// Construct a Array2D of `count` elements, each initialized to
     /// `repeatedValue`.
-    public init(columns:Int, rows:Int, repeatValue: T)
+    public init(columns:Int, rows:Int, repeatValue: Element?)
     {
         self.columns = columns;
         self.rows = rows;
         let c = columns * rows
-        self.source = Array<Element>(count: c, repeatedValue: repeatValue);
+        self.source = Array<Element?>(count: c, repeatedValue: repeatValue);
     }
     
-    public init(columns:Int, rows:Int, values: [Element]? = nil)
+    public init(columns:Int, rows:Int, values: [Element?]? = nil)
     {
         self.columns = columns;
         self.rows = rows;
         self.source = values ?? [];
     }
-}
-extension Array2D where T: NilLiteralConvertible
-{
+    
     public init(columns:Int, rows:Int)
     {
-        self.init(columns: columns, rows: rows, repeatValue: nil);
+        self.init(columns: columns, rows: rows, repeatValue: .None);
     }
 }
 //MARK: extension Array2DType
 extension Array2D: Collection2DType
 {
     //subscript
-    public subscript(column:Int, row:Int) -> Element {
+    public subscript(column:Int, row:Int) -> Element? {
         set{
             guard isValid(column, row) else {return;}
             let index = self.indexAt(column, row)
@@ -148,6 +147,6 @@ extension Array2D: Collection2DType
     /// collection
     public var startIndex: Int {return 0}
     public var endIndex: Int {return self.source.count;}
-    public subscript(i: Int) -> Element{return self.source[i]}
+    public subscript(i: Int) -> Element{return self.source[i]!}
 }
 extension Array2D: CustomDebugStringConvertible{}
