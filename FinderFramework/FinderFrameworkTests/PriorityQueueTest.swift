@@ -10,7 +10,7 @@ import Foundation
 @testable import FinderFramework;
 
 
-typealias PQ = PriorityQueue<Int>;
+typealias PQ = PriorityQueue2<Int>;
 
 
 //XPriorityQueue test
