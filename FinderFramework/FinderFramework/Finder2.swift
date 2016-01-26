@@ -86,6 +86,7 @@ public struct FinderQueue<Element: FinderPointable> {
 }
 extension FinderQueue: FinderQueueType{
     ///get the visited element and return it, or nil if no visited element exists at point.
+    ///return (visited element, is closed)
     public func elementOf(point: Element.Point) -> (Element, Bool)? {
         if let e = self.visiteList[point] {
             return (e, false);
@@ -122,12 +123,23 @@ extension FinderQueue: FinderQueueType{
     }
 }
 
-
+//MARK: == FinderDiagoanlModel ==
+public enum FinderDiagoanlModel {
+    case Never          //just straight
+    case Always         //straight and diagonal without check obstacle
+    case NoObstacle     //straight and diagonal whth check if all straight neighbors is not obstacle
+    case MostOneNoObstacle      //straight and diagonal with check if has one neighbor which is not obstacle at least;
+}
 
 
 
 
 /**
+
+
+Diagonal model -> always(diagonal), never(straight), no obstacles(diagonal), one obstacle(diagoanl)
+
+
 generate:
 current point
 parent element

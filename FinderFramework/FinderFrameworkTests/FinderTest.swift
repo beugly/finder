@@ -16,19 +16,20 @@ typealias PF = AstarFinder<FinderPoint2D>
 //typealias PF = GreedyBestFinder<FinderPoint2D>
 
 
-func pathFinderTest(markVisited: Bool = true, markPath: Bool = true, isDiagnal: Bool = false, multiGoals: Bool = false) {
+func pathFinderTest(markVisited: Bool = true, markPath: Bool = false, isDiagnal: Bool = false, multiGoals: Bool = false) {
+    
     let size = 50;
     let mp = size - 1;
     var conf = Array2D<Int>(columns: size, rows: size, repeatValue: 1);
     var hinder = [FinderPoint2D]();
-    for i in 10...49{
-        if i < 30{
-            hinder.append(FinderPoint2D(x: i, y: 15))
-            conf[i, 15] = .None;
-        }
-        hinder.append(FinderPoint2D(x: 15, y: i));
-        conf[15, i] = .None;
-    }
+//    for i in 10...49{
+//        if i < 30{
+//            hinder.append(FinderPoint2D(x: i, y: 15))
+//            conf[i, 15] = .None;
+//        }
+//        hinder.append(FinderPoint2D(x: 15, y: i));
+//        conf[15, i] = .None;
+//    }
     let h2d: FinderHeuristic2D = isDiagnal ? .Chebyshev : .Manhattan;
     let m: FinderModel = isDiagnal ? .Diagonal : .Straight;
     
