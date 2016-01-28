@@ -21,7 +21,6 @@
 		1B2FA2261C4024F30050F1F8 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2241C4024F30050F1F8 /* TestUtils.swift */; };
 		1B2FA2271C4024F30050F1F8 /* TestArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2251C4024F30050F1F8 /* TestArrow.swift */; };
 		65F5B55C1C478A3F0036EC18 /* Finder2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F5B55B1C478A3F0036EC18 /* Finder2.swift */; };
-		65FB0B7A1C5097E100AD18E0 /* PriorityQueue2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB0B791C5097E100AD18E0 /* PriorityQueue2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,7 +51,6 @@
 		1B2FA2241C4024F30050F1F8 /* TestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestUtils.swift; sourceTree = "<group>"; };
 		1B2FA2251C4024F30050F1F8 /* TestArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestArrow.swift; sourceTree = "<group>"; };
 		65F5B55B1C478A3F0036EC18 /* Finder2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder2.swift; sourceTree = "<group>"; };
-		65FB0B791C5097E100AD18E0 /* PriorityQueue2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueue2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,7 +119,6 @@
 				1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */,
 				1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */,
 				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
-				65FB0B791C5097E100AD18E0 /* PriorityQueue2.swift */,
 				1B2FA2151C40246A0050F1F8 /* Collection2D.swift */,
 			);
 			name = finder;
@@ -258,7 +255,6 @@
 				1B2FA2171C40246A0050F1F8 /* FinderImpl.swift in Sources */,
 				1B2FA21B1C40246A0050F1F8 /* Finder2DImpl.swift in Sources */,
 				1B2FA2181C40246A0050F1F8 /* Finder.swift in Sources */,
-				65FB0B7A1C5097E100AD18E0 /* PriorityQueue2.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
 				1B2FA21A1C40246A0050F1F8 /* Collection2D.swift in Sources */,
 			);

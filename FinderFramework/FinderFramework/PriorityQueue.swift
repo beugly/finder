@@ -11,20 +11,20 @@ import Foundation
 ///MARK: == PriorityQueue ==
 public struct PriorityQueue<T> {
     ///source
-    public internal(set) var source: [T];
+    private var _source: [T];
     
     ///is ordered before
-    let isOrderedBefore: (T, T) -> Bool;
+    private let isOrderedBefore: (T, T) -> Bool;
     
     ///branch size
-    let branchSize: Int;
+    private let branchSize: Int;
     
     ///init
     public init(branchSize: Int, source: [T], _ isOrderedBefore: (T, T) -> Bool) {
         self.branchSize = branchSize;
-        self.source = source;
         self.isOrderedBefore = isOrderedBefore;
-        self.build(source);
+        self._source = source;
+        self.rebuild();
     }
     
     ///init binary queue
@@ -34,103 +34,110 @@ public struct PriorityQueue<T> {
 }
 ///extension internal
 extension PriorityQueue {
-    ///return trunk index of index
-    ///if trunk index < source.startIndex return nil otherwise return trunk index
-    func trunkIndexOf(index: Int) -> Int? {
-        let i = (index - 1) / self.branchSize;
-        return i < 0 ? .None : i;
+    
+    ///Return source array (get)
+    ///Set source array and rebuild priority queue (set)
+    public var source: [T] {
+        set{
+            self._source = newValue;
+            self.rebuild();
+        }
+        get{
+            return self._source;
+        }
     }
     
-    ///return branch index of index
-    ///if branch index < source.endIndex return branch index otherwise return nil
-    func branchIndexOf(index: Int) -> Int? {
-        let i = index * self.branchSize + 1;
-        return i < source.count ? i : .None;
+    ///return trunk position of position
+    public func trunkPositionOf(position:Int) -> Int {
+        return (position - 1) / self.branchSize;
     }
     
-    ///shift up of index
-    mutating func shiftUp(ofIndex: Int) {
-        let shiftElement = source[ofIndex];
-        var shiftIndex = ofIndex;
-        
+    ///return branch position of position
+    public func branchPositionOf(position:Int) -> Int {
+        return position  * self.branchSize + 1;
+    }
+    
+    ///shift up at position
+    public mutating func shiftUp(atPosition: Int) {
+        let shiftElement = self._source[atPosition];
+        var shiftIndex = atPosition;
         repeat{
-            guard let trunkIndex = trunkIndexOf(shiftIndex) else {break;}
-            let trunkElement = source[trunkIndex];
-            
-            guard isOrderedBefore(shiftElement, trunkElement) else {break;}
-            source[shiftIndex] = source[trunkIndex];
-            source[trunkIndex] = shiftElement;
+            let trunkIndex = trunkPositionOf(shiftIndex);
+            guard trunkIndex >= 0
+                && isOrderedBefore(shiftElement, self._source[trunkIndex]) else {break;}
+            self._source[shiftIndex] = self._source[trunkIndex];
+            self._source[trunkIndex] = shiftElement;
             shiftIndex = trunkIndex;
         }while true
     }
     
-    ///shift down of index
-    mutating func shiftDown(ofIndex: Int) {
-        let shiftElement = source[ofIndex];
-        var trunkIndex = ofIndex;
-        let eIndex = source.endIndex;
+    ///shift down at position
+    public mutating func shiftDown(atPosition: Int) {
+        let shiftElement = self._source[atPosition];
+        var trunkIndex = atPosition;
+        let c = self._source.count;
         repeat{
-            guard var branchIndex = branchIndexOf(trunkIndex) else {break;}
+            var branchIndex = branchPositionOf(trunkIndex);
             var shiftIndex = trunkIndex;
             let bIndex = branchIndex;
-            repeat{
-                if isOrderedBefore(source[branchIndex], source[shiftIndex]) {
-                    shiftIndex = branchIndex
-                }
-                branchIndex += 1;
-                if branchIndex >= eIndex || branchIndex - bIndex >= branchSize {break;}
-            }while true
+            while branchIndex < c
+                && branchIndex - bIndex < branchSize {
+                    if isOrderedBefore(self._source[branchIndex], self._source[shiftIndex]) {
+                        shiftIndex = branchIndex
+                    }
+                    branchIndex += 1;
+            }
             
             guard shiftIndex != trunkIndex else{break;}
-            source[trunkIndex] = source[shiftIndex];
-            source[shiftIndex] = shiftElement;
+            self._source[trunkIndex] = self._source[shiftIndex];
+            self._source[shiftIndex] = shiftElement;
             trunkIndex = shiftIndex;
         }while true;
     }
     
-    ///shift element at index
-    mutating func shiftAt(index: Int) {
-        guard let tindex = trunkIndexOf(index)else{
-            self.shiftDown(index);
+    ///auto shift element at index
+    public mutating func autoShift(atPosition: Int) {
+        let trunkIndex = trunkPositionOf(atPosition);
+        guard trunkIndex >= 0 else {
+            self.shiftDown(atPosition);
             return;
         }
-        self.isOrderedBefore(source[index], source[tindex]) ? shiftUp(index) : shiftDown(index);
+        self.isOrderedBefore(self._source[atPosition], self._source[trunkIndex]) ? shiftUp(atPosition) : shiftDown(atPosition);
+    }
+    
+    ///rebuild source
+    public mutating func rebuild() {
+        guard self._source.count > 0 else{return;}
+        var index = self.trunkPositionOf(self._source.count - 1);
+        while index > -1{
+            self.shiftDown(index);
+            index -= 1;
+        }
     }
 }
 ///extension public
 extension PriorityQueue{
     //append element and resort
     mutating public func insert(element: T) {
-        self.source.append(element);
-        self.shiftUp(self.source.count - 1);
+        self._source.append(element);
+        self.shiftUp(self._source.count - 1);
     }
     
     //return(and remove) first element and resort
     mutating public func popBest() -> T? {
-        if(self.source.isEmpty){return nil;}
-        let first = self.source[0];
-        let end = self.source.removeLast();
-        guard !self.source.isEmpty else{return first;}
-        self.source[0] = end;
+        if(self._source.isEmpty){return nil;}
+        let first = self._source[0];
+        let end = self._source.removeLast();
+        guard !self._source.isEmpty else{return first;}
+        self._source[0] = end;
         self.shiftDown(0);
         return first;
     }
     
     ///replace element at index
-    mutating public func replace(element: T, at index: Int) {
-        self.source[index] = element;
-        self.shiftAt(index);
-    }
-    
-    ///build source
-    mutating public func build(s: [T]) {
-        self.source = s;
-        let lastIndex = self.source.count - 1;
-        guard var index = self.trunkIndexOf(lastIndex) else {return;}
-        repeat{
-            self.shiftDown(index);
-            index -= 1;
-        }while index >= 0
+    mutating public func replace(element: T, at position: Int) {
+        self._source[position] = element;
+        self.autoShift(position);
     }
 }
 ///extension where T: Comparable
@@ -148,11 +155,11 @@ extension PriorityQueue where T: Comparable {
 }
 ///extension CollectionType
 extension PriorityQueue: CollectionType {
-    public var startIndex: Int{return self.source.startIndex;}
-    public var endIndex: Int{return self.source.endIndex;}
-    public var count: Int{return self.source.count;}
+    public var startIndex: Int{return self._source.startIndex;}
+    public var endIndex: Int{return self._source.endIndex;}
+    public var count: Int{return self._source.count;}
     public subscript(position: Int) -> T{
-        return self.source[position];
+        return self._source[position];
     }
 }
 

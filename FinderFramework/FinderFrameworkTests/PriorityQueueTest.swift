@@ -10,11 +10,11 @@ import Foundation
 @testable import FinderFramework;
 
 
-typealias PQ = PriorityQueue2<Int>;
+typealias PQ = PriorityQueue<Int>;
 
 
 //XPriorityQueue test
-func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
+func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false, branchSize: Int = 2)
 {
     var queue: PQ;
     
@@ -39,9 +39,7 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         {
             sortArray.append(random());
         }
-        
         queue = PQ(minimum: sortArray);
-        
         sortArray.sortInPlace({$0 > $1})
         while !queue.isEmpty
         {
@@ -52,7 +50,8 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         return;
     }
     
-    queue = PQ(minimum: []);
+//    queue = PQ(minimum: []);
+    queue = PQ(minimum: [], branchSize: branchSize);
     var count = 4000;
     let i = count;
     repeat{
