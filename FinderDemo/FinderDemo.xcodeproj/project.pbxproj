@@ -215,7 +215,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0710;
-				ORGANIZATIONNAME = "叶贤辉";
+				ORGANIZATIONNAME = xifangame;
 				TargetAttributes = {
 					1B2FA2301C4026010050F1F8 = {
 						CreatedOnToolsVersion = 7.1.1;
