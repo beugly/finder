@@ -8,158 +8,150 @@
 
 import Foundation
 
-///MARK: == PriorityQueue ==
+///MARK: PriorityQueue
 public struct PriorityQueue<T> {
     ///source
-    private var _source: [T];
+    public private(set) var source: [T];
     
-    ///is ordered before
+    ///max heap (>) OR min heap (<)
     private let isOrderedBefore: (T, T) -> Bool;
     
-    ///branch size
-    private let branchSize: Int;
-    
-    ///init
-    public init(branchSize: Int, source: [T], _ isOrderedBefore: (T, T) -> Bool) {
-        self.branchSize = branchSize;
+    ///Init
+    public init(source: [T], isOrderedBefore: (T, T) -> Bool) {
         self.isOrderedBefore = isOrderedBefore;
-        self._source = source;
+        self.source = source;
         self.rebuild();
     }
     
-    ///init binary queue
-    public init(binary source: [T], isOrderedBefore: (T, T) -> Bool){
-        self.init(branchSize: 2, source: source, isOrderedBefore);
+    ///Init
+    public init(isOrderedBefore: (T, T) -> Bool) {
+        self.init(source: [], isOrderedBefore: isOrderedBefore);
     }
 }
-///extension internal
+
+//MARK: extension PriorityQueue internal
 extension PriorityQueue {
     
-    ///Return source array (get)
-    ///Set source array and rebuild priority queue (set)
-    public var source: [T] {
-        set{
-            self._source = newValue;
-            self.rebuild();
-        }
-        get{
-            return self._source;
-        }
+    ///Return parent index of child index
+    func parentIndexOf(index: Int) -> Int {
+        return (index - 1) >> 1;
     }
     
-    ///return trunk position of position
-    public func trunkPositionOf(position:Int) -> Int {
-        return (position - 1) / self.branchSize;
+    ///Return min child index of parent index
+    func childIndexOf(index: Int) -> Int {
+        return index << 1 + 1;
     }
     
-    ///return branch position of position
-    public func branchPositionOf(position:Int) -> Int {
-        return position  * self.branchSize + 1;
-    }
-    
-    ///shift up at position
-    public mutating func shiftUp(atPosition: Int) {
-        let shiftElement = self._source[atPosition];
-        var shiftIndex = atPosition;
+    ///Shift up at index
+    mutating func shiftUp(atIndex: Int) {
+        let shiftElement = self.source[atIndex];
+        var shiftIndex = atIndex;
         repeat{
-            let trunkIndex = trunkPositionOf(shiftIndex);
-            guard trunkIndex >= 0
-                && isOrderedBefore(shiftElement, self._source[trunkIndex]) else {break;}
-            self._source[shiftIndex] = self._source[trunkIndex];
-            self._source[trunkIndex] = shiftElement;
-            shiftIndex = trunkIndex;
+            let parentIndex = parentIndexOf(shiftIndex);
+            guard parentIndex >= 0
+                && isOrderedBefore(shiftElement, self.source[parentIndex]) else {break;}
+            swap(&source[shiftIndex], &source[parentIndex])
+            shiftIndex = parentIndex;
         }while true
     }
     
     ///shift down at position
-    public mutating func shiftDown(atPosition: Int) {
-        let shiftElement = self._source[atPosition];
-        var trunkIndex = atPosition;
-        let c = self._source.count;
+    mutating func shiftDown(atIndex: Int) {
+        var parentIndex = atIndex;
+        let c = self.source.count;
         repeat{
-            var branchIndex = branchPositionOf(trunkIndex);
-            var shiftIndex = trunkIndex;
-            let bIndex = branchIndex;
-            while branchIndex < c
-                && branchIndex - bIndex < branchSize {
-                    if isOrderedBefore(self._source[branchIndex], self._source[shiftIndex]) {
-                        shiftIndex = branchIndex
-                    }
-                    branchIndex += 1;
+            var childIndex = childIndexOf(parentIndex);
+            guard childIndex < c else {break;}
+            
+            var shiftIndex = parentIndex;
+            if isOrderedBefore(self.source[childIndex], self.source[shiftIndex]) {
+                shiftIndex = childIndex;
             }
             
-            guard shiftIndex != trunkIndex else{break;}
-            self._source[trunkIndex] = self._source[shiftIndex];
-            self._source[shiftIndex] = shiftElement;
-            trunkIndex = shiftIndex;
+            childIndex += 1;
+            if childIndex < c && isOrderedBefore(self.source[childIndex], self.source[shiftIndex]) {
+                shiftIndex = childIndex;
+            }
+            
+            guard shiftIndex != parentIndex else{break;}
+            swap(&source[parentIndex], &source[shiftIndex])
+            parentIndex = shiftIndex;
         }while true;
     }
     
-    ///auto shift element at index
-    public mutating func autoShift(atPosition: Int) {
-        let trunkIndex = trunkPositionOf(atPosition);
-        guard trunkIndex >= 0 else {
-            self.shiftDown(atPosition);
+    ///Auto shift element at index
+    mutating func autoShift(atIndex: Int) {
+        let parentIndex = parentIndexOf(atIndex);
+        guard parentIndex >= 0 else {
+            self.shiftDown(atIndex);
             return;
         }
-        self.isOrderedBefore(self._source[atPosition], self._source[trunkIndex]) ? shiftUp(atPosition) : shiftDown(atPosition);
+        self.isOrderedBefore(self.source[atIndex], self.source[parentIndex]) ? shiftUp(atIndex) : shiftDown(atIndex);
+    }
+}
+
+//MARK: extension PriorityQueue public
+extension PriorityQueue{
+    
+    ///Preview min OR max element
+    public var preview: T? {
+        return self.source.first;
     }
     
-    ///rebuild source
-    public mutating func rebuild() {
-        guard self._source.count > 0 else{return;}
-        var index = self.trunkPositionOf(self._source.count - 1);
+    ///Insert element
+    mutating public func insert(element: T) {
+        self.source.append(element);
+        self.shiftUp(self.source.count - 1);
+    }
+    
+    ///Remove best element
+    mutating public func popBest() -> T? {
+        guard !self.source.isEmpty else {return nil;}
+        guard self.source.count > 1 else{return self.source.removeLast();}
+        let first = self.source[0];
+        self.source[0] = self.source.removeLast();
+        self.shiftDown(0);
+        return first;
+    }
+    
+    ///Replace element at index
+    mutating public func replace(atIndex: Int, newValue: T) {
+        self.source[atIndex] = newValue;
+        self.autoShift(atIndex);
+    }
+    
+    ///Rebuild priority queue
+    mutating public func rebuild() {
+        guard self.source.count > 0 else{return;}
+        var index = self.parentIndexOf(self.source.count - 1);
         while index > -1{
             self.shiftDown(index);
             index -= 1;
         }
     }
 }
-///extension public
-extension PriorityQueue{
-    //append element and resort
-    mutating public func insert(element: T) {
-        self._source.append(element);
-        self.shiftUp(self._source.count - 1);
-    }
-    
-    //return(and remove) first element and resort
-    mutating public func popBest() -> T? {
-        if(self._source.isEmpty){return nil;}
-        let first = self._source[0];
-        let end = self._source.removeLast();
-        guard !self._source.isEmpty else{return first;}
-        self._source[0] = end;
-        self.shiftDown(0);
-        return first;
-    }
-    
-    ///replace element at index
-    mutating public func replace(element: T, at position: Int) {
-        self._source[position] = element;
-        self.autoShift(position);
-    }
-}
-///extension where T: Comparable
+
+//MARK: extension PriorityQueue where T: Comparable
 extension PriorityQueue where T: Comparable {
-    //minimum heap
-    public init(minimum source: Array<T>, branchSize: Int = 2){
-        self.init(branchSize: branchSize, source: source){return $0 < $1;}
+    ///minimum heap
+    public init(minimum source: [T] = []){
+        self.init(source: source){return $0 < $1;}
     }
     
-    //maximum heap
-    public init(maximum source: Array<T>, branchSize: Int = 2)
+    ///maximum heap
+    public init(maximum source: [T] = [])
     {
-        self.init(branchSize: branchSize, source: source){return $0 > $1;}
+        self.init(source: source){return $0 > $1;}
     }
 }
-///extension CollectionType
+
+//MARK: extension PriorityQueue: CollectionType
 extension PriorityQueue: CollectionType {
-    public var startIndex: Int{return self._source.startIndex;}
-    public var endIndex: Int{return self._source.endIndex;}
-    public var count: Int{return self._source.count;}
+    public var startIndex: Int{return self.source.startIndex;}
+    public var endIndex: Int{return self.source.endIndex;}
+    public var count: Int{return self.source.count;}
     public subscript(position: Int) -> T{
-        return self._source[position];
+        return self.source[position];
     }
 }
 

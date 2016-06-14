@@ -18,7 +18,7 @@ typealias PF = AstarFinder<FinderPoint2D>
 
 func pathFinderTest(markVisited: Bool = true, markPath: Bool = false, isDiagnal: Bool = false, multiGoals: Bool = false) {
     
-    let size = 50;
+    let size = 100;
     let mp = size - 1;
     var conf = Array2D<Int>(columns: size, rows: size, repeatValue: 1);
     var hinder = [FinderPoint2D]();
@@ -111,7 +111,6 @@ extension TestFinderDataSource: FinderOption2DType{
     ///otherwise return nil
     func getCost(x: Int, y: Int) -> CGFloat? {
         guard x > -1 && x < self.config.columns && y > -1 && y < self.config.rows else {return .None;}
-        guard let cost = self.config[x, y] else {return .None;}
-        return CGFloat(cost);
+        return CGFloat(self.config[x, y]);
     }
 }
