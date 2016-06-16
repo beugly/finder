@@ -7,7 +7,7 @@
 //
 
 import UIKit
-@testable import FinderFramework;
+import FinderFramework;
 
 func array2DTest()
 {

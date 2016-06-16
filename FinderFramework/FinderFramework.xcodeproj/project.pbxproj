@@ -13,13 +13,15 @@
 		1B2FA2171C40246A0050F1F8 /* FinderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */; };
 		1B2FA2181C40246A0050F1F8 /* Finder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2131C40246A0050F1F8 /* Finder.swift */; };
 		1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */; };
-		1B2FA21A1C40246A0050F1F8 /* Collection2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2151C40246A0050F1F8 /* Collection2D.swift */; };
+		1B2FA21A1C40246A0050F1F8 /* Array2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2151C40246A0050F1F8 /* Array2D.swift */; };
 		1B2FA21B1C40246A0050F1F8 /* Finder2DImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */; };
 		1B2FA2201C4024D20050F1F8 /* FinderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA21D1C4024D20050F1F8 /* FinderTest.swift */; };
 		1B2FA2211C4024D20050F1F8 /* PriorityQueueTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA21E1C4024D20050F1F8 /* PriorityQueueTest.swift */; };
-		1B2FA2221C4024D20050F1F8 /* CollectionNDTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA21F1C4024D20050F1F8 /* CollectionNDTest.swift */; };
+		1B2FA2221C4024D20050F1F8 /* Array2DTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA21F1C4024D20050F1F8 /* Array2DTest.swift */; };
 		1B2FA2261C4024F30050F1F8 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2241C4024F30050F1F8 /* TestUtils.swift */; };
 		1B2FA2271C4024F30050F1F8 /* TestArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2251C4024F30050F1F8 /* TestArrow.swift */; };
+		6558871E1C731E78000B40B6 /* Finder3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6558871D1C731E78000B40B6 /* Finder3.swift */; };
+		655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D72291CA39A3B00673E3F /* FinderProtocols.swift */; };
 		65F5B55C1C478A3F0036EC18 /* Finder2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F5B55B1C478A3F0036EC18 /* Finder2.swift */; };
 /* End PBXBuildFile section */
 
@@ -43,13 +45,15 @@
 		1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl.swift; sourceTree = "<group>"; };
 		1B2FA2131C40246A0050F1F8 /* Finder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder.swift; sourceTree = "<group>"; };
 		1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
-		1B2FA2151C40246A0050F1F8 /* Collection2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection2D.swift; sourceTree = "<group>"; };
+		1B2FA2151C40246A0050F1F8 /* Array2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array2D.swift; sourceTree = "<group>"; };
 		1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder2DImpl.swift; sourceTree = "<group>"; };
 		1B2FA21D1C4024D20050F1F8 /* FinderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderTest.swift; sourceTree = "<group>"; };
 		1B2FA21E1C4024D20050F1F8 /* PriorityQueueTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueueTest.swift; sourceTree = "<group>"; };
-		1B2FA21F1C4024D20050F1F8 /* CollectionNDTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionNDTest.swift; sourceTree = "<group>"; };
+		1B2FA21F1C4024D20050F1F8 /* Array2DTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array2DTest.swift; sourceTree = "<group>"; };
 		1B2FA2241C4024F30050F1F8 /* TestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestUtils.swift; sourceTree = "<group>"; };
 		1B2FA2251C4024F30050F1F8 /* TestArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestArrow.swift; sourceTree = "<group>"; };
+		6558871D1C731E78000B40B6 /* Finder3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder3.swift; sourceTree = "<group>"; };
+		655D72291CA39A3B00673E3F /* FinderProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderProtocols.swift; sourceTree = "<group>"; };
 		65F5B55B1C478A3F0036EC18 /* Finder2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,12 +118,14 @@
 		1B2FA2111C4024310050F1F8 /* finder */ = {
 			isa = PBXGroup;
 			children = (
+				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
+				1B2FA2151C40246A0050F1F8 /* Array2D.swift */,
+				6558871D1C731E78000B40B6 /* Finder3.swift */,
 				65F5B55B1C478A3F0036EC18 /* Finder2.swift */,
 				1B2FA2131C40246A0050F1F8 /* Finder.swift */,
 				1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */,
 				1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */,
-				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
-				1B2FA2151C40246A0050F1F8 /* Collection2D.swift */,
+				655D72291CA39A3B00673E3F /* FinderProtocols.swift */,
 			);
 			name = finder;
 			sourceTree = "<group>";
@@ -129,7 +135,7 @@
 			children = (
 				1B2FA21D1C4024D20050F1F8 /* FinderTest.swift */,
 				1B2FA21E1C4024D20050F1F8 /* PriorityQueueTest.swift */,
-				1B2FA21F1C4024D20050F1F8 /* CollectionNDTest.swift */,
+				1B2FA21F1C4024D20050F1F8 /* Array2DTest.swift */,
 			);
 			name = case;
 			sourceTree = "<group>";
@@ -201,7 +207,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0710;
-				ORGANIZATIONNAME = "叶贤辉";
+				ORGANIZATIONNAME = xifangame;
 				TargetAttributes = {
 					1B2FA1F61C4023FC0050F1F8 = {
 						CreatedOnToolsVersion = 7.1.1;
@@ -253,10 +259,12 @@
 			files = (
 				65F5B55C1C478A3F0036EC18 /* Finder2.swift in Sources */,
 				1B2FA2171C40246A0050F1F8 /* FinderImpl.swift in Sources */,
+				6558871E1C731E78000B40B6 /* Finder3.swift in Sources */,
 				1B2FA21B1C40246A0050F1F8 /* Finder2DImpl.swift in Sources */,
 				1B2FA2181C40246A0050F1F8 /* Finder.swift in Sources */,
+				655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
-				1B2FA21A1C40246A0050F1F8 /* Collection2D.swift in Sources */,
+				1B2FA21A1C40246A0050F1F8 /* Array2D.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,7 +277,7 @@
 				1B2FA2211C4024D20050F1F8 /* PriorityQueueTest.swift in Sources */,
 				1B2FA2271C4024F30050F1F8 /* TestArrow.swift in Sources */,
 				1B2FA2261C4024F30050F1F8 /* TestUtils.swift in Sources */,
-				1B2FA2221C4024D20050F1F8 /* CollectionNDTest.swift in Sources */,
+				1B2FA2221C4024D20050F1F8 /* Array2DTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,7 +329,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -363,7 +371,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

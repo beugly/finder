@@ -118,18 +118,20 @@ extension FinderQueue: FinderQueueType{
     mutating public func replace(element: Element) {
         print("WARN: FinderDelegate.update ===============")
         guard let i = (self.openList.indexOf{$0 == element}) else {return;}
-        self.openList.replace(element, at: i);
+        self.openList.replace(i, newValue: element)
         self.visiteList[element.point] = element;
     }
 }
 
-//MARK: == FinderDiagoanlModel ==
-public enum FinderDiagoanlModel {
+//MARK: == FinderDiagonalModel ==
+public enum FinderDiagonalModel {
     case Never          //just straight
     case Always         //straight and diagonal without check obstacle
     case NoObstacle     //straight and diagonal whth check if all straight neighbors is not obstacle
     case MostOneNoObstacle      //straight and diagonal with check if has one neighbor which is not obstacle at least;
 }
+
+
 
 
 

@@ -55,7 +55,7 @@ extension FinderDelegate: FinderDelegateType{
     mutating public func update(element: Element) {
         print("WARN: FinderDelegate.update ===============")
         guard let i = (self.openList.indexOf{$0 == element}) else {return;}
-        self.openList.replace(element, at: i);
+        self.openList.replace(i, newValue: element);
         self.visiteList[element.point] = element;
     }
 }

@@ -7,7 +7,8 @@
 //
 
 import Foundation
-@testable import FinderFramework;
+@testable
+import FinderFramework;
 
 
 
@@ -40,8 +41,7 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         {
             sortArray.append(random());
         }
-//        queue = PQ(minimum: sortArray);
-        queue = PQ(maximum: sortArray);
+        queue = PQ(minimum: sortArray);
         sortArray.sortInPlace({$0 > $1})
         while !queue.isEmpty
         {
@@ -52,13 +52,13 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         return;
     }
     
-//    queue = PQ(minimum: []);
     queue = PQ(minimum: []);
+//    queue = PQ(maximum: []);
     var count = 4000;
     let i = count;
     repeat{
         queue.insert(count);
-        count--;
+        count -= 1;
     }while count > 0;
     //        print(queue.indexOf(1));
     //        print(queue);
