@@ -24,7 +24,7 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         let arr = [0, 2, 3, 1, 9, 6, 8, 7];
         queue = PQ(minimum: arr);
         print(queue.source);
-        queue.replace(4, newValue: -1);
+        queue.replace(queue.indexOf(9)!, newValue: -1);
         print(queue.source);
         while !queue.isEmpty
         {
