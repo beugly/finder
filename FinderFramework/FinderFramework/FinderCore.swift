@@ -114,6 +114,56 @@ extension FinderHeap: FinderHeapType {
     }
 }
 
+///FinderArray
+public struct FinderArray<T: Hashable> {
+    
+    ///openlist
+    public private(set) var openList: [FinderArray.Vertex];
+    
+    ///visitlist - [Vertex: FinderHeap.Element]
+    public private(set) var visitList: [Vertex: FinderArray.Element];
+    
+    ///index
+    private var index: Int = -1;
+    
+    ///init
+    public init(){
+        self.visitList = [:];
+        self.openList = [];
+    }
+}
+extension FinderArray: FinderHeapType {
+    
+    ///Vertex Type
+    public typealias Vertex = T;
+    
+    public func elementOf(vertex: Vertex) -> FinderArray.Element? {
+        return visitList[vertex];
+    }
+    
+    public mutating func insert(element: FinderArray.Element) {
+        openList.append(element.item.vertex);
+        visitList[element.item.vertex] = element;
+    }
+    
+    public mutating func pop() -> FinderArray.Element? {
+        index += 1;
+        guard index < openList.count else{
+            return .None;
+        }
+        
+        let vertex = openList[index];
+        var element = visitList[vertex];
+        element?.isClosed = true;
+        visitList[vertex] = element;
+        return element;
+    }
+    
+    public mutating func update(newElement: FinderArray.Element) {
+        let vertex = newElement.item.vertex;
+        visitList[vertex] = newElement;
+    }
+}
 
 ///FinderVertexItem
 public struct FinderVertexItem<Vertex: Hashable> {
