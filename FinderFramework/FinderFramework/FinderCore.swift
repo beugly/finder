@@ -12,52 +12,54 @@ import Foundation
 ///FinderHeapType
 public protocol FinderHeapType {
     
-    ///Point Type
-    associatedtype Point: Hashable;
+    ///Vertex Type
+    associatedtype Vertex: Hashable;
     
-    ///Return visited
-    func visitedOf(point: Point) -> Visited?
+    ///Return visited element at vertex
+    func elementOf(vertex: Vertex) -> Element?
     
     ///insert element
-    mutating func insert(element: Element, parent: Element?)
+    mutating func insert(element: Element)
     
-    ///pop element and set it closed
+    ///pop element and close it
     mutating func pop() -> Element?
     
     ///update element
-    mutating func update(newValue: Visited)
+    mutating func update(newElement: Element)
+    
+    ///init
+    init();
 }
 extension FinderHeapType {
     
+    ///FinderVertexItem
+    public typealias Item = FinderVertexItem<Vertex>;
+    
     ///Element Type
-    public typealias Element = FinderElement<Self.Point>;
+    public typealias Element = (item: Item, parent: Item?, isClosed: Bool);
     
-    ///Visited type
-    public typealias Visited = (element: Element, parent: Element?, closed: Bool)
-    
-    ///back trace element
-    public func backtrace(point: Point) -> [Element] {
-        guard let element = visitedOf(point)?.element else {
+    ///parse
+    public func parseToItems(vertex: Vertex) -> [Item] {
+        guard let element = elementOf(vertex) else {
             return [];
         }
         
-        var result = [element];
-        var point = point;
-        
+        var result: [Item] = [element.item];
+        var vertex = vertex;
         repeat{
-            guard let parent = visitedOf(point)?.parent else {
+            guard let parent = elementOf(vertex)?.parent else {
                 return result;
             }
             result.append(parent);
-            point = parent.point;
+            vertex = parent.vertex;
         }while true;
     }
     
-    ///back trace element
-    public func backtrace(point: Point) -> [Point] {
-        let result: [Element] = backtrace(point);
+    ///parse
+    public func parseToVertexes(vertex: Vertex) -> [Vertex] {
+        let result: [Item] = parseToItems(vertex);
         return result.flatMap{
-            return $0.point;
+            return $0.vertex;
         }
     }
 }
@@ -67,59 +69,59 @@ extension FinderHeapType {
 public struct FinderHeap<T: Hashable> {
     
     ///openlist
-    public private(set) var openList: PriorityQueue<FinderHeap.Element>;
+    public private(set) var openList: PriorityQueue<FinderHeap.Item>;
     
-    ///visitlist - [Point: Visited]
-    public private(set) var visitList: [Point: FinderHeap.Visited];
+    ///visitlist - [Vertex: FinderHeap.Element]
+    public private(set) var visitList: [Vertex: FinderHeap.Element];
     
     ///init
     public init(){
         self.visitList = [:];
-        self.openList = PriorityQueue<FinderHeap.Element>{
-            $0.f < $1.f;
-        }
+        self.openList = PriorityQueue<FinderHeap.Item>.init(minimum: []);
     }
 }
 extension FinderHeap: FinderHeapType {
     
-    ///Point Type
-    public typealias Point = T;
+    ///Vertex Type
+    public typealias Vertex = T;
     
-    public func visitedOf(point: Point) -> FinderHeap.Visited? {
-        return visitList[point];
+    public func elementOf(vertex: Vertex) -> FinderHeap.Element? {
+        return visitList[vertex];
     }
     
-    public mutating func insert(element: FinderHeap.Element, parent: FinderHeap.Element?) {
-        openList.insert(element);
-        visitList[element.point] = (element: element, parent: parent, closed: false);
+    public mutating func insert(element: FinderHeap.Element) {
+        openList.insert(element.item);
+        visitList[element.item.vertex] = element;
     }
     
     public mutating func pop() -> FinderHeap.Element? {
-        guard let element = openList.popBest() else {
+        guard let item = openList.popBest() else {
             return .None;
         }
-        visitList[element.point]?.closed = true;
+        var element = visitList[item.vertex];
+        element?.isClosed = true;
+        visitList[item.vertex] = element;
         return element;
     }
     
-    public mutating func update(newValue: FinderHeap.Visited) {
-        let point = newValue.element.point;
-        guard let index = (openList.indexOf{$0.point == point}) else {
+    public mutating func update(newElement: FinderHeap.Element) {
+        let vertex = newElement.item.vertex;
+        guard let index = (openList.indexOf{$0.vertex == vertex}) else {
             return;
         }
-        openList.replace(index, newValue: newValue.element);
-        visitList[point] = newValue;
+        openList.replace(index, newValue: newElement.item);
+        visitList[vertex] = newElement;
     }
 }
 
 
-///FinderElement
-public struct FinderElement<Point: Hashable> {
+///FinderVertexItem
+public struct FinderVertexItem<Vertex: Hashable> {
     
-    ///point
-    public let point: Point;
+    ///vertex
+    public let vertex: Vertex;
     
-    ///g value real cost, h value   
+    ///g represents exact cost, h represents heuristic estimated cost
     public internal(set) var g, h: Int;
     
     ///f value, f = g + h;
@@ -128,11 +130,20 @@ public struct FinderElement<Point: Hashable> {
     }
     
     ///init
-    public init(point: Point, g: Int, h: Int){
-        self.point = point;
+    public init(vertex: Vertex, g: Int, h: Int){
+        self.vertex = vertex;
         self.g = g;
         self.h = h;
     }
 }
+extension FinderVertexItem: Comparable {}
+public func ==<Vertex: Hashable>(lsh: FinderVertexItem<Vertex>, rsh: FinderVertexItem<Vertex>) -> Bool{
+    return lsh.vertex == rsh.vertex;
+}
+public func <<Vertex: Hashable>(lsh: FinderVertexItem<Vertex>, rsh: FinderVertexItem<Vertex>) -> Bool{
+    return lsh.f < rsh.f ? true : (lsh.h < rsh.h);
+}
+
+
 
 
