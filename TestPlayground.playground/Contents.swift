@@ -2,7 +2,7 @@
 
 import UIKit
 import SpriteKit;
-
+import FinderFramework;
 
 
 
@@ -27,9 +27,9 @@ import SpriteKit;
 //let s = SS<Int>();
 //s.test(10, b: 15);
 
-var a = [0, 1, 2];
-var b = 3;
 
-swap(&a[1], &b);
-b;
-a;
+var a = FOne2Many(origin: 0, goal: [1,2]);
+a.isGoal(0)
+
+var b = FOne2Many(origin: 0, goal: 1);
+b.isGoal(0)

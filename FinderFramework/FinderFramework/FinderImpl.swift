@@ -194,7 +194,7 @@
 //    ///delegate
 //    public var delegate: FinderDelegate<Point>;
 //}
-//extension DijkstraPathFinder: FinderMultiType{}
+//extension DijkstraPathFinder: FinderSingleType{}
 //extension DijkstraPathFinder:  FinderType {
 //    ///Returns result of request with option -- [start point: [path point]]
 //    /// - Parameters:

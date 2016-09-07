@@ -25,7 +25,6 @@ class FinderFrameworkTests: XCTestCase {
     {
         if testPerformance
         {
-            
             self.measureBlock{
                 self.waitForTest();
             }
@@ -44,7 +43,15 @@ class FinderFrameworkTests: XCTestCase {
 //        array2DTest();
 //        priorityQueueTest();
     }
+    
+    
+    
 }
+
+
+
+
+
 
 
 

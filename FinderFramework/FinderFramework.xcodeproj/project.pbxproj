@@ -11,7 +11,6 @@
 		1B2FA2021C4023FC0050F1F8 /* FinderFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B2FA1F71C4023FC0050F1F8 /* FinderFramework.framework */; };
 		1B2FA2071C4023FC0050F1F8 /* FinderFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2061C4023FC0050F1F8 /* FinderFrameworkTests.swift */; };
 		1B2FA2171C40246A0050F1F8 /* FinderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */; };
-		1B2FA2181C40246A0050F1F8 /* Finder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2131C40246A0050F1F8 /* Finder.swift */; };
 		1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */; };
 		1B2FA21A1C40246A0050F1F8 /* Array2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2151C40246A0050F1F8 /* Array2D.swift */; };
 		1B2FA21B1C40246A0050F1F8 /* Finder2DImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */; };
@@ -42,7 +41,6 @@
 		1B2FA2061C4023FC0050F1F8 /* FinderFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderFrameworkTests.swift; sourceTree = "<group>"; };
 		1B2FA2081C4023FC0050F1F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl.swift; sourceTree = "<group>"; };
-		1B2FA2131C40246A0050F1F8 /* Finder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder.swift; sourceTree = "<group>"; };
 		1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
 		1B2FA2151C40246A0050F1F8 /* Array2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array2D.swift; sourceTree = "<group>"; };
 		1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder2DImpl.swift; sourceTree = "<group>"; };
@@ -149,7 +147,6 @@
 			children = (
 				1B2FA2121C40246A0050F1F8 /* FinderImpl.swift */,
 				1B2FA2161C40246A0050F1F8 /* Finder2DImpl.swift */,
-				1B2FA2131C40246A0050F1F8 /* Finder.swift */,
 			);
 			name = old;
 			sourceTree = "<group>";
@@ -264,7 +261,6 @@
 			files = (
 				1B2FA2171C40246A0050F1F8 /* FinderImpl.swift in Sources */,
 				1B2FA21B1C40246A0050F1F8 /* Finder2DImpl.swift in Sources */,
-				1B2FA2181C40246A0050F1F8 /* Finder.swift in Sources */,
 				655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */,
 				BA57D5061D2F8ED500023631 /* FinderCore.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
