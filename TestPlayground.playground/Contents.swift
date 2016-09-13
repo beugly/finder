@@ -28,8 +28,9 @@ import FinderFramework;
 //s.test(10, b: 15);
 
 
-var a = FOne2Many(origin: 0, goal: [1,2]);
-a.isGoal(0)
+//var a = FOne2Many(origin: 0, goal: [1,2]);
+//a.isGoal(0)
+//
+//var b = FOne2Many(origin: 0, goal: 1);
+//b.isGoal(0)
 
-var b = FOne2Many(origin: 0, goal: 1);
-b.isGoal(0)

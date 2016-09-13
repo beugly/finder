@@ -9,11 +9,15 @@
 import Foundation
 
 
-//MARK: FStorage
-public protocol FStorage {
+
+//MARK: FinderHeap
+public protocol FinderHeap {
     
     ///Vertex Type
     associatedtype Vertex: Hashable;
+    
+    ///Element Type
+    associatedtype Element = FElement<Vertex>;
     
     ///Insert a element into 'Self'.
     mutating func insert(element: Element)
@@ -26,15 +30,11 @@ public protocol FStorage {
     
     ///Return element info
     func elementOf(vertex: Vertex) -> Element?
-    
-    init();
 }
-extension FStorage {
-    ///Element Type
-    public typealias Element = FElement<Vertex>;
+extension FinderHeap where Self.Element == FElement<Self.Vertex> {
     
     ///Return Vertex array(backtrace of vertex)
-    public func backtrace(vertex: Vertex) -> [Vertex]{
+    func backtrace(vertex: Vertex) -> [Vertex]{
         var result = [vertex];
         var element: Element? = elementOf(vertex);
         repeat {
@@ -49,12 +49,7 @@ extension FStorage {
 }
 
 //MARK: FHeap
-///Finder Heap
-public struct FHeap<Vertex: Hashable> {
-    
-    ///Element Type
-    public typealias Element = FElement<Vertex>;
-    
+public struct FHeap<Vertex: Hashable, Goal> {
     ///Open list
     internal private(set) var openList: PriorityQueue<Element>;
     
@@ -64,10 +59,13 @@ public struct FHeap<Vertex: Hashable> {
     ///Init
     public init(){
         self.visitList = [:];
-        self.openList = PriorityQueue<Element>.init(minimum: []);
+        self.openList = PriorityQueue<Element>.heap(minimum: [])
     }
 }
-extension FHeap: FStorage {
+extension FHeap: FinderHeap {
+    
+    ///Element Type
+    public typealias Element = FElement<Vertex>;
     
     ///Insert a element into 'Self'.
     mutating public func insert(element: Element) {
@@ -90,7 +88,7 @@ extension FHeap: FStorage {
         guard let index = (openList.indexOf{$0.vertex == vertex}) else {
             return;
         }
-        openList.replace(index, newValue: newElement);
+        openList.replace(newElement, at: index);
         visitList[vertex] = newElement;
     }
     

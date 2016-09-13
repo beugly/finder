@@ -22,9 +22,9 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
     
     guard !testReplace else {
         let arr = [0, 2, 3, 1, 9, 6, 8, 7];
-        queue = PQ(minimum: arr);
+        queue = PQ.heap(minimum: arr)
         print(queue.source);
-        queue.replace(queue.indexOf(9)!, newValue: -1);
+        queue.replace(-1, at: queue.indexOf(9)!);
         print(queue.source);
         while !queue.isEmpty
         {
@@ -41,10 +41,9 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         {
             sortArray.append(random());
         }
-        queue = PQ(minimum: sortArray);
+        queue = PQ.heap(minimum: sortArray)
         sortArray.sortInPlace({$0 > $1})
-        while !queue.isEmpty
-        {
+        while !queue.isEmpty {
             let e1 = queue.popBest()!;
             let e2 = sortArray.removeLast();
             print("\(e1)-\(e2)=\(e1 - e2)  count:\(queue.count)");
@@ -52,8 +51,8 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         return;
     }
     
-    queue = PQ(minimum: []);
-//    queue = PQ(maximum: []);
+    queue = PQ.heap(minimum: [])
+//    queue = PQ.heap(maximum: []);
     var count = 4000;
     let i = count;
     repeat{
