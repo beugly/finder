@@ -20,6 +20,7 @@
 		1B2FA2261C4024F30050F1F8 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2241C4024F30050F1F8 /* TestUtils.swift */; };
 		1B2FA2271C4024F30050F1F8 /* TestArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2251C4024F30050F1F8 /* TestArrow.swift */; };
 		655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D72291CA39A3B00673E3F /* FinderProtocols.swift */; };
+		BA1E63EB1D89000300EF91B5 /* PQ2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1E63EA1D89000300EF91B5 /* PQ2.swift */; };
 		BA57D5061D2F8ED500023631 /* FinderCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA57D5051D2F8ED500023631 /* FinderCore.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 		1B2FA2241C4024F30050F1F8 /* TestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestUtils.swift; sourceTree = "<group>"; };
 		1B2FA2251C4024F30050F1F8 /* TestArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestArrow.swift; sourceTree = "<group>"; };
 		655D72291CA39A3B00673E3F /* FinderProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderProtocols.swift; sourceTree = "<group>"; };
+		BA1E63EA1D89000300EF91B5 /* PQ2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PQ2.swift; sourceTree = "<group>"; };
 		BA57D5051D2F8ED500023631 /* FinderCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderCore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -116,6 +118,7 @@
 			children = (
 				BA5626E61D2DFFF000FC1B54 /* old */,
 				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
+				BA1E63EA1D89000300EF91B5 /* PQ2.swift */,
 				1B2FA2151C40246A0050F1F8 /* Array2D.swift */,
 				655D72291CA39A3B00673E3F /* FinderProtocols.swift */,
 				BA57D5051D2F8ED500023631 /* FinderCore.swift */,
@@ -264,6 +267,7 @@
 				655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */,
 				BA57D5061D2F8ED500023631 /* FinderCore.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
+				BA1E63EB1D89000300EF91B5 /* PQ2.swift in Sources */,
 				1B2FA21A1C40246A0050F1F8 /* Array2D.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
