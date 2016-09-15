@@ -25,7 +25,7 @@ class FinderFrameworkTests: XCTestCase {
     {
         if testPerformance
         {
-            self.measureBlock{
+            self.measure{
                 self.waitForTest();
             }
         }
@@ -35,9 +35,9 @@ class FinderFrameworkTests: XCTestCase {
         }
     }
     
-    private var testPerformance:Bool = false;
+    fileprivate var testPerformance:Bool = true;
     
-    private func waitForTest()
+    fileprivate func waitForTest()
     {
 //        pathFinderTest();
 //        array2DTest();

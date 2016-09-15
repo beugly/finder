@@ -16,7 +16,7 @@ typealias PQ = PriorityQueue<Int>;
 
 
 //XPriorityQueue test
-func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
+func priorityQueueTest(_ testRebuild:Bool = false, testReplace: Bool = false)
 {
     var queue: PQ;
     
@@ -24,7 +24,7 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         let arr = [0, 2, 3, 1, 9, 6, 8, 7];
         queue = PQ.heap(minimum: arr)
         print(queue.source);
-        queue.replace(-1, at: queue.indexOf(9)!);
+        queue.replace(-1, at: queue.index(of: 9)!);
         print(queue.source);
         while !queue.isEmpty
         {
@@ -39,10 +39,10 @@ func priorityQueueTest(testRebuild:Bool = false, testReplace: Bool = false)
         
         for _ in 0...100
         {
-            sortArray.append(random());
+            sortArray.append(Int(arc4random()));
         }
         queue = PQ.heap(minimum: sortArray)
-        sortArray.sortInPlace({$0 > $1})
+        sortArray.sort(by: {$0 > $1})
         while !queue.isEmpty {
             let e1 = queue.popBest()!;
             let e2 = sortArray.removeLast();

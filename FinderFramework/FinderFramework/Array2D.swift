@@ -15,13 +15,13 @@ public struct Array2D<T> {
     public let columns, rows: Int;
     
     ///Source array
-    public private(set) var source: [T];
+    public fileprivate(set) var source: [T];
     
     ///Init
     public init(columns: Int, rows: Int, repeatValue: T) {
         self.columns = columns;
         self.rows = rows;
-        self.source = .init(count: columns * rows, repeatedValue: repeatValue);
+        self.source = .init(repeating: repeatValue, count: columns * rows);
     }
 }
 
@@ -38,13 +38,22 @@ extension Array2D {
     }
     
     ///Position to Index
-    private func position2Index(column: Int, row: Int) -> Int {
+    fileprivate func position2Index(_ column: Int, row: Int) -> Int {
         return row * columns + column
     }
 }
 
 //MARK: extension Array2D: CollectionType
-extension Array2D: CollectionType {
+extension Array2D: Collection {
+    /// Returns the position immediately after the given index.
+    ///
+    /// - Parameter i: A valid index of the collection. `i` must be less than
+    ///   `endIndex`.
+    /// - Returns: The index value immediately after `i`.
+    public func index(after i: Int) -> Int {
+        return i + 1;
+    }
+
     public var startIndex: Int {return self.source.startIndex;}
     public var endIndex: Int {return self.source.endIndex;}
     public var count: Int {return self.source.count;}

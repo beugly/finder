@@ -11,51 +11,51 @@ import Foundation
 
 enum TestArrow
 {
-    case L, R, T, B, TL, TR, BL, BR
+    case l, r, t, b, tl, tr, bl, br
 }
 extension TestArrow:CustomStringConvertible
 {
     var description:String{
         switch self{
-        case .L:
+        case .l:
             return "⬅️";
-        case .R:
+        case .r:
             return "➡️";
-        case .T:
+        case .t:
             return "⬆️";
-        case .B:
+        case .b:
             return "⬇️";
-        case .TL:
+        case .tl:
             return "↖️";
-        case .TR:
+        case .tr:
             return "↗️";
-        case .BL:
+        case .bl:
             return "↙️";
-        case .BR:
+        case .br:
             return "↘️";
         }
     }
     
-    static func getArrow(x1: Int, y1: Int, x2: Int, y2: Int) -> TestArrow{
+    static func getArrow(_ x1: Int, y1: Int, x2: Int, y2: Int) -> TestArrow{
         switch(x1 - x2, y1 - y2){
         case let (dx, dy) where dx == 0 && dy < 0:
-            return .T;
+            return .t;
         case let (dx, dy) where dx < 0 && dy < 0:
-            return .TL;
+            return .tl;
         case let (dx, dy) where dx < 0 && dy == 0:
-            return .L;
+            return .l;
         case let (dx, dy) where dx < 0 && dy > 0:
-            return .BL;
+            return .bl;
         case let (dx, dy) where dx == 0 && dy > 0:
-            return .B;
+            return .b;
         case let (dx, dy) where dx > 0 && dy > 0:
-            return .BR;
+            return .br;
         case let (dx, dy) where dx > 0 && dy == 0:
-            return .R;
+            return .r;
         case let (dx, dy) where dx > 0 && dy < 0:
-            return .TR;
+            return .tr;
         default:
-            return .T;
+            return .t;
         }
     }
 }

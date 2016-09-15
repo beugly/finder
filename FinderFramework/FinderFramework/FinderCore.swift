@@ -20,21 +20,21 @@ public protocol FinderHeap {
     associatedtype Element = FElement<Vertex>;
     
     ///Insert a element into 'Self'.
-    mutating func insert(element: Element)
+    mutating func insert(_ element: Element)
     
     ///Remove the best element and close it.
     mutating func removeBest() -> Element?
     
     ///Update element
-    mutating func update(newElement: Element)
+    mutating func update(_ newElement: Element)
     
     ///Return element info
-    func elementOf(vertex: Vertex) -> Element?
+    func elementOf(_ vertex: Vertex) -> Element?
 }
 extension FinderHeap where Self.Element == FElement<Self.Vertex> {
     
     ///Return Vertex array(backtrace of vertex)
-    func backtrace(vertex: Vertex) -> [Vertex]{
+    func backtrace(_ vertex: Vertex) -> [Vertex]{
         var result = [vertex];
         var element: Element? = elementOf(vertex);
         repeat {
@@ -51,10 +51,10 @@ extension FinderHeap where Self.Element == FElement<Self.Vertex> {
 //MARK: FHeap
 public struct FHeap<Vertex: Hashable, Goal> {
     ///Open list
-    internal private(set) var openList: PriorityQueue<Element>;
+    internal fileprivate(set) var openList: PriorityQueue<Element>;
     
     ///Visited list - [Vertex: Element]
-    internal private(set) var visitList: [Vertex: Element];
+    internal fileprivate(set) var visitList: [Vertex: Element];
     
     ///Init
     public init(){
@@ -68,7 +68,7 @@ extension FHeap: FinderHeap {
     public typealias Element = FElement<Vertex>;
     
     ///Insert a element into 'Self'.
-    mutating public func insert(element: Element) {
+    mutating public func insert(_ element: Element) {
         openList.insert(element);
         visitList[element.vertex] = element;
     }
@@ -76,16 +76,16 @@ extension FHeap: FinderHeap {
     ///Remove the best element and close it.
     mutating public func removeBest() -> Element? {
         guard let element = openList.popBest() else {
-            return .None;
+            return .none;
         }
         visitList[element.vertex]?.isClosed = true;
         return element;
     }
     
     ///Update element
-    mutating public func update(newElement: Element) {
+    mutating public func update(_ newElement: Element) {
         let vertex = newElement.vertex;
-        guard let index = (openList.indexOf{$0.vertex == vertex}) else {
+        guard let index = (openList.index{$0.vertex == vertex}) else {
             return;
         }
         openList.replace(newElement, at: index);
@@ -94,7 +94,7 @@ extension FHeap: FinderHeap {
     
     
     ///Return element
-    public func elementOf(vertex: Vertex) -> Element?{
+    public func elementOf(_ vertex: Vertex) -> Element?{
         return visitList[vertex];
     }
 }

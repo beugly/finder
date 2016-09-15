@@ -10,23 +10,23 @@ import Foundation
 
 
 class TestUtils {
-    private static var _bundle:NSBundle?;
+    fileprivate static var _bundle:Bundle?;
     
-    private static var bundle:NSBundle{
+    fileprivate static var bundle:Bundle{
         if let b = _bundle
         {
             return b;
         }
-        _bundle = NSBundle(forClass: self);
+        _bundle = Bundle(for: self);
         return _bundle!;
     }
     
-    static func loadLocalData(fileName:String, _ ofType:String, _ success:(NSData?) -> ())
+    static func loadLocalData(_ fileName:String, _ ofType:String, _ success:(Data?) -> ())
     {
-        let p = self.bundle.pathForResource(fileName, ofType: ofType);
+        let p = self.bundle.path(forResource: fileName, ofType: ofType);
         
         do{
-            let data = try NSData(contentsOfFile: p!, options: NSDataReadingOptions.DataReadingUncached);
+            let data = try Data(contentsOf: URL(fileURLWithPath: p!), options: NSData.ReadingOptions.uncached);
             success(data);
         }
         catch {
@@ -34,22 +34,22 @@ class TestUtils {
         }
     }
     
-    class func loadDataFromURL(url: NSURL, completion:(data: NSData?, error: NSError?) -> Void) {
-        let session = NSURLSession.sharedSession()
+    class func loadDataFromURL(_ url: URL, completion:@escaping (_ data: Data?, _ error: NSError?) -> Void) {
+        let session = URLSession.shared
         
         // Use NSURLSession to get data from an NSURL
-        let loadDataTask = session.dataTaskWithURL(url, completionHandler: { (data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+        let loadDataTask = session.dataTask(with: url, completionHandler: { (data: Data?, response: URLResponse?, error: NSError?) -> Void in
             if let responseError = error {
-                completion(data: nil, error: responseError)
-            } else if let httpResponse = response as? NSHTTPURLResponse {
+                completion(nil, responseError)
+            } else if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode != 200 {
                     let statusError = NSError(domain:"com.raywenderlich", code:httpResponse.statusCode, userInfo:[NSLocalizedDescriptionKey : "HTTP status code has unexpected value."])
-                    completion(data: nil, error: statusError)
+                    completion(nil, statusError)
                 } else {
-                    completion(data: data, error: nil)
+                    completion(data, nil)
                 }
             }
-        })
+        } as! (Data?, URLResponse?, Error?) -> Void)
         
         loadDataTask.resume()
     }
