@@ -24,7 +24,7 @@ func priorityQueueTest(_ testRebuild:Bool = false, testReplace: Bool = false)
         let arr = [0, 2, 3, 1, 9, 6, 8, 7];
         queue = PQ.heap(minimum: arr)
         print(queue.source);
-        queue.replace(-1, at: queue.index(of: 9)!);
+        queue.replace(newValue: -1, at: queue.index(of: 9)!);
         print(queue.source);
         while !queue.isEmpty
         {
@@ -56,7 +56,7 @@ func priorityQueueTest(_ testRebuild:Bool = false, testReplace: Bool = false)
     var count = 4000;
     let i = count;
     repeat{
-        queue.insert(count);
+        queue.insert(element: count);
         count -= 1;
     }while count > 0;
     //        print(queue.indexOf(1));
