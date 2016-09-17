@@ -123,6 +123,8 @@ public struct PQShifting<T: MutableCollection> {
     ///fork count
     let forkCount: T.IndexDistance;
     
+    ///isOrderedBefore: compare function
+    ///forkCount: max fork count - 2.4.8....
     public init(isOrderedBefore: @escaping (T.Iterator.Element, T.Iterator.Element) -> Bool,
                 forkCount: T.IndexDistance = 2) {
         self.iob = isOrderedBefore;
@@ -130,15 +132,22 @@ public struct PQShifting<T: MutableCollection> {
     }
 }
 extension PQShifting {
-    ///Return parent index of child index
-    func parentDistance(of distance: T.IndexDistance) -> T.IndexDistance {
-        return (distance - 1) / forkCount;
+    ///parent index of index
+    func parentIndexOf(_ index: T.Index, source: T) -> T.Index{
+        let sIndex = source.startIndex;
+        let distance = source.distance(from: sIndex, to: index);
+        let pDistance = (distance - 1) / forkCount;
+        return source.index(sIndex, offsetBy: pDistance);
     }
     
-    ///Return child indexs range of parent index
-    func childDistance(of distance: T.IndexDistance) -> T.IndexDistance {
-        return distance * forkCount + 1;
+    ///child index of index
+    func childIndexOf(_ index: T.Index, source: T) -> T.Index {
+        let sIndex = source.startIndex;
+        let distance = source.distance(from: sIndex, to: index);
+        let cDistance = distance * forkCount + 1;
+        return source.index(sIndex, offsetBy: cDistance);
     }
+    
     
     ///Shift up at index
     public func shift(up index: T.Index, of source: T) -> T {
@@ -151,9 +160,7 @@ extension PQShifting {
         let shiftElement = source[index];
         var shiftIndex = index;
         repeat{
-            let shiftDistance = source.distance(from: sIndex, to: shiftIndex);
-            let pDistance = parentDistance(of: shiftDistance);
-            let pIndex = source.index(sIndex, offsetBy: pDistance);
+            let pIndex = parentIndexOf(shiftIndex, source: source);
             guard iob(shiftElement, source[pIndex]) else {
                 break;
             }
@@ -167,20 +174,13 @@ extension PQShifting {
     public func shift(down index: T.Index, of source: T) -> T {
         var source = source;
         var pIndex = index;
-        let sIndex = source.startIndex;
-        let eDistance = source.count
+        let eIndex = source.endIndex;
         repeat{
             var shiftIndex = pIndex;
-            let pDistance = source.distance(from: sIndex, to: shiftIndex);
-            let cDistance = childDistance(of: pDistance);
-            guard eDistance > cDistance else {
-                break;
-            }
+            var cIndex = childIndexOf(shiftIndex, source: source);
+            let ceIndex = min(source.index(cIndex, offsetBy: forkCount), eIndex);
             
-            let ceDistance = min(cDistance + forkCount, eDistance);
-            let ceIndex = source.index(sIndex, offsetBy: ceDistance);
-            var cIndex = source.index(sIndex, offsetBy: cDistance);
-            while cIndex < ceIndex {
+            while ceIndex > cIndex{
                 if iob(source[cIndex], source[shiftIndex]) {
                     shiftIndex = cIndex;
                 }
@@ -203,9 +203,7 @@ extension PQShifting {
             return source;
         }
         
-        let distance = source.distance(from: sIndex, to: index);
-        let pDistance = parentDistance(of: distance);
-        let pIndex = source.index(sIndex, offsetBy: pDistance);
+        let pIndex = parentIndexOf(index, source: source);
         return iob(source[index], source[pIndex]) ?
             shift(up: index, of: source)
             :
@@ -219,15 +217,13 @@ extension PQShifting {
         }
         
         let sIndex = source.startIndex;
-        let eIndex = source.endIndex;
-        let eDistance = source.distance(from: sIndex, to: eIndex);
-        var distance = parentDistance(of: eDistance - 1);
+        let eIndex = source.index(source.endIndex, offsetBy: -1);
+        var index = parentIndexOf(eIndex, source: source);
         
         var source = source;
-        while distance >= 0{
-            let index = source.index(sIndex, offsetBy: distance);
+        while index >= sIndex{
             source = shift(down: index, of: source);
-            distance = distance - 1;
+            index = source.index(index, offsetBy: -1);
         }
         return source;
     }
