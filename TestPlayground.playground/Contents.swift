@@ -33,3 +33,6 @@ import SpriteKit;
 //var b = FOne2Many(origin: 0, goal: 1);
 //b.isGoal(0)
 
+//_Strideable
+
+

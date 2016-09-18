@@ -27,7 +27,6 @@ public protocol PriorityQueueType: Collection{
 }
 
 
-
 ///MARK: PriorityQueue
 ///If u need Heap, use static func PriorityQueue.heap(xxxxx);
 public struct PriorityQueue<T> {
@@ -132,6 +131,7 @@ public struct PQShifting<T: MutableCollection> {
     }
 }
 extension PQShifting {
+    
     ///parent index of index
     func parentIndexOf(_ index: T.Index, source: T) -> T.Index{
         let sIndex = source.startIndex;
@@ -152,29 +152,26 @@ extension PQShifting {
     ///Shift up at index
     public func shift(up index: T.Index, of source: T) -> T {
         let sIndex = source.startIndex;
-        guard index > sIndex else {
-            return source;
-        }
-        
-        var source = source;
         let shiftElement = source[index];
+        var source = source;
         var shiftIndex = index;
-        repeat{
+        
+        while shiftIndex > sIndex{
             let pIndex = parentIndexOf(shiftIndex, source: source);
             guard iob(shiftElement, source[pIndex]) else {
                 break;
             }
             swap(&source[shiftIndex], &source[pIndex])
             shiftIndex = pIndex;
-        }while shiftIndex > sIndex
+        }
         return source;
     }
     
     ///shift down at index
     public func shift(down index: T.Index, of source: T) -> T {
+        let eIndex = source.endIndex;
         var source = source;
         var pIndex = index;
-        let eIndex = source.endIndex;
         repeat{
             var shiftIndex = pIndex;
             var cIndex = childIndexOf(shiftIndex, source: source);
