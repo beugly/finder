@@ -8,47 +8,39 @@
 
 import Foundation
 
-
-//MARK: FinderHeap
-public protocol FinderHeap {
-    
-    ///Vertex Type
-    associatedtype Vertex: Hashable;
-    
-    ///Element Type
-    associatedtype Element = FElement<Vertex>;
-    
-    ///Insert a element into 'Self'.
-    mutating func insert(_ element: Element)
-    
-    ///Remove the best element and close it.
-    mutating func removeBest() -> Element?
-    
-    ///Update element
-    mutating func update(_ newElement: Element)
-    
-    ///Return element info
-    func elementOf(_ vertex: Vertex) -> Element?
-    
-    ///back trace
-    func backtrace(_ element: Element) -> [Vertex]
-}
-extension FinderHeap where Self.Element == FElement<Self.Vertex> {
-    
-    ///back trace
-    public func backtrace(_ element: Element) -> [Vertex] {
-        var result = [element.vertex];
-        var element: Element = element;
-        repeat {
-            guard let p = element.parent, let ele = elementOf(p) else {
-                break;
-            }
-            result.append(p);
-            element = ele;
-        }while true
-        return result.reversed();
+//MARK: FRequestOneToOne
+public struct FRequestOneToOne<Vertex: Hashable> {
+    let goal: Vertex;
+    public init(goal: Vertex){
+        self.goal = goal;
     }
 }
+extension FRequestOneToOne: FinderRequest{
+    public func search(of vertex: Vertex) -> (found: Bool, completed: Bool) {
+        guard vertex == goal else {
+            return (false, false);
+        }
+        return (true, true);
+    }
+}
+
+//MARK: FRequestManyToOne
+public struct FRequestManyToOne<Vertex: Hashable> {
+    fileprivate(set) var goals: [Vertex];
+    public init(goals: [Vertex]){
+        self.goals = goals;
+    }
+}
+extension FRequestManyToOne: FinderRequest {
+    public mutating func search(of vertex: Vertex) -> (found: Bool, completed: Bool) {
+        guard let i = goals.index(of: vertex) else {
+            return (false, false);
+        }
+        goals.remove(at: i);
+        return (true, goals.isEmpty);
+    }
+}
+
 
 //MARK: FHeap
 public struct FHeap<Vertex: Hashable> {
