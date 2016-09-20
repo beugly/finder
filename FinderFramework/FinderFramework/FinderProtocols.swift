@@ -8,115 +8,66 @@
 
 import Foundation
 
+
+
 //MARK: FinderProtocol
-public protocol FinderProtocol{
-    
-    ///successors around element
-    func successors(around element: Heap.Element, in heap: Heap) -> [(element: Heap.Element, isOpened: Bool)]
+public protocol FinderProtocol {
     
     ///heap type
-    associatedtype Heap: FinderHeap;
+    associatedtype Heap: FinderHeapProtocol;
     
     ///make heap and insert origin element
     func makeHeap() -> Heap
+    
+    ///Return successor elements around element
+    func successors(around element: Heap.Element, in heap: Heap) -> [(element: Heap.Element, isOpened: Bool)]
 }
-extension FinderProtocol where Heap.Element == FElement<Heap.Vertex> {
+extension FinderProtocol{
+    
     ///find
-    public func find<Request: FinderRequest>(request: Request, findOne: ([Heap.Vertex]) -> Void) -> Heap
-        where Request.Vertex == Heap.Vertex {
-        var heap = makeHeap();
-        var request = request
+    public func find<Request>(request: Request, findOne: ([Heap.Element.Vertex]) -> Void) -> Heap where
+        Request: FinderRequestProtocol,
+        Request.Vertex == Self.Heap.Element.Vertex
+    {
+        var request = request;
+        var heap = self.makeHeap();
         
-        repeat{
-            ///get best element
+        repeat {
+            //get best element
             guard let element = heap.removeBest() else {
                 break;
             }
+            let vertex = element.vertex;
             
-            ///search element
-            let state = request.search(of: element.vertex);
-            if state.found {
-                let result = backtrace(element: element, in: heap);
+            //check state
+            let state = request.search(of: vertex);
+            if state.found{
+                let result = heap.backtrace(vertex: vertex);
                 findOne(result);
             }
+            
             if state.completed{
                 break;
             }
             
-            ///expand successors
+            //expand successors
             let _successors = successors(around: element, in: heap);
-            for successor in _successors{
+            for successor in _successors {
                 let isOpened = successor.isOpened;
                 let ele = successor.element;
-                isOpened ? heap.update(ele) : heap.insert(ele);
+                !isOpened ? heap.insert(ele) : heap.update(ele);
             }
         }while true
         return heap;
     }
-    
-    ///back trace
-    func backtrace(element: Heap.Element, in heap: Heap) -> [Heap.Vertex] {
-        var result = [element.vertex];
-        var element: Heap.Element = element;
-        repeat {
-            guard let p = element.parent, let ele = heap.elementOf(p) else {
-                break;
-            }
-            result.append(p);
-            element = ele;
-        }while true
-        return result.reversed();
-    }
-}
-
-//MARK: FinderOneToOne
-public protocol FinderOneToOne{
-    ///Vertex type
-    associatedtype Vertex: Hashable;
-    
-    ///goal
-    var goal: Vertex{get}
-}
-extension FinderOneToOne where Self: FinderProtocol, Self.Vertex == Self.Heap.Vertex, Self.Heap.Element == FElement<Vertex> {
-    ////find
-    public func find(findOne: ([Vertex]) -> Void) -> Heap {
-        let request = FRequestOneToOne<Vertex>.init(goal: goal);
-        return self.find(request: request, findOne: findOne);
-    }
 }
 
 
-//MARK: FinderManyToOne
-public protocol FinderManyToOne {
-    ///Vertex type
-    associatedtype Vertex: Hashable;
-    
-    ///goals
-    var goals: [Vertex]{get}
-}
-extension FinderManyToOne where Self: FinderProtocol, Self.Vertex == Self.Heap.Vertex, Self.Heap.Element == FElement<Vertex> {
-    ////find
-    public func find(findOne: ([Vertex]) -> Void) -> Heap {
-        if(goals.count > 1){
-            let request = FRequestManyToOne<Vertex>.init(goals: goals);
-            return self.find(request: request, findOne: findOne);
-        }
-        else {
-            let request = FRequestOneToOne<Vertex>.init(goal: goals[0]);
-            return self.find(request: request, findOne: findOne);
-        }
-    }
-}
-
-
-//MARK: FinderHeap
-public protocol FinderHeap {
-    
-    ///Vertex Type
-    associatedtype Vertex: Hashable;
+//MARK: FinderHeapProtocol
+public protocol FinderHeapProtocol {
     
     ///Element Type
-    associatedtype Element = FElement<Vertex>;
+    associatedtype Element: FinderElementProtocol;
     
     ///Insert a element into 'Self'.
     mutating func insert(_ element: Element)
@@ -128,80 +79,103 @@ public protocol FinderHeap {
     mutating func update(_ newElement: Element)
     
     ///Return element info
-    func elementOf(_ vertex: Vertex) -> Element?
+    func elementOf(_ vertex: Element.Vertex) -> Element?
+}
+extension FinderHeapProtocol {
+    ///back trace
+    public func backtrace(vertex: Element.Vertex) -> [Element.Vertex] {
+        var result = [vertex];
+        var element: Element? = elementOf(vertex);
+        repeat{
+            guard let parent = element?.parent else {
+                break;
+            }
+            result.append(parent);
+            element = elementOf(parent);
+        }while true
+        return result;
+    }
 }
 
+//MARK: FinderElementProtocol
+public protocol FinderElementProtocol{
+    ///Vertex Type
+    associatedtype Vertex: Hashable;
+    
+    ///vertex
+    var vertex: Vertex{get}
+    
+    ///parent
+    var parent: Vertex?{get}
+}
 
-
-
-//MARK: FinderRequest
-public protocol FinderRequest {
+//MARK: FinderRequestProtocol
+public protocol FinderRequestProtocol {
     ///vertex type
     associatedtype Vertex: Hashable;
+    
+    ///origin vertex
+    var origin: Vertex{get}
     
     ///vertex is one of targets
     mutating func search(of vertex: Vertex) -> (found: Bool, completed: Bool)
 }
 
+//MARK: FinderOneToOne
+public protocol FinderOneToOneProtocol{
+    ///Vertex type
+    associatedtype Vertex: Hashable;
+    
+    ///goal
+    var goal: Vertex{get}
+    
+    ///origin
+    var origin: Vertex{get}
+}
+extension FinderOneToOneProtocol
+    where
+    Self: FinderProtocol,
+    Self.Vertex == Self.Heap.Element.Vertex
+{
+    ////find
+    public func find(findOne: ([Vertex]) -> Void) -> Heap {
+        let request = FRequestOneToOne<Vertex>.init(origin: origin, goal: goal);
+        return self.find(request: request){
+            let result: [Vertex] = $0.reversed();
+            findOne(result);
+        }
+    }
+}
 
 
-
-//public struct BreadthBestFinder<Vertex: Hashable> {
-//    
-//    var origin: Vertex;
-//    
-//    var goal: Vertex;
-//    
-//    public var isComplete: Bool = false;
-//    
-//    init(origin: Vertex, goal: Vertex) {
-//        self.origin = origin;
-//        self.goal = goal;
-//    }
-//    
-//    
-//    
-//}
-//extension BreadthBestFinder: FinderProtocol {
-//    
-//    public typealias Heap = FHeap<Vertex>;
-//    
-//    public func makeHeap() ->  Heap{
-//        let ele = Heap.Element(vertex: origin, parent: .none, g: 0, h: 0);
-//        var heap = Heap();
-//        heap.insert(ele);
-//        return heap;
-//    }
-//    
-//    public mutating func search(element: Heap.Element) -> Bool {
-//        guard  element.vertex == goal else {
-//            return false;
-//        }
-//        isComplete = true;
-//        return true;
-//    }
-//    
-//    public func successors(of element: Heap.Element, in heap: Heap) -> [(element: Heap.Element, isOpened: Bool)] {
-//        var result: [(element: Heap.Element, isOpened: Bool)] = [];
-//        let neighbors: [Heap.Vertex] = []; //test
-//        let parentVertex = element.vertex;
-//        var g = element.g;
-//        for n in neighbors{
-//            if let _ = heap.elementOf(n){
-//                continue;
-//            }
-//            g += 1;
-//            let ele = Heap.Element(vertex: n, parent: parentVertex, g: g, h: 0);
-//            result.append((ele, false));
-//        }
-//        return result;
-//    }
-//}
-
-
-
-
-
+//MARK: FinderManyToOne
+public protocol FinderManyToOneProtocol {
+    ///Vertex type
+    associatedtype Vertex: Hashable;
+    
+    ///origin
+    var origin: Vertex{get}
+    
+    ///goals
+    var goals: [Vertex]{get}
+}
+extension FinderManyToOneProtocol
+    where
+    Self: FinderProtocol,
+    Self.Vertex == Self.Heap.Element.Vertex
+{
+    ////find
+    public func find(findOne: ([Vertex]) -> Void) -> Heap {
+        if(goals.count > 1){
+            let request = FRequestManyToOne<Vertex>.init(origin: origin, goals: goals);
+            return self.find(request: request, findOne: findOne);
+        }
+        else {
+            let request = FRequestOneToOne<Vertex>.init(origin: origin, goal: goals[0]);
+            return self.find(request: request, findOne: findOne);
+        }
+    }
+}
 
 
 
@@ -209,124 +183,3 @@ public protocol FinderRequest {
 
 
 
-
-
-
-
-
-
-
-
-
-
-/////FinderAbstract
-//public protocol FinderAbstract{
-//    
-//    ///Vertex Type
-//    associatedtype Vertex: Hashable;
-//    
-//    ///Goal Type
-//    associatedtype Goal = Vertex;
-//    
-//    ///origin
-//    var origin: Vertex {get}
-//    
-//    ///goal
-//    var goal: Goal{get set}
-//    
-//    ///Finder is complete
-//    var isComplete: Bool {get set}
-//    
-//    ///Return vertex is one of goals
-//    mutating func isGoal(vertex: Vertex) -> Bool
-//    
-//    ///Return movement cost from v1 to v2
-//    func movementCost(from v1: Vertex, to v2: Vertex) -> Int?
-//    
-//    ///Return h value of vertex
-//    func heuristic(of vertex: Vertex) -> Int
-//    
-//    ///Return successors of vertex from v
-//    func successorsOf(vertex: Vertex, from v: Vertex) -> [Vertex]
-//    
-//    
-//    
-//    ///Heap Type
-//    associatedtype Heap: FinderHeap;
-//}
-//extension FinderAbstract {
-//    mutating public func isGoal(vertex: Vertex) -> Bool{
-//        return false;
-//    }
-//}
-//extension FinderAbstract where Goal == Vertex{
-//    ///Return vertex is one of goals
-//    mutating public func isGoal(vertex: Vertex) -> Bool{
-//        guard vertex == goal else {
-//            return false;
-//        }
-//        isComplete = true;
-//        return true;
-//    }
-//}
-//extension FinderAbstract where Goal == [Vertex]{
-//    ///Return vertex is one of goals
-//    mutating public func isGoal(vertex: Vertex) -> Bool{
-//        guard let index = goal.indexOf(vertex) else {
-//            return false;
-//        }
-//        goal.removeAtIndex(index);
-//        if goal.isEmpty {
-//            isComplete = true;
-//        }
-//        return true;
-//    }
-//}
-//extension FinderAbstract where Heap.Vertex == Self.Vertex, Heap.Element == FElement<Vertex> {
-//    
-//    ///execute
-//    mutating public func execute(@noescape findOne: [Vertex] -> Void) -> Heap{
-//        var storage = Heap();
-//        let h = heuristic(of: origin);
-//        let originEle = FElement<Vertex>(vertex: origin, parent: nil, g: 0, h: h);
-//        storage.insert(originEle);
-//        
-//        repeat{
-//            guard let element = storage.removeBest() else {
-//                break;
-//            }
-//            
-//            let vertex = element.vertex;
-//            if isGoal(vertex) {
-//                let result = storage.backtrace(vertex);
-//                findOne(result);
-//            }
-//            
-//            if isComplete{
-//                break;
-//            }
-//            
-//            let parentVertex = element.parent ?? vertex;
-//            let successors = successorsOf(vertex, from: parentVertex);
-//            for successor in successors {
-//                guard let cost = movementCost(from: vertex, to: successor) else {
-//                    return;
-//                }
-//                
-//                let g = cost + element.g;
-//                if let old = storage.elementOf(successor) where !old.isClosed && old.g > g{
-//                    var newElement = old;
-//                    newElement.g = g;
-//                    newElement.parent = vertex;
-//                    storage.update(newElement);
-//                    return;
-//                }
-//                
-//                let h = heuristic(of: successor);
-//                let ele = FElement<Vertex>(vertex: successor, parent: vertex, g: g, h: h);
-//                storage.insert(ele);
-//            }
-//        }while true
-//        return storage;
-//    }
-//}

@@ -42,32 +42,15 @@ class FinderFrameworkTests: XCTestCase {
 //        pathFinderTest();
 //        array2DTest();
 //        priorityQueueTest();
-        
-        let s = S();
-        var a = [0, 1, 3,5,5,6,7,9999,6,7,9999,1111,11,333,66,77,88,88,55,44,33,6,7,9999,6,7,9999,6,7,9999,6,7,9999];
-        for i in 0...9999{
-//            let _ = s.test1(a: i, b: &a);
-            let _ = s.test2(a: i, b: a);
-        }
-        a.append(0);
-        print(a.count);
     }
     
     
 }
 
 
-struct S {
-    
-    
-    func test1(a: Int, b: inout [Int]) -> Int?{
-        return b.index(of: a);
-    }
-    
-    func test2(a: Int, b: [Int]) -> Int?{
-        return b.index(of: a);
-    }
-}
+
+
+
 
 
 

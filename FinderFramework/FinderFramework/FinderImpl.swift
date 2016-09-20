@@ -1,269 +1,136 @@
-////
-////  FinderImpl.swift
-////  X_Framework
-////
-////  Created by 173 on 15/12/16.
-////  Copyright © 2015年 yeah. All rights reserved.
-////
 //
-//import Foundation
+//  FinderImpl.swift
+//  FinderFramework
 //
-////MARK: == FinderDelegate ==
-//public struct FinderDelegate<Point: Hashable> {
-//    ///element type
-//    public typealias Element = FinderElement<Point>;
+//  Created by xifangame on 16/7/8.
+//  Copyright © 2016年 xifangame. All rights reserved.
 //
-//    ///open list
-//    private(set) var openList: PriorityQueue<Element>;
-//
-//    ///visite list
-//    private(set) var visiteList: [Point: Element];
-//    
-//    ///init
-//    public init(){
-//        self.openList = PriorityQueue.init(minimum: []);
-//        self.visiteList = [:];
-//    }
-//    
-//    ///backtrace record
-//    public func backtraceRecord() -> [Element] {
-//        return visiteList.values.reverse();
-//    }
-//}
-//extension FinderDelegate: FinderDelegateType{
-//    ///get the visited element and return it, or nil if no visited element exists at point.
-//    public subscript(point: Point) -> Element? {
-//        return self.visiteList[point];
-//    }
-//
-//    ///return next element
-//    /// - Requires: set element closed
-//    mutating public func next() -> Element?{
-//        guard var element = self.openList.popBest() else {return .None;}
-//        element.closed = true;
-//        self.visiteList[element.point] = element;
-//        return element;
-//    }
-//    
-//    ///insert element and set element visited
-//    mutating public func insert(element: Element){
-//        self.openList.insert(element);
-//        self.visiteList[element.point] = element;
-//    }
-//    
-//    ///update element
-//    mutating public func update(element: Element) {
-//        print("WARN: FinderDelegate.update ===============")
-//        guard let i = (self.openList.indexOf{$0 == element}) else {return;}
-//        self.openList.replace(i, newValue: element);
-//        self.visiteList[element.point] = element;
-//    }
-//}
-//
-////MARK: == FinderRequest ==
-//public struct FinderRequest<Point: Hashable> {
-//    ///origin point
-//    public private(set) var origin: Point;
-//    
-//    ///goal
-//    public private(set) var goal: Point?;
-//    
-//    public private(set) var goals: [Point]?;
-//    
-//    ///is completion
-//    public private(set) var isCompletion: Bool = false;
-//    
-//    ///init single goal
-//    public init(origin: Point, goal: Point){
-//        self.origin = origin;
-//        self.goal = goal;
-//    }
-//    
-//    ///init multi goal
-//    public init(origin: Point, goals: [Point]){
-//        self.origin = origin;
-//        self.goals = goals;
-//    }
-//}
-//extension FinderRequest: FinderRequestType {
-//    ///point is target return true otherwise return false
-//    mutating public func findTarget(point: Point) -> Bool {
-//        guard let g = self.goal else{
-//            guard let i = self.goals?.indexOf(point) else {return false;}
-//            self.goals!.removeAtIndex(i);
-//            self.isCompletion = (self.goals?.isEmpty)!;
-//            return true;
-//        }
-//        
-//        guard g == point else{return false;}
-//        self.isCompletion = true;
-//        return true;
-//    }
-//}
-//
-/////MARK: extension FinderType where 'Self'.Request == FinderRequest
-//extension FinderSingleType where Self.Request == FinderRequest<Self.Delegate.Point> {
-//    ///return request
-//    public func requestGenerate(from: Request.Point, to: Request.Point) -> FinderRequest<Self.Delegate.Point>{
-//        return FinderRequest(origin: from, goal: to);
-//    }
-//}
-/////MARK: extension FinderMultiType where 'Self'.Request == FinderRequest
-//extension FinderMultiType where Self.Request == FinderRequest<Self.Delegate.Point> {
-//    ///return request
-//    public func requestGenerate(from: [Request.Point], to: Request.Point) -> FinderRequest<Self.Delegate.Point>{
-//        return FinderRequest(origin: to, goals: from);
-//    }
-//}
-//
-////MARK: == GreedyBestFinder ==
-//public struct GreedyBestFinder<Point: Hashable> {
-//    ///delegate
-//    public var delegate: FinderDelegate<Point>;
-//}
-//extension GreedyBestFinder: FinderSingleType{}
-//extension GreedyBestFinder: FinderType {
-//    ///Returns result of request with option -- [start point: [path point]]
-//    /// - Parameters:
-//    ///     - request: request
-//    ///     - with option: option
-//    @warn_unused_result
-//    mutating public func find<
-//        Opt: FinderOptionType,
-//        Req: FinderRequestType
-//        where
-//        Opt.Point == Point,
-//        Opt.Point == Point
-//        >(request: Req, with option: Opt) -> [Point: [Point]]
-//    {
-//        guard var request = request as? FinderRequest<Point>, let goal = request.goal else {return [:]}
-//        self.delegate = FinderDelegate<Point>();
-//        return self.find(&request, from: request.origin, with: option){
-//            let point = $0;
-//            guard delegate[point] == .None else {return .None;}
-//            if let bp = $1?.point where option.calculateCost(from: bp, to: point) == .None{return .None;}
-//            let h = option.estimateCost(from: point, to: goal);
-//            return (FinderElement(point: point, g: 0, h: h, backward: $1?.point), false);
-//        }
-//    }
-//}
-//
-////MARK: == AstarFinder ==
-//public struct AstarFinder<Point: Hashable> {
-//    ///delegate
-//    public var delegate: FinderDelegate<Point>;
-//}
-//extension AstarFinder: FinderSingleType{}
-//extension AstarFinder:  FinderType {
-//    ///Returns result of request with option -- [start point: [path point]]
-//    /// - Parameters:
-//    ///     - request: request
-//    ///     - with option: option
-//    @warn_unused_result
-//    mutating public func find<
-//        Opt: FinderOptionType,
-//        Req: FinderRequestType
-//        where
-//        Opt.Point == Point,
-//        Opt.Point == Point
-//        >(request: Req, with option: Opt) -> [Point: [Point]]
-//    {
-//        guard var request = request as? FinderRequest<Point>, let goal = request.goal else {return [:]}
-//        self.delegate = FinderDelegate<Point>();
-//        return self.find(&request, from: request.origin, with: option){
-//            let point = $0;
-//            let parent = $1;
-//            var g: CGFloat = 0;
-//            if let _parent = parent {
-//                guard let cost = option.calculateCost(from: _parent.point, to: point) else {return .None;}
-//                g = _parent.g + cost;
-//            }
-//            guard let visited = delegate[point] else {
-//                let h = option.estimateCost(from: point, to: goal);
-//                return (FinderElement(point: point, g: g, h: h, backward: parent?.point), false);
-//            }
-////            return .None;
-//            guard !visited.closed && g < visited.g else {return .None;}
-//            return (FinderElement(point: point, g: g, h: visited.h, backward: parent?.point), true);
-//        }
-//    }
-//}
-//
-////MARK: == DijkstraPathFinder ==
-//public struct DijkstraPathFinder<Point: Hashable> {
-//    ///delegate
-//    public var delegate: FinderDelegate<Point>;
-//}
-//extension DijkstraPathFinder: FinderSingleType{}
-//extension DijkstraPathFinder:  FinderType {
-//    ///Returns result of request with option -- [start point: [path point]]
-//    /// - Parameters:
-//    ///     - request: request
-//    ///     - with option: option
-//    @warn_unused_result
-//    mutating public func find<
-//        Opt: FinderOptionType,
-//        Req: FinderRequestType
-//        where
-//        Opt.Point == Point,
-//        Opt.Point == Point
-//        >(request: Req, with option: Opt) -> [Point: [Point]]
-//    {
-//        guard var request = request as? FinderRequest<Point> else {return [:]}
-//        self.delegate = FinderDelegate<Point>();
-//        var h: CGFloat = 0;
-//        return self.find(&request, from: request.origin, with: option){
-//            let point = $0;
-//            let parent = $1;
-//            var g: CGFloat = 0;
-//            h += 1;
-//            if let _parent = parent {
-//                guard let cost = option.calculateCost(from: _parent.point, to: point) else {return .None;}
-//                g = _parent.g + cost;
-//            }
-//            guard let visited = delegate[point] else {
-//                return (FinderElement(point: point, g: g, h: h, backward: parent?.point), false);
-//            }
-//            guard !visited.closed && g < visited.g else {return .None;}
-//            return (FinderElement(point: point, g: g, h: h, backward: parent?.point), true);
-//        }
-//    }
-//}
-//
-////MARK: == BreadthBestPathFinder ==
-//public struct BreadthBestPathFinder<Point: Hashable> {
-//    ///delegate
-//    public var delegate: FinderDelegate<Point>;
-//}
-//extension BreadthBestPathFinder: FinderMultiType{}
-//extension BreadthBestPathFinder:  FinderType {
-//    ///Returns result of request with option -- [start point: [path point]]
-//    /// - Parameters:
-//    ///     - request: request
-//    ///     - with option: option
-//    @warn_unused_result
-//    mutating public func find<
-//        Opt: FinderOptionType,
-//        Req: FinderRequestType
-//        where
-//        Opt.Point == Point,
-//        Opt.Point == Point
-//        >(request: Req, with option: Opt) -> [Point: [Point]]
-//    {
-//        guard var request = request as? FinderRequest<Point> else {return [:]}
-//        self.delegate = FinderDelegate<Point>();
-//        var h: CGFloat = 0;
-//        return self.find(&request, from: request.origin, with: option){
-//            let point = $0;
-//            guard self.delegate[point] == .None else {return .None;}
-//            let parent = $1;
-//            var g: CGFloat = 0;
-//            if let _parent = parent {
-//                g = _parent.g + 1;
-//                guard let _ = option.calculateCost(from: _parent.point, to: point) else {return .None;}
-//            }
-//            h += 1;
-//            return (FinderElement(point: point, g: g, h: h, backward: parent?.point), false);
-//        }
-//    }
-//}
+
+import Foundation
+
+//MARK: FinderHeap
+public struct FinderHeap<T: Hashable> {
+    ///Open list
+    internal fileprivate(set) var openList: PriorityQueue<Element>;
+    
+    ///Visited list - [Vertex: Element]
+    internal fileprivate(set) var visitList: [T: Element];
+    
+    ///Init
+    public init(){
+        self.visitList = [:];
+        self.openList = PriorityQueue<Element>.heap(minimum: [])
+    }
+}
+extension FinderHeap: FinderHeapProtocol {
+    
+    ///Element Type
+    public typealias Element = FinderElement<T>;
+    
+    ///Insert a element into 'Self'.
+    mutating public func insert(_ element: Element) {
+        openList.insert(element: element);
+        visitList[element.vertex] = element;
+    }
+    
+    ///Remove the best element and close it.
+    mutating public func removeBest() -> Element? {
+        guard let element = openList.popBest() else {
+            return .none;
+        }
+        visitList[element.vertex]?.isClosed = true;
+        return element;
+    }
+    
+    ///Update element
+    mutating public func update(_ newElement: Element) {
+        let vertex = newElement.vertex;
+        guard let index = (openList.index{$0.vertex == vertex}) else {
+            return;
+        }
+        openList.replace(newValue: newElement, at: index);
+        visitList[vertex] = newElement;
+    }
+    
+    
+    ///Return element
+    public func elementOf(_ vertex: T) -> Element?{
+        return visitList[vertex];
+    }
+}
+
+
+//MARK: FinderElement
+public struct FinderElement<Vertex: Hashable> {
+    ///Vertex
+    public let vertex: Vertex;
+    
+    ///Parent vertex
+    public internal(set) var parent: Vertex?;
+    
+    ///G represents exact cost, H represents heuristic estimated cost
+    public internal(set) var g, h: Int;
+    
+    ///is closed
+    public internal(set) var isClosed: Bool = false;
+    
+    ///f value, f = g + h;
+    public var f: Int {
+        return g + h;
+    }
+    
+    ///init
+    public init(vertex: Vertex, parent: Vertex?, g: Int, h: Int){
+        self.vertex = vertex;
+        self.parent = parent;
+        self.g = g;
+        self.h = h;
+    }
+}
+extension FinderElement: FinderElementProtocol{}
+extension FinderElement: Comparable {}
+public func ==<Element: FinderElementProtocol>(lsh: Element, rsh: Element) -> Bool{
+    return lsh.vertex == rsh.vertex;
+}
+public func <<Vertex: Hashable>(lsh: FinderElement<Vertex>, rsh: FinderElement<Vertex>) -> Bool{
+    return lsh.f < rsh.f ? true : (lsh.h < rsh.h);
+}
+
+
+
+//MARK: FRequestOneToOne
+public struct FRequestOneToOne<Vertex: Hashable> {
+    let goal: Vertex;
+    public let origin: Vertex;
+    public init(origin: Vertex, goal: Vertex){
+        self.origin = origin;
+        self.goal = goal;
+    }
+}
+extension FRequestOneToOne: FinderRequestProtocol{
+    public func search(of vertex: Vertex) -> (found: Bool, completed: Bool) {
+        guard vertex == goal else {
+            return (false, false);
+        }
+        return (true, true);
+    }
+}
+
+//MARK: FRequestManyToOne
+public struct FRequestManyToOne<Vertex: Hashable> {
+    fileprivate(set) var goals: [Vertex];
+    public let origin: Vertex;
+    public init(origin: Vertex, goals: [Vertex]){
+        self.goals = goals;
+        self.origin = origin;
+    }
+}
+extension FRequestManyToOne: FinderRequestProtocol {
+    public mutating func search(of vertex: Vertex) -> (found: Bool, completed: Bool) {
+        guard let i = goals.index(of: vertex) else {
+            return (false, false);
+        }
+        goals.remove(at: i);
+        return (true, goals.isEmpty);
+    }
+}
