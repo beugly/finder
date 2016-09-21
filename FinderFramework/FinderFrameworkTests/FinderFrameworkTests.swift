@@ -40,7 +40,6 @@ class FinderFrameworkTests: XCTestCase {
     fileprivate func waitForTest()
     {
 //        pathFinderTest();
-//        array2DTest();
 //        priorityQueueTest();
     }
     

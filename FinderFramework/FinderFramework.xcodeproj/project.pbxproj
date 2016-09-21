@@ -10,13 +10,10 @@
 		1B2FA1FB1C4023FC0050F1F8 /* FinderFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B2FA1FA1C4023FC0050F1F8 /* FinderFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B2FA2021C4023FC0050F1F8 /* FinderFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B2FA1F71C4023FC0050F1F8 /* FinderFramework.framework */; };
 		1B2FA2071C4023FC0050F1F8 /* FinderFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2061C4023FC0050F1F8 /* FinderFrameworkTests.swift */; };
-		1B2FA2171C40246A0050F1F8 /* FinderImpl_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2121C40246A0050F1F8 /* FinderImpl_old.swift */; };
 		1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */; };
-		1B2FA21A1C40246A0050F1F8 /* Array2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2151C40246A0050F1F8 /* Array2D.swift */; };
 		1B2FA21B1C40246A0050F1F8 /* Finder2DImpl_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2161C40246A0050F1F8 /* Finder2DImpl_old.swift */; };
 		1B2FA2201C4024D20050F1F8 /* FinderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA21D1C4024D20050F1F8 /* FinderTest.swift */; };
 		1B2FA2211C4024D20050F1F8 /* PriorityQueueTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA21E1C4024D20050F1F8 /* PriorityQueueTest.swift */; };
-		1B2FA2221C4024D20050F1F8 /* Array2DTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA21F1C4024D20050F1F8 /* Array2DTest.swift */; };
 		1B2FA2261C4024F30050F1F8 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2241C4024F30050F1F8 /* TestUtils.swift */; };
 		1B2FA2271C4024F30050F1F8 /* TestArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2251C4024F30050F1F8 /* TestArrow.swift */; };
 		655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D72291CA39A3B00673E3F /* FinderProtocols.swift */; };
@@ -40,13 +37,10 @@
 		1B2FA2011C4023FC0050F1F8 /* FinderFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinderFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B2FA2061C4023FC0050F1F8 /* FinderFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderFrameworkTests.swift; sourceTree = "<group>"; };
 		1B2FA2081C4023FC0050F1F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1B2FA2121C40246A0050F1F8 /* FinderImpl_old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl_old.swift; sourceTree = "<group>"; };
 		1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
-		1B2FA2151C40246A0050F1F8 /* Array2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array2D.swift; sourceTree = "<group>"; };
 		1B2FA2161C40246A0050F1F8 /* Finder2DImpl_old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Finder2DImpl_old.swift; sourceTree = "<group>"; };
 		1B2FA21D1C4024D20050F1F8 /* FinderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderTest.swift; sourceTree = "<group>"; };
 		1B2FA21E1C4024D20050F1F8 /* PriorityQueueTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueueTest.swift; sourceTree = "<group>"; };
-		1B2FA21F1C4024D20050F1F8 /* Array2DTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array2DTest.swift; sourceTree = "<group>"; };
 		1B2FA2241C4024F30050F1F8 /* TestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestUtils.swift; sourceTree = "<group>"; };
 		1B2FA2251C4024F30050F1F8 /* TestArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestArrow.swift; sourceTree = "<group>"; };
 		655D72291CA39A3B00673E3F /* FinderProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderProtocols.swift; sourceTree = "<group>"; };
@@ -116,7 +110,6 @@
 			children = (
 				BA5626E61D2DFFF000FC1B54 /* old */,
 				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
-				1B2FA2151C40246A0050F1F8 /* Array2D.swift */,
 				655D72291CA39A3B00673E3F /* FinderProtocols.swift */,
 				BA57D5051D2F8ED500023631 /* FinderImpl.swift */,
 			);
@@ -128,7 +121,6 @@
 			children = (
 				1B2FA21D1C4024D20050F1F8 /* FinderTest.swift */,
 				1B2FA21E1C4024D20050F1F8 /* PriorityQueueTest.swift */,
-				1B2FA21F1C4024D20050F1F8 /* Array2DTest.swift */,
 			);
 			name = case;
 			sourceTree = "<group>";
@@ -145,7 +137,6 @@
 		BA5626E61D2DFFF000FC1B54 /* old */ = {
 			isa = PBXGroup;
 			children = (
-				1B2FA2121C40246A0050F1F8 /* FinderImpl_old.swift */,
 				1B2FA2161C40246A0050F1F8 /* Finder2DImpl_old.swift */,
 			);
 			name = old;
@@ -261,12 +252,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B2FA2171C40246A0050F1F8 /* FinderImpl_old.swift in Sources */,
 				1B2FA21B1C40246A0050F1F8 /* Finder2DImpl_old.swift in Sources */,
 				655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */,
 				BA57D5061D2F8ED500023631 /* FinderImpl.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
-				1B2FA21A1C40246A0050F1F8 /* Array2D.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,7 +268,6 @@
 				1B2FA2211C4024D20050F1F8 /* PriorityQueueTest.swift in Sources */,
 				1B2FA2271C4024F30050F1F8 /* TestArrow.swift in Sources */,
 				1B2FA2261C4024F30050F1F8 /* TestUtils.swift in Sources */,
-				1B2FA2221C4024D20050F1F8 /* Array2DTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
