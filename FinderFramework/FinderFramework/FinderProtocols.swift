@@ -23,6 +23,9 @@ public protocol FinderProtocol {
     
     ///Return successor elements around element
     func successors(around element: Heap.Element, in heap: Heap) -> [(element: Heap.Element, isOpened: Bool)]
+    
+    ///find
+    func find(findOne: ([Heap.Element.Vertex]) -> Void) -> Heap
 }
 extension FinderProtocol{
     ///find
@@ -71,20 +74,23 @@ public protocol FinderHeapProtocol {
     ///Update element
     mutating func update(newElement: Element)
     
-    ///Return element
-    subscript(vertex: Element.Vertex) -> Element? {get}
+    ///Return visited element info
+    func visitedOf(vertex: Element.Vertex) -> (element: Element, isClosed: Bool)?
+    
+    ///init
+    init();
 }
 extension FinderHeapProtocol {
     ///back trace
     public func backtrace(vertex: Element.Vertex) -> [Element.Vertex] {
         var result = [vertex];
-        var element: Element? = self[vertex];
+        var element: Element? = visitedOf(vertex: vertex)?.element;
         repeat{
             guard let parent = element?.parent else {
                 break;
             }
             result.append(parent);
-            element = self[parent];
+            element = visitedOf(vertex: parent)?.element;
         }while true
         return result;
     }
@@ -100,6 +106,9 @@ public protocol FinderElementProtocol{
     
     ///parent
     var parent: Vertex?{get}
+    
+    ///init
+    init(vertex: Vertex, parent: Vertex?)
 }
 
 

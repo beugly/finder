@@ -42,14 +42,7 @@ class FinderFrameworkTests: XCTestCase {
 //        pathFinderTest();
 //        priorityQueueTest();
     }
-    
-    
 }
-
-
-
-
-
 
 
 

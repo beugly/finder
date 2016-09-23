@@ -26,7 +26,7 @@ class TestUtils {
         let p = self.bundle.path(forResource: fileName, ofType: ofType);
         
         do{
-            let data = try Data(contentsOf: URL(fileURLWithPath: p!), options: NSData.ReadingOptions.uncached);
+            let data = try Data(contentsOf: URL(fileURLWithPath: p!), options: Data.ReadingOptions.uncached);
             success(data);
         }
         catch {

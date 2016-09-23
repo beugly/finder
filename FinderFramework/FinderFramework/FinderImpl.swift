@@ -48,13 +48,11 @@ extension FinderDijkstra: FinderProtocol {
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
             let g = element.g + option.exactCost(from: vertex, to: succssor);
-            if let visited = heap[succssor] {
-                guard !visited.isClosed && g < visited.g else {
+            if let visited = heap.visitedOf(vertex: succssor) {
+                guard !visited.isClosed && g < visited.element.g else {
                     continue;
                 }
-                var ele = visited;
-                ele.parent = vertex;
-                ele.g = g;
+                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.element.h);
                 result.append((ele, true));
             }
             else {
@@ -109,15 +107,15 @@ extension FinderBFS: FinderProtocol {
         var result: [(element: Heap.Element, isOpened: Bool)] = [];
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
-        var i = 1;
+        var i = 0;
         for succssor in _successors {
-            let g = element.g + i;
             i += 1;
-            
-            if heap[succssor] == .none {
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: 0);
-                result.append((ele, false));
+            guard let _ = heap.visitedOf(vertex: succssor) else {
+                continue;
             }
+            let g = element.g + i;
+            let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: 0);
+            result.append((ele, false));
         }
         return result;
     }
@@ -162,11 +160,12 @@ extension FinderGreedyBest: FinderProtocol {
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
-            if heap[succssor] == .none {
-                let h = option.heuristic(from: vertex, to: goal);
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: 0, h: h);
-                result.append((ele, false));
+            guard let _ = heap.visitedOf(vertex: succssor) else {
+                continue;
             }
+            let h = option.heuristic(from: vertex, to: goal);
+            let ele = Heap.Element(vertex: succssor, parent: vertex, g: 0, h: h);
+            result.append((ele, false));
         }
         return result;
     }
@@ -218,13 +217,11 @@ extension FinderAStar: FinderProtocol {
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
             let g = element.g + option.exactCost(from: vertex, to: succssor);
-            if let visited = heap[succssor] {
-                guard !visited.isClosed && g < visited.g else {
+            if let visited = heap.visitedOf(vertex: succssor) {
+                guard !visited.isClosed && g < visited.element.g else {
                     continue;
                 }
-                var ele = visited;
-                ele.parent = vertex;
-                ele.g = g;
+                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.element.h);
                 result.append((ele, true));
             }
             else {
@@ -245,7 +242,7 @@ public struct FinderHeap<T: Hashable> {
     internal fileprivate(set) var openList: PriorityQueue<Element>;
     
     ///Visited list - [Vertex: Element]
-    internal fileprivate(set) var visitList: [T: Element];
+    internal fileprivate(set) var visitList: [T: (Element, Bool)];
     
     ///Init
     public init(){
@@ -261,7 +258,7 @@ extension FinderHeap: FinderHeapProtocol {
     ///Insert a element into 'Self'.
     mutating public func insert(element: Element) {
         openList.insert(element: element);
-        visitList[element.vertex] = element;
+        visitList[element.vertex] = (element, false);
     }
     
     ///Remove the best element and close it.
@@ -269,7 +266,7 @@ extension FinderHeap: FinderHeapProtocol {
         guard let element = openList.popBest() else {
             return .none;
         }
-        visitList[element.vertex]?.isClosed = true;
+        visitList[element.vertex]?.1 = true;
         return element;
     }
     
@@ -280,11 +277,11 @@ extension FinderHeap: FinderHeapProtocol {
             return;
         }
         openList.replace(newValue: newElement, at: index);
-        visitList[vertex] = newElement;
+        visitList[vertex] = (newElement, false);
     }
     
-    ///return element
-    public subscript(vertex: T) -> Element? {
+    ///return visited element info
+    public func visitedOf(vertex: T) -> (element: Element, isClosed: Bool)? {
         return visitList[vertex];
     }
 }
@@ -295,14 +292,11 @@ public struct FinderElement<Vertex: Hashable> {
     ///Vertex
     public let vertex: Vertex;
     
-    public internal(set) var parent: Vertex?,   //parent vertex
-    g, h: Int,                                  //g: exact cost, h: estimate cost
-    isClosed: Bool = false;                     //is close
-    
-    ///f value, f = g + h;
-    public var f: Int {
-        return g + h;
-    }
+    public private(set) var parent: Vertex?,   //parent vertex
+    g, h: Int;                                 //g: exact cost, h: estimate cost
+   
+    ///f value (g + h)
+    public let f: Int;
     
     ///init
     public init(vertex: Vertex, parent: Vertex?) {
@@ -315,6 +309,7 @@ public struct FinderElement<Vertex: Hashable> {
         self.parent = parent;
         self.g = g;
         self.h = h;
+        self.f = g + h;
     }
 }
 extension FinderElement: FinderElementProtocol{}

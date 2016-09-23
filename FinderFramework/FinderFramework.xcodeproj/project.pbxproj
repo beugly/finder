@@ -18,6 +18,7 @@
 		1B2FA2271C4024F30050F1F8 /* TestArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FA2251C4024F30050F1F8 /* TestArrow.swift */; };
 		655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D72291CA39A3B00673E3F /* FinderProtocols.swift */; };
 		BA57D5061D2F8ED500023631 /* FinderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA57D5051D2F8ED500023631 /* FinderImpl.swift */; };
+		BAD0C0F91D93BC0B00418D53 /* FProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD0C0F81D93BC0B00418D53 /* FProtocols.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		1B2FA2251C4024F30050F1F8 /* TestArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestArrow.swift; sourceTree = "<group>"; };
 		655D72291CA39A3B00673E3F /* FinderProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderProtocols.swift; sourceTree = "<group>"; };
 		BA57D5051D2F8ED500023631 /* FinderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl.swift; sourceTree = "<group>"; };
+		BAD0C0F81D93BC0B00418D53 /* FProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FProtocols.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
 				655D72291CA39A3B00673E3F /* FinderProtocols.swift */,
 				BA57D5051D2F8ED500023631 /* FinderImpl.swift */,
+				BAD0C0F81D93BC0B00418D53 /* FProtocols.swift */,
 			);
 			name = finder;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 				1B2FA21B1C40246A0050F1F8 /* Finder2DImpl_old.swift in Sources */,
 				655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */,
 				BA57D5061D2F8ED500023631 /* FinderImpl.swift in Sources */,
+				BAD0C0F91D93BC0B00418D53 /* FProtocols.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
