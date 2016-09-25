@@ -28,23 +28,24 @@ public protocol PriorityQueueType: Collection{
 
 
 ///MARK: PriorityQueue
-///If u need Heap, use static func PriorityQueue.heap(xxxxx);
 public struct PriorityQueue<T> {
+    ///Source Type
+    public typealias Source = [T];
+    
     ///source
-    public internal(set) var source: Source;
+    public internal(set) var source: Source = [];
     
     ///shifting
     let shifting: PQShifting<Source>;
     
     ///Init
-    public init(source: Source, forkCount: Int, isOrderedBefore: @escaping (T, T) -> Bool){
-        self.source = source;
+    public init(isOrderedBefore: @escaping (T, T) -> Bool, forkCount: Int){
         self.shifting = PQShifting<Source>(isOrderedBefore: isOrderedBefore, forkCount: forkCount);
-        self.source = shifting.build(source: source);
     }
 }
 //MARK: extension PriorityQueue: PriorityQueueType
 extension PriorityQueue: PriorityQueueType{
+    
     ///Preview min OR max element
     public var preview: T? {
         return source.first;
@@ -71,33 +72,35 @@ extension PriorityQueue: PriorityQueueType{
         source[index] = newValue;
         source = shifting.shift(auto: index, of: source);
     }
-}
-//MARK: PriorityQueue.heap -- Return Heap
-extension PriorityQueue {
-    ///Source Type
-    public typealias Source = [T];
     
-    ///Return heap
-    public static func heap(_ source: Source, isOrderedBefore: @escaping (T, T) -> Bool) -> PriorityQueue{
-        return PriorityQueue<T>.init(source: source, forkCount: 2, isOrderedBefore: isOrderedBefore);
+    ///Rebuild source
+    mutating public func rebuild(newSource: Source) {
+        self.source = shifting.build(source: newSource);
+        
     }
-    
-    ///Return heap
-    public static func heap(_ isOrderedBefore: @escaping (T, T) -> Bool) -> PriorityQueue{
-        return heap([], isOrderedBefore: isOrderedBefore);
+}
+//MARK: extension PriorityQueue -- init Heap
+extension PriorityQueue {
+    ///init heap
+    public init(heap isOrderedBefore: @escaping (T, T) -> Bool) {
+        self.init(isOrderedBefore: isOrderedBefore, forkCount: 2);
     }
 }
 
 //MARK: PriorityQueue.heap where T: Comparable
 extension PriorityQueue where T: Comparable {
-    ///Return minimum heap
-    public static func heap(minimum source: Source) -> PriorityQueue{
-        return heap(source){return $0 < $1;}
+    ///Return minimum
+    public init(minimum forkCount: Int = 2){
+        self.init(isOrderedBefore: {
+            return $0 < $1;
+        }, forkCount: forkCount);
     }
     
-    ///Return maximum heap
-    public static func heap(maximum source: Source) -> PriorityQueue{
-        return heap(source){return $0 > $1;}
+    ///Return maximum
+    public init(maximum forkCount: Int = 2){
+        self.init(isOrderedBefore: {
+            return $0 > $1;
+        }, forkCount: forkCount);
     }
 }
 //MARK: extension PriorityQueue: CollectionType
@@ -108,8 +111,6 @@ extension PriorityQueue: Collection {
     public subscript(index: Int) -> T {return source[index];}
     public func index(after i: Int) -> Int {return i + 1;}
 }
-
-
 
 
 
@@ -225,5 +226,3 @@ extension PQShifting {
         return source;
     }
 }
-
-

@@ -105,6 +105,8 @@ extension FinderProtocol00000 where Element ==  FinderElement<Option.Vertex>, Ta
             if isGoal(vertex: element.vertex, goals: &vertexs) {
                 let r = heap.backtrace(vertex: element.vertex);
                 result.append(r);
+            }
+            if vertexs.isEmpty {
                 break;
             }
             

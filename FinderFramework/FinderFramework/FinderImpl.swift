@@ -247,7 +247,7 @@ public struct FinderHeap<T: Hashable> {
     ///Init
     public init(){
         self.visitList = [:];
-        self.openList = PriorityQueue<Element>.heap(minimum: [])
+        self.openList = PriorityQueue<Element>(minimum: 2);
     }
 }
 extension FinderHeap: FinderHeapProtocol {

@@ -21,7 +21,7 @@ let testType: PQTestType = .normal;
 
 
 private func testNormal(){
-    var queue = PQ.heap(minimum: [])
+    var queue = PQ.init(minimum: 2)
 //    var queue = PQ.heap(maximum: []);
     var count = 4000;
     let i = count;
@@ -47,7 +47,8 @@ private func testBuild(){
     {
         sortArray.append(Int(arc4random()));
     }
-    var queue = PQ.heap(minimum: sortArray)
+    var queue = PQ.init(minimum: 2)
+    queue.rebuild(newSource: sortArray);
     sortArray.sort(by: {$0 > $1})
     while !queue.isEmpty {
         let e1 = queue.popBest()!;
@@ -59,7 +60,8 @@ private func testBuild(){
 
 private func testReplace(){
     let arr = [0, 2, 3, 1, 9, 6, 8, 7];
-    var queue = PQ.heap(minimum: arr)
+    var queue = PQ.init(minimum: 2)
+    queue.rebuild(newSource: arr);
     print(queue.source);
     queue.replace(newValue: -1, at: queue.index(of: 9)!);
     print(queue.source);
