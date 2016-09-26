@@ -171,7 +171,29 @@ extension FinderAStar2: FinderProtocol00000 {
 }
 
 
-
+public protocol FinderEngineProtocol: IteratorProtocol {
+    
+    associatedtype Element: FinderElementProtocol;
+    
+    ///expand successors around element
+    mutating func expandSuccessors(around element: Element) -> Bool
+}
+extension FinderEngineProtocol {
+    
+    ///start up
+    mutating func startup() {
+        repeat {
+            guard let element = next() else {
+                break;
+            }
+            
+            let isCompleted = expandSuccessors(around: element);
+            if isCompleted {
+                break;
+            }
+        }while true;
+    }
+}
 
 
 
