@@ -8,81 +8,94 @@
 
 import Foundation
 
-
-
 //MARK: FinderProtocol
 public protocol FinderProtocol {
     ///heap type
-    associatedtype Heap: FinderHeapProtocol;
+    associatedtype Heap: FinderIteratorProtocl;
+    
+    ///vertex type
+    associatedtype Vertex: Hashable;
     
     ///make heap and insert origin element
     func makeHeap() -> Heap
     
     ///search element
-    func search(element: Heap.Element) -> (found: Bool, completed: Bool)
+    func search(element: Heap.Element, in heap: Heap) -> (result: [Vertex]?, isCompleted: Bool)
     
-    ///Return successor elements around element
-    func successors(around element: Heap.Element, in heap: Heap) -> [(element: Heap.Element, isOpened: Bool)]
+    ///expand successor(of parent) into heap
+    func expandSuccessors(around element: Heap.Element, into heap: inout Heap)
     
     ///find
-    func find(findOne: ([Heap.Element.Vertex]) -> Void) -> Heap
+    func find(findOne: ([Vertex]) -> Void) -> Heap
 }
-extension FinderProtocol{
+extension FinderProtocol {
     ///find
-    public func find(findOne: ([Heap.Element.Vertex]) -> Void) -> Heap{
+    public func find(findOne: ([Vertex]) -> Void) -> Heap{
         var heap = self.makeHeap();
         repeat {
             //get best element
-            guard let element = heap.removeBest() else {
+            guard let element = heap.next() else {
                 break;
             }
             
             //check state
-            let state = search(element: element);
-            if state.found{
-                let result = heap.backtrace(vertex: element.vertex);
+            let state = search(element: element, in: heap);
+            if let result = state.result{
                 findOne(result);
             }
-            if state.completed{
+            if state.isCompleted{
                 break;
             }
             
             //expand successors
-            let _successors = successors(around: element, in: heap);
-            for successor in _successors {
-                let isOpened = successor.isOpened;
-                let ele = successor.element;
-                !isOpened ? heap.insert(element: ele) : heap.update(newElement: ele);
-            }
+            expandSuccessors(around: element, into: &heap);
         }while true
         return heap;
     }
 }
 
-//MARK: FinderHeapProtocol
-public protocol FinderHeapProtocol {
+//MARK: FinderOneToOne
+public protocol FinderOneToOne: FinderProtocol {
+    ///start vertex
+    var start: Vertex {get}
     
-    ///Element Type
-    associatedtype Element: FinderElementProtocol;
-    
-    ///Insert a element into 'Self'.
-    mutating func insert(element: Element)
-    
-    ///Remove the best element and close it.
-    mutating func removeBest() -> Element?
-    
-    ///Update element
-    mutating func update(newElement: Element)
+    ///goal vertex
+    var goal: Vertex {get}
+}
+extension FinderOneToOne where Heap == FinderHeap<Vertex> {
+    public func makeHeap() -> Heap {
+        let origin = FinderElement(vertex: start, parent: nil, g: 0, h: 0);
+        var heap = Heap();
+        heap.insert(element: origin);
+        return heap;
+    }
+}
+extension FinderOneToOne
+    where
+    Heap.Element: FinderElementProtocol,
+    Heap.Element.Vertex == Heap.Vertex,
+    Heap.Vertex == Vertex
+{
+    public func search(element: Heap.Element, in heap: Heap) -> (result: [Heap.Vertex]?, isCompleted: Bool) {
+        guard goal == element.vertex else {
+            return (nil, false);
+        }
+        let result: [Heap.Vertex] = heap.backtrace(vertex: goal).reversed();
+        return (result, true);
+    }
+}
+
+//MARK: FinderIteratorProtocl
+public protocol FinderIteratorProtocl: IteratorProtocol {
+    ///Vertex type
+    associatedtype Vertex: Hashable;
     
     ///Return visited element info
-    func visitedOf(vertex: Element.Vertex) -> (element: Element, isClosed: Bool)?
-    
-    ///init
-    init();
+    func visitedOf(vertex: Vertex) -> (element: Element, isClosed: Bool)?
 }
-extension FinderHeapProtocol {
+extension FinderIteratorProtocl where Element: FinderElementProtocol, Element.Vertex == Vertex {
     ///back trace
-    public func backtrace(vertex: Element.Vertex) -> [Element.Vertex] {
+    func backtrace(vertex: Vertex) -> [Vertex] {
         var result = [vertex];
         var element: Element? = visitedOf(vertex: vertex)?.element;
         repeat{
@@ -106,13 +119,7 @@ public protocol FinderElementProtocol{
     
     ///parent
     var parent: Vertex?{get}
-    
-    ///init
-    init(vertex: Vertex, parent: Vertex?)
 }
-
-
-
 
 //MARK: FinderOptionProtocol
 public protocol FinderOptionProtocol {
@@ -121,26 +128,12 @@ public protocol FinderOptionProtocol {
     
     ///Return successor vertexs of vertex from parent vertex
     func successors(of vertex: Vertex, from parent: Vertex?) -> [Vertex]
-}
-
-//MARK: FinderExactCostProtocol
-public protocol FinderExactCostProtocol {
-    ///Vertex Type
-    associatedtype Vertex: Hashable;
     
     ///Return exact cost from v1 to v2
     func exactCost(from v1: Vertex, to v2: Vertex) -> Int
-}
-
-//MARK: FinderHeuristicProtocol
-public protocol FinderHeuristicProtocol {
-    
-    ///Vertex Type
-    associatedtype Vertex: Hashable;
     
     ///heuristic
     func heuristic(from v1: Vertex, to v2: Vertex) -> Int
 }
-
 
 
