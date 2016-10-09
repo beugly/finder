@@ -154,9 +154,10 @@ extension FinderBFS: FinderProtocol {
             }
 
             //check state
-            if let i = _starts.index(of: element.vertex) {
+            let vertex = element.vertex;
+            if let i = _starts.index(of: vertex) {
                 _starts.remove(at: i);
-                let result: [Option.Vertex] = backtrace(of: element.vertex, in: heap);
+                let result: [Option.Vertex] = heap.backtrace(of: vertex)
                 findOne(result);
                 if _starts.isEmpty {
                     break;

@@ -16,21 +16,6 @@ public protocol FinderProtocol {
     ///find
     func find(findOne: ([Heap.Vertex]) -> Void) -> Heap
 }
-extension FinderProtocol {
-    ///back trace
-    func backtrace<T: FinderOpenListProtocol>(of vertex: T.Vertex, in heap: T) -> [T.Vertex] {
-        var result = [vertex];
-        var e: FinderElement<T.Vertex>? = heap.element(of: vertex);
-        repeat{
-            guard let parent = e?.parent else {
-                break;
-            }
-            result.append(parent);
-            e = heap.element(of: parent);
-        }while true
-        return result;
-    }
-}
 
 //MARK: FinderOpenListProtocol
 public protocol FinderOpenListProtocol {
@@ -42,6 +27,21 @@ public protocol FinderOpenListProtocol {
     
     ///Return next element
     mutating func next() -> FinderElement<Vertex>?
+}
+extension FinderOpenListProtocol {
+    ///back trace
+    final public func backtrace(of vertex: Vertex) -> [Vertex] {
+        var result = [vertex];
+        var e: FinderElement<Vertex>? = element(of: vertex);
+        repeat{
+            guard let parent = e?.parent else {
+                break;
+            }
+            result.append(parent);
+            e = element(of: parent);
+        }while true
+        return result;
+    }
 }
 
 //MARK: FinderOptionProtocol
@@ -105,7 +105,7 @@ extension FinderOneToOne {
             //check state
             let vertex = element.vertex;
             if goal == vertex {
-                let result: [Option.Vertex] = backtrace(of: vertex, in: heap).reversed();
+                let result: [Option.Vertex] = heap.backtrace(of: vertex).reversed();
                 findOne(result);
                 break;
             }

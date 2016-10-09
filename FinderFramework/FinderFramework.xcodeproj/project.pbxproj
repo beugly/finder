@@ -18,6 +18,7 @@
 		655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D72291CA39A3B00673E3F /* FinderProtocols.swift */; };
 		BA4CA1D91D9BA2D200603232 /* FinderImpl2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4CA1D81D9BA2D200603232 /* FinderImpl2D.swift */; };
 		BA57D5061D2F8ED500023631 /* FinderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA57D5051D2F8ED500023631 /* FinderImpl.swift */; };
+		BAA28C111DAA63DE00D7289C /* sf.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA28C101DAA63DE00D7289C /* sf.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		655D72291CA39A3B00673E3F /* FinderProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderProtocols.swift; sourceTree = "<group>"; };
 		BA4CA1D81D9BA2D200603232 /* FinderImpl2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl2D.swift; sourceTree = "<group>"; };
 		BA57D5051D2F8ED500023631 /* FinderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl.swift; sourceTree = "<group>"; };
+		BAA28C101DAA63DE00D7289C /* sf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = sf.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				655D72291CA39A3B00673E3F /* FinderProtocols.swift */,
 				BA57D5051D2F8ED500023631 /* FinderImpl.swift */,
 				BA4CA1D81D9BA2D200603232 /* FinderImpl2D.swift */,
+				BAA28C101DAA63DE00D7289C /* sf.swift */,
 			);
 			name = finder;
 			sourceTree = "<group>";
@@ -246,6 +249,7 @@
 			files = (
 				655D722A1CA39A3B00673E3F /* FinderProtocols.swift in Sources */,
 				BA57D5061D2F8ED500023631 /* FinderImpl.swift in Sources */,
+				BAA28C111DAA63DE00D7289C /* sf.swift in Sources */,
 				BA4CA1D91D9BA2D200603232 /* FinderImpl2D.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
 			);
