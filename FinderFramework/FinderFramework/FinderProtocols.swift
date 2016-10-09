@@ -13,24 +13,14 @@ public protocol FinderProtocol {
     ///heap type
     associatedtype Heap: FinderOpenListProtocol;
     
-    ///expand successor(of parent) into heap
-    func expandSuccessors(around element: _Element, into heap: inout Heap)
-    
     ///find
-    func find(findOne: ([_Vertex]) -> Void) -> Heap
+    func find(findOne: ([Heap.Vertex]) -> Void) -> Heap
 }
 extension FinderProtocol {
-    
-    ///vertex type
-    public typealias _Vertex = Heap.Vertex;
-    
-    ///element type
-    public typealias _Element = FinderElement<_Vertex>;
-    
     ///back trace
-    func backtrace(of vertex: _Vertex, in heap: Heap) -> [_Vertex] {
+    func backtrace<T: FinderOpenListProtocol>(of vertex: T.Vertex, in heap: T) -> [T.Vertex] {
         var result = [vertex];
-        var e: _Element? = heap.element(of: vertex);
+        var e: FinderElement<T.Vertex>? = heap.element(of: vertex);
         repeat{
             guard let parent = e?.parent else {
                 break;
@@ -69,15 +59,11 @@ public protocol FinderOptionProtocol {
     func heuristic(from v1: Vertex, to v2: Vertex) -> Int
 }
 
-
 //MARK: FinderOneToOne
 public protocol FinderOneToOne: FinderProtocol {
     
     ///Option type
     associatedtype Option: FinderOptionProtocol;
-    
-    ///heap type
-    associatedtype Heap: FinderOpenListProtocol = FinderHeap<Option.Vertex>;
     
     ///start vertex
     var start: _Vertex {get}
@@ -86,24 +72,29 @@ public protocol FinderOneToOne: FinderProtocol {
     var goal: _Vertex {get}
     
     ///init
-    init(start: Option.Vertex, goal: Option.Vertex, option: Option)
+    init(start: _Vertex, goal: _Vertex, option: Option)
+    
+    ///expand successor(of parent) into heap
+    func expandSuccessors(around element: FinderElement<_Vertex>, into heap: inout FinderHeap<_Vertex>)
 }
-extension FinderOneToOne where Option.Vertex == Heap.Vertex {
+extension FinderOneToOne {
+    ///vertex type
+    public typealias _Vertex = Option.Vertex;
+    
     ///static find
-    public static func find(from start: Option.Vertex, to goal: Option.Vertex, option: Option) -> [Option.Vertex]? {
-        var result: [Option.Vertex]?;
+    public static func find(from start: _Vertex, to goal: _Vertex, option: Option) -> [_Vertex]? {
+        var result: [_Vertex]?;
         let f = Self.init(start: start, goal: goal, option: option);
         let _ = f.find{
             result = $0;
         }
         return result;
     }
-}
-extension FinderOneToOne where Heap == FinderHeap<Option.Vertex> {
+    
     ///find
-    public func find(findOne: ([_Vertex]) -> Void) -> Heap{
-        let origin = _Element(vertex: start, parent: nil, g: 0, h: 0);
-        var heap = Heap();
+    public func find(findOne: ([_Vertex]) -> Void) -> FinderHeap<_Vertex>{
+        let origin = FinderElement(vertex: start, parent: nil, g: 0, h: 0);
+        var heap = FinderHeap<_Vertex>();
         heap.insert(element: origin);
         repeat {
             //get best element
@@ -114,7 +105,7 @@ extension FinderOneToOne where Heap == FinderHeap<Option.Vertex> {
             //check state
             let vertex = element.vertex;
             if goal == vertex {
-                let result: [_Vertex] = backtrace(of: vertex, in: heap).reversed();
+                let result: [Option.Vertex] = backtrace(of: vertex, in: heap).reversed();
                 findOne(result);
                 break;
             }
@@ -125,8 +116,5 @@ extension FinderOneToOne where Heap == FinderHeap<Option.Vertex> {
         return heap;
     }
 }
-
-
-
 
 

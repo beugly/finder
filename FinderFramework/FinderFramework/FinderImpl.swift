@@ -20,8 +20,7 @@ public struct FinderDijkstra<Option> where Option: FinderOptionProtocol {
 }
 extension FinderDijkstra: FinderOneToOne{}
 extension FinderDijkstra: FinderProtocol {
-    public typealias Heap = FinderHeap<Option.Vertex>;
-    public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
+    public func expandSuccessors(around element: FinderElement<Option.Vertex>, into heap: inout FinderHeap<Option.Vertex>) {
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
@@ -30,11 +29,11 @@ extension FinderDijkstra: FinderProtocol {
                 guard !visited.isClosed && g < visited.g else {
                     continue;
                 }
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.h);
+                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: visited.h);
                 heap.update(newElement: ele);
             }
             else {
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: 0);
+                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: 0);
                 heap.insert(element: ele);
             }
         }
@@ -52,8 +51,7 @@ public struct FinderGreedyBest<Option> where Option: FinderOptionProtocol {
 }
 extension FinderGreedyBest: FinderOneToOne{}
 extension FinderGreedyBest: FinderProtocol {
-    public typealias Heap = FinderHeap<Option.Vertex>;
-    public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
+    public func expandSuccessors(around element: FinderElement<Option.Vertex>, into heap: inout FinderHeap<Option.Vertex>) {
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
@@ -61,7 +59,7 @@ extension FinderGreedyBest: FinderProtocol {
                 continue;
             }
             let h = option.heuristic(from: vertex, to: goal);
-            let ele = Heap.Element(vertex: succssor, parent: vertex, g: 0, h: h);
+            let ele = FinderElement(vertex: succssor, parent: vertex, g: 0, h: h);
             heap.insert(element: ele);
         }
     }
@@ -79,8 +77,7 @@ public struct FinderAStar<Option> where Option: FinderOptionProtocol {
 }
 extension FinderAStar: FinderOneToOne{}
 extension FinderAStar: FinderProtocol {
-    public typealias Heap = FinderHeap<Option.Vertex>;
-    public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
+    public func expandSuccessors(around element: FinderElement<Option.Vertex>, into heap: inout FinderHeap<Option.Vertex>) {
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
@@ -89,12 +86,12 @@ extension FinderAStar: FinderProtocol {
                 guard !visited.isClosed && g < visited.g else {
                     continue;
                 }
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.h);
+                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: visited.h);
                 heap.update(newElement: ele);
             }
             else {
                 let h = option.heuristic(from: vertex, to: goal);
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: h);
+                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: h);
                 heap.insert(element: ele);
             }
         }
