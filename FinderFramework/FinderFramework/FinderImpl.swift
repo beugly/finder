@@ -11,8 +11,7 @@ import Foundation
 
 //MARK: FinderDijkstra
 public struct FinderDijkstra<Option> where Option: FinderOptionProtocol {
-    public let start, goal: Option.Vertex;
-    public let option: Option;
+    public let start, goal: Option.Vertex, option: Option;
     public init(start: Option.Vertex, goal: Option.Vertex, option: Option) {
         self.start = start;
         self.goal = goal;
@@ -44,8 +43,7 @@ extension FinderDijkstra: FinderProtocol {
 
 //MARK: FinderGreedyBest
 public struct FinderGreedyBest<Option> where Option: FinderOptionProtocol {
-    public let start, goal: Option.Vertex;
-    public let option: Option;
+    public let start, goal: Option.Vertex, option: Option;
     public init(start: Option.Vertex, goal: Option.Vertex, option: Option) {
         self.start = start;
         self.goal = goal;
@@ -72,8 +70,7 @@ extension FinderGreedyBest: FinderProtocol {
 
 //MARK: FinderAStar
 public struct FinderAStar<Option> where Option: FinderOptionProtocol {
-    public let start, goal: Option.Vertex;
-    public let option: Option;
+    public let start, goal: Option.Vertex, option: Option;
     public init(start: Option.Vertex, goal: Option.Vertex, option: Option) {
         self.start = start;
         self.goal = goal;
@@ -107,36 +104,30 @@ extension FinderAStar: FinderProtocol {
 
 //MARK: FinderBFS
 public class FinderBFS<Option> where Option: FinderOptionProtocol {
-    public let start: Option.Vertex;
-    public let goals: [Option.Vertex];
+    public let starts: [Option.Vertex];
+    public let goal: Option.Vertex;
     public let option: Option;
-    fileprivate var _goals: [Option.Vertex];
-    public init(start: Option.Vertex, goals: [Option.Vertex], option: Option) {
-        self.start = start;
-        self.goals = goals;
+    fileprivate var _starts: [Option.Vertex];
+    public init(starts: [Option.Vertex], goal: Option.Vertex, option: Option) {
+        self.starts = starts;
+        self.goal = goal;
         self.option = option;
-        self._goals = goals;
+        self._starts = starts;
+    }
+}
+extension FinderBFS {
+    ///static find
+    public static func find(from vertexs: [Option.Vertex], to vertex: Option.Vertex, option: Option) -> [[Option.Vertex]] {
+        var result: [[Option.Vertex]] = [];
+        let f = FinderBFS.init(starts: vertexs, goal: vertex, option: option);
+        let _ = f.find{
+            result.append($0);
+        }
+        return result;
     }
 }
 extension FinderBFS: FinderProtocol {
-    public typealias Heap = FinderHeap<Option.Vertex>;
-
-    public func makeHeap() -> Heap {
-        self._goals = goals;
-        let origin = Heap.Element(vertex: start, parent: .none, g: 0, h: 0);
-        var heap = Heap();
-        heap.insert(element: origin);
-        return heap;
-    }
-    
-    public func search(element: Heap.Element, in heap: Heap) -> (result: [Option.Vertex]?, isCompleted: Bool) {
-        guard let i = _goals.index(of: element.vertex) else {
-            return (nil, false);
-        }
-        _goals.remove(at: i);
-        let result: [Option.Vertex] = backtrace(of: element.vertex, in: heap);
-        return (result, _goals.isEmpty);
-    }
+    public typealias Heap = FinderArray<Option.Vertex>;
 
     public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
         let vertex = element.vertex;
@@ -151,6 +142,34 @@ extension FinderBFS: FinderProtocol {
             let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: 0);
             heap.insert(element: ele);
         }
+    }
+    
+    ///find
+    public func find(findOne: ([Option.Vertex]) -> Void) -> Heap{
+        self._starts = starts;
+        let origin = Heap.Element(vertex: goal, parent: .none, g: 0, h: 0);
+        var heap = Heap();
+        heap.insert(element: origin);
+        repeat {
+            //get best element
+            guard let element = heap.next() else {
+                break;
+            }
+
+            //check state
+            if let i = _starts.index(of: element.vertex) {
+                _starts.remove(at: i);
+                let result: [Option.Vertex] = backtrace(of: element.vertex, in: heap);
+                findOne(result);
+                if _starts.isEmpty {
+                    break;
+                }
+            }
+
+            //expand successors
+            expandSuccessors(around: element, into: &heap);
+        }while true
+        return heap;
     }
 }
 
