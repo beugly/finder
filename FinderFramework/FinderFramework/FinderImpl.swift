@@ -21,18 +21,17 @@ public struct FinderDijkstra<Option> where Option: FinderOptionProtocol {
 }
 extension FinderDijkstra: FinderOneToOne{}
 extension FinderDijkstra: FinderProtocol {
-    public typealias Vertex = Option.Vertex;
-    public typealias Heap = FinderHeap<Vertex>;
+    public typealias Heap = FinderHeap<Option.Vertex>;
     public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
             let g = element.g + option.exactCost(from: vertex, to: succssor);
-            if let visited = heap.visitedOf(vertex: succssor) {
-                guard !visited.isClosed && g < visited.element.g else {
+            if let visited = heap.element(of: succssor) {
+                guard !visited.isClosed && g < visited.g else {
                     continue;
                 }
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.element.h);
+                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.h);
                 heap.update(newElement: ele);
             }
             else {
@@ -55,13 +54,12 @@ public struct FinderGreedyBest<Option> where Option: FinderOptionProtocol {
 }
 extension FinderGreedyBest: FinderOneToOne{}
 extension FinderGreedyBest: FinderProtocol {
-    public typealias Vertex = Option.Vertex;
-    public typealias Heap = FinderHeap<Vertex>;
+    public typealias Heap = FinderHeap<Option.Vertex>;
     public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
-            guard let _ = heap.visitedOf(vertex: succssor) else {
+            guard let _ = heap.element(of: succssor) else {
                 continue;
             }
             let h = option.heuristic(from: vertex, to: goal);
@@ -84,18 +82,17 @@ public struct FinderAStar<Option> where Option: FinderOptionProtocol {
 }
 extension FinderAStar: FinderOneToOne{}
 extension FinderAStar: FinderProtocol {
-    public typealias Vertex = Option.Vertex;
-    public typealias Heap = FinderHeap<Vertex>;
+    public typealias Heap = FinderHeap<Option.Vertex>;
     public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
         let vertex = element.vertex;
         let _successors = option.successors(of: vertex, from: element.parent);
         for succssor in _successors {
             let g = element.g + option.exactCost(from: vertex, to: succssor);
-            if let visited = heap.visitedOf(vertex: succssor) {
-                guard !visited.isClosed && g < visited.element.g else {
+            if let visited = heap.element(of: succssor) {
+                guard !visited.isClosed && g < visited.g else {
                     continue;
                 }
-                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.element.h);
+                let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: visited.h);
                 heap.update(newElement: ele);
             }
             else {
@@ -122,8 +119,7 @@ public class FinderBFS<Option> where Option: FinderOptionProtocol {
     }
 }
 extension FinderBFS: FinderProtocol {
-    public typealias Vertex = Option.Vertex;
-    public typealias Heap = FinderHeap<Vertex>;
+    public typealias Heap = FinderHeap<Option.Vertex>;
 
     public func makeHeap() -> Heap {
         self._goals = goals;
@@ -138,7 +134,7 @@ extension FinderBFS: FinderProtocol {
             return (nil, false);
         }
         _goals.remove(at: i);
-        let result: [Option.Vertex] = heap.backtrace(vertex: element.vertex);
+        let result: [Option.Vertex] = backtrace(of: element.vertex, in: heap);
         return (result, _goals.isEmpty);
     }
 
@@ -148,7 +144,7 @@ extension FinderBFS: FinderProtocol {
         var i = 0;
         for succssor in _successors {
             i += 1;
-            guard let _ = heap.visitedOf(vertex: succssor) else {
+            guard let _ = heap.element(of: succssor) else {
                 continue;
             }
             let g = element.g + i;
@@ -159,13 +155,41 @@ extension FinderBFS: FinderProtocol {
 }
 
 
+//MARK: FinderElement
+public struct FinderElement<Vertex: Hashable> {
+    ///properties
+    public let vertex: Vertex, parent: Vertex?,     ///vertex, parent vertex
+    g, h, f: Int;                                   ///exact cost, h: estimate cost, f: g + h
+    
+    ///is closed
+    public fileprivate(set) var isClosed: Bool;
+    
+    ///init
+    public init(vertex: Vertex, parent: Vertex?, g: Int, h: Int, isClosed: Bool = false){
+        self.vertex = vertex;
+        self.parent = parent;
+        self.g = g;
+        self.h = h;
+        self.f = g + h;
+        self.isClosed = isClosed;
+    }
+}
+extension FinderElement: Comparable {}
+public func ==<Vertex: Hashable>(lsh: FinderElement<Vertex>, rsh: FinderElement<Vertex>) -> Bool{
+    return lsh.vertex == rsh.vertex;
+}
+public func <<Vertex: Hashable>(lsh: FinderElement<Vertex>, rsh: FinderElement<Vertex>) -> Bool{
+    return lsh.f < rsh.f ? true : (lsh.h < rsh.h);
+}
+
+
 //MARK: FinderHeap
 public struct FinderHeap<T: Hashable> {
     ///Open list
     internal fileprivate(set) var openList: PriorityQueue<Element>;
     
     ///Visited list - [Vertex: Element]
-    internal fileprivate(set) var visitList: [T: (Element, Bool)];
+    internal fileprivate(set) var visitList: [T: Element];
     
     ///Init
     public init(){
@@ -173,17 +197,18 @@ public struct FinderHeap<T: Hashable> {
         self.openList = PriorityQueue<Element>(minimum: 2);
     }
 }
-extension FinderHeap: FinderIteratorProtocl {
+extension FinderHeap: FinderOpenListProtocol {
     public typealias Element = FinderElement<T>;
+    
     public mutating func next() -> Element? {
         guard let element = openList.popBest() else {
             return .none;
         }
-        visitList[element.vertex]?.1 = true;
+        visitList[element.vertex]?.isClosed = true;
         return element;
     }
-    ///return visited element info
-    public func visitedOf(vertex: T) -> (element: Element, isClosed: Bool)? {
+    ///return visited element of vertex
+    public func element(of vertex: T) -> Element? {
         return visitList[vertex];
     }
 }
@@ -191,7 +216,7 @@ extension FinderHeap {
     ///Insert a element into 'Self'.
     mutating public func insert(element: Element) {
         openList.insert(element: element);
-        visitList[element.vertex] = (element, false);
+        visitList[element.vertex] = element;
     }
     
     ///Update element
@@ -201,41 +226,9 @@ extension FinderHeap {
             return;
         }
         openList.replace(newValue: newElement, at: index);
-        visitList[vertex] = (newElement, false);
+        visitList[vertex] = newElement;
     }
 }
-
-
-//MARK: FinderElement
-public struct FinderElement<Vertex: Hashable> {
-    ///Vertex
-    public let vertex: Vertex;
-    
-    public private(set) var parent: Vertex?,   //parent vertex
-    g, h: Int;                                 //g: exact cost, h: estimate cost
-   
-    ///f value (g + h)
-    public let f: Int;
-    
-    ///init
-    public init(vertex: Vertex, parent: Vertex?, g: Int, h: Int){
-        self.vertex = vertex;
-        self.parent = parent;
-        self.g = g;
-        self.h = h;
-        self.f = g + h;
-    }
-}
-extension FinderElement: FinderElementProtocol{}
-extension FinderElement: Comparable {}
-public func ==<Element: FinderElementProtocol>(lsh: Element, rsh: Element) -> Bool{
-    return lsh.vertex == rsh.vertex;
-}
-public func <<Vertex: Hashable>(lsh: FinderElement<Vertex>, rsh: FinderElement<Vertex>) -> Bool{
-    return lsh.f < rsh.f ? true : (lsh.h < rsh.h);
-}
-
-
 
 //MARK: FinderArray
 public struct FinderArray<T: Hashable> {
@@ -243,7 +236,7 @@ public struct FinderArray<T: Hashable> {
     internal fileprivate(set) var openList: [Element];
     
     ///Visited list - [Vertex: Element]
-    internal fileprivate(set) var visitList: [T: (Element, Bool)];
+    internal fileprivate(set) var visitList: [T: Element];
     
     ///current index
     fileprivate var currentIndex = 0;
@@ -254,21 +247,22 @@ public struct FinderArray<T: Hashable> {
         self.openList = [];
     }
 }
-extension FinderArray: FinderIteratorProtocl {
+extension FinderArray: FinderOpenListProtocol {
     ///Element Type
     public typealias Element = FinderElement<T>;
+    
     public mutating func next() -> Element? {
         guard currentIndex < openList.count else {
             return nil;
         }
         
         let ele = openList[currentIndex];
-        visitList[ele.vertex]?.1 = true;
+        visitList[ele.vertex]?.isClosed = true;
         currentIndex += 1;
         return ele;
     }
-    ///return visited element info
-    public func visitedOf(vertex: T) -> (element: Element, isClosed: Bool)? {
+    ///return visited element of vertex
+    public func element(of vertex: T) -> Element? {
         return visitList[vertex];
     }
 }
@@ -276,7 +270,7 @@ extension FinderArray {
     ///Insert a element into 'Self'.
     mutating public func insert(element: Element) {
         openList.append(element);
-        visitList[element.vertex] = (element, false);
+        visitList[element.vertex] = element;
     }
     
     ///Update element
@@ -286,7 +280,7 @@ extension FinderArray {
             return;
         }
         openList[index] = newElement;
-        visitList[vertex] = (newElement, false);
+        visitList[vertex] = newElement;
     }
 }
 
