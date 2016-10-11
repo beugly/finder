@@ -24,19 +24,11 @@ public struct PriorityQueue<Element> {
     let forkCount: Int;
     
     ///Init
-    public init(isOrderedBefore: @escaping (Element, Element) -> Bool, forkCount: Int){
+    public init(isOrderedBefore: @escaping (Element, Element) -> Bool, forkCount: Int = 2){
         self.iob = isOrderedBefore;
         self.forkCount = forkCount;
     }
 }
-//MARK: extension PriorityQueue -- init Heap
-extension PriorityQueue {
-    ///init heap
-    public init(heap isOrderedBefore: @escaping (Element, Element) -> Bool) {
-        self.init(isOrderedBefore: isOrderedBefore, forkCount: 2);
-    }
-}
-
 //MARK: PriorityQueue.heap where T: Comparable
 extension PriorityQueue where Element: Comparable {
     ///Return minimum
@@ -62,8 +54,8 @@ extension PriorityQueue{
     }
     
     ///Insert element
-    mutating public func insert(element: Element) {
-        source.append(element);
+    mutating public func insert(_ newElement: Element) {
+        source.append(newElement);
         shift(up: source.count - 1);
     }
     
@@ -78,8 +70,8 @@ extension PriorityQueue{
     }
     
     ///Replace element at index
-    mutating public func replace(newValue: Element, at index: Int) {
-        source[index] = newValue;
+    mutating public func updateElement(_ element: Element, atIndex index: Int) {
+        source[index] = element;
         shift(auto: index);
     }
     

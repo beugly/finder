@@ -26,7 +26,7 @@ private func testNormal(){
     var count = 4000;
     let i = count;
     repeat{
-        queue.insert(element: count);
+        queue.insert(count);
         count -= 1;
     }while count > 0;
     var a = 0;
@@ -63,7 +63,7 @@ private func testReplace(){
     var queue = PQ.init(minimum: 2)
     queue.build(newSource: arr);
     print(queue.source);
-    queue.replace(newValue: -1, at: queue.index(of: 9)!);
+    queue.updateElement(-1, atIndex: queue.index(of: 9)!);
     print(queue.source);
     while !queue.isEmpty
     {

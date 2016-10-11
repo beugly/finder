@@ -232,7 +232,7 @@ extension FinderHeap: FinderOpenListProtocol {
 extension FinderHeap {
     ///Insert a element into 'Self'.
     mutating public func insert(element: Element) {
-        openList.insert(element: element);
+        openList.insert(element);
         visitList[element.vertex] = element;
     }
     
@@ -242,7 +242,7 @@ extension FinderHeap {
         guard let index = (openList.index{$0.vertex == vertex}) else {
             return;
         }
-        openList.replace(newValue: newElement, at: index);
+        openList.updateElement(newElement, atIndex: index);
         visitList[vertex] = newElement;
     }
 }
