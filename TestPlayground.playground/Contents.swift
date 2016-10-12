@@ -5,3 +5,6 @@ import SpriteKit;
 import FinderFramework;
 
 
+var a = [0 : 0];
+a.removeAll();
+

@@ -8,113 +8,203 @@
 
 import Foundation
 
+//MARK: FinderSequence
+/// A finder sequence
+public protocol FinderSequence{
+    /// A type that can represent the vertex to associate with `element`
+    associatedtype Vertex: Hashable;
+    
+    /// A type that can represent the element to associate with `vertex`
+    associatedtype Element = FinderElement<Vertex>;
+    
+    /// Inserts the given element into the sequence unconditionally.
+    /// - Parameter newElement: An element to insert into the sequence
+    mutating func insert(_ newElement: Element)
+    
+    /// Pop the best element
+    /// - Returns: the best element if the sequence is not empty; othewise, 'nil'
+    mutating func popBest() -> Element?
+    
+    /// Inserts the given element into the sequence unconditionally.
+    /// - Parameter newElement: An element to insert into the sequence
+    /// - Returns: element equal to `newElement` if the sequence already contained
+    ///   such a element; otherwise, `nil`.
+    mutating func update(_ newElement: Element) -> Element?
+    
+    /// Return element of vertex.
+    /// - Parameters:
+    ///   - vertex: The vertex to associate with `element`
+    /// - Returns: the existing associated element of 'vertex'
+    ///   if 'vertex' already in the sequence; otherwise, 'nil'.
+    func element(of vertex: Vertex) -> Element?
+}
+
+
 //MARK: FinderProtocol
 public protocol FinderProtocol {
-    ///heap type
-    associatedtype Heap: FinderOpenListProtocol;
-    
-    ///find
-    func find(findOne: ([Heap.Vertex]) -> Void) -> Heap
-}
-
-//MARK: FinderOpenListProtocol
-public protocol FinderOpenListProtocol {
-    ///Vertex type
+    /// A type that can represent the vertex to associate with `element`
     associatedtype Vertex: Hashable;
     
-    ///Return visited element of vertex
-    func element(of vertex: Vertex) -> FinderElement<Vertex>?
+    /// A type that can represent the element to associate with `vertex`
+    associatedtype Element = FinderElement<Vertex>;
     
-    ///Return next element
-    mutating func next() -> FinderElement<Vertex>?
-}
-extension FinderOpenListProtocol {
-    ///back trace
-    final public func backtrace(of vertex: Vertex) -> [Vertex] {
-        var result = [vertex];
-        var e: FinderElement<Vertex>? = element(of: vertex);
-        repeat{
-            guard let parent = e?.parent else {
-                break;
-            }
-            result.append(parent);
-            e = element(of: parent);
-        }while true
-        return result;
-    }
+    /// A type that can represent the 'target'.
+    associatedtype Target = Vertex;
+    
+    /// Make element of 'vertex' whose parent is 'element'
+    /// - Parameters: 
+    ///   - vertex: The vertex to associate with `element`
+    ///   - parent: The element of parent vertex
+    ///   - target: The target Vertex or [Vertex]
+    /// - Returns: The element of vertex
+    func makeElementOf(_ vertex: Vertex, parent: Element, target: Target) -> Element
 }
 
-//MARK: FinderOptionProtocol
-public protocol FinderOptionProtocol {
-    ///Vertex Type
-    associatedtype Vertex: Hashable;
+//MARK: FinderExactCostProtocol
+public protocol FinderExactCostProtocol: FinderProtocol {
     
-    ///Return successor vertexs of vertex from parent vertex
-    func successors(of vertex: Vertex, from parent: Vertex?) -> [Vertex]
-    
-    ///Return exact cost from v1 to v2
+    /// Return exact cost from 'v1' to 'v2'
+    /// - Parameters: 
+    ///   - v1: from vertex
+    ///   - v2: to vertex
     func exactCost(from v1: Vertex, to v2: Vertex) -> Int
     
-    ///heuristic
-    func heuristic(from v1: Vertex, to v2: Vertex) -> Int
+    /// Make element of 'existElement'
+    func makeElementOf(_ existElement: Element, parent: Element) -> Element?
 }
 
-//MARK: FinderOneToOne
-public protocol FinderOneToOne: FinderProtocol {
+//MARK: FinderHeuristicProtocol
+public protocol FinderHeuristicProtocol: FinderProtocol {
+    /// Heuristic function
+    func heuristic(from v1: Vertex, to v2: Vertex) -> Int
     
-    ///Option type
-    associatedtype Option: FinderOptionProtocol;
-    
-    ///start vertex
-    var start: _Vertex {get}
-    
-    ///goal vertex
-    var goal: _Vertex {get}
-    
-    ///init
-    init(start: _Vertex, goal: _Vertex, option: Option)
-    
-    ///expand successor(of parent) into heap
-    func expandSuccessors(around element: FinderElement<_Vertex>, into heap: inout FinderHeap<_Vertex>)
+    /// Make element of 'vertex' whose parent is 'element'
+    /// Target must be Vertex
+    /// - Parameters:
+    ///   - vertex: The vertex to associate with `element`
+    ///   - parent: The element of parent vertex
+    ///   - target: The target vertex
+    /// - Returns: The element of vertex
+    func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element
 }
-extension FinderOneToOne {
-    ///vertex type
-    public typealias _Vertex = Option.Vertex;
+
+
+//MARK: extension FinderProtocol: FinderExactCostProtocol
+extension FinderProtocol where Self: FinderExactCostProtocol, Element == FinderElement<Vertex> {
+    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element {
+        let parentVertex = parent.vertex;
+        let g = exactCost(from: parentVertex, to: vertex);
+        let ele = Element(vertex: vertex, parent: parentVertex, g: g, h: 0);
+        return ele;
+    }
     
-    ///static find
-    public static func find(from start: _Vertex, to goal: _Vertex, option: Option) -> [_Vertex]? {
-        var result: [_Vertex]?;
-        let f = Self.init(start: start, goal: goal, option: option);
-        let _ = f.find{
-            result = $0;
+    public func makeElementOf(_ existElement: Element, parent: Element) -> Element? {
+        guard !existElement.isClosed else {
+            return nil;
         }
-        return result;
-    }
-    
-    ///find
-    public func find(findOne: ([_Vertex]) -> Void) -> FinderHeap<_Vertex>{
-        let origin = FinderElement(vertex: start, parent: nil, g: 0, h: 0);
-        var heap = FinderHeap<_Vertex>();
-        heap.insert(element: origin);
-        repeat {
-            //get best element
-            guard let element = heap.next() else {
-                break;
-            }
-            
-            //check state
-            let vertex = element.vertex;
-            if goal == vertex {
-                let result: [Option.Vertex] = heap.backtrace(of: vertex).reversed();
-                findOne(result);
-                break;
-            }
-            
-            //expand successors
-            expandSuccessors(around: element, into: &heap);
-        }while true
-        return heap;
+        let vertex = existElement.vertex;
+        let parentVertex = parent.vertex;
+        let g = exactCost(from: parentVertex, to: vertex);
+        
+        guard g < existElement.g else {
+            return nil;
+        }
+        
+        let ele = FinderElement(vertex: vertex, parent: parentVertex, g: g, h: existElement.h);
+        return ele;
     }
 }
+
+//MARK: extension FinderProtocol: FinderHeuristicProtocol
+extension FinderProtocol where Self: FinderHeuristicProtocol, Element == FinderElement<Vertex> {
+    /// Make element of 'vertex' whose parent is 'element'
+    /// - Parameters:
+    ///   - vertex: The vertex to associate with `element`
+    ///   - parent: The element of parent vertex
+    ///   - target: The target vertex
+    /// - Returns: The element of vertex
+    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element {
+        let parentVertex = parent.vertex;
+        let h = heuristic(from: vertex, to: target);
+        let ele = Element(vertex: vertex, parent: parentVertex, g: 0, h: h);
+        return ele;
+    }
+}
+
+
+//MARK: extension FinderProtocol: FinderExactCostProtocol & FinderHeuristicProtocol
+extension FinderProtocol
+    where
+    Self: FinderExactCostProtocol & FinderHeuristicProtocol,
+    Element == FinderElement<Vertex>
+{
+    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element {
+        let parentVertex = parent.vertex;
+        let g = exactCost(from: parentVertex, to: vertex);
+        let h = heuristic(from: vertex, to: target);
+        let ele = Element(vertex: vertex, parent: parentVertex, g: g, h: h);
+        return ele;
+    }
+}
+
+
+
+
+
+
+
+
+//MARK: FinderSuccessorsProtocol
+public protocol FinderSuccessorsProtocol {
+    ///vertex type
+    associatedtype Vertex: Hashable;
+    
+    ///successors around vertex
+    func successors(around vertex: Vertex) -> [Vertex]
+}
+
+
+////MARK: FinderUniformCostProtocol
+/////the cost of vertex must be unified.
+//public protocol FinderUniformCostProtocol {
+//    ///vertex type
+//    associatedtype Vertex;
+//    
+//    ///if jumpable is true use jump point search
+//    var jumpable: Bool {get}
+//    
+//    ///return jump point
+//    func jump(vertex: Vertex, from v: Vertex) -> Vertex?
+//}
+//
+////MARK: FinderMultiformCostProtocol
+//public protocol FinderMultiformCostProtocol {
+//    ///vertex type
+//    associatedtype Vertex;
+//    
+//    ///if the vertex can be expanding return cost of vertex, otherwise return nil
+//    func cost(of vertex: Vertex) -> Int?
+//}
+//extension FinderMultiformCostProtocol {
+//    ///if the vertex can be expanding return true, othewise return false
+//    public func isValid(of vertex: Self.Vertex) -> Bool {
+//        return cost(of: vertex) != nil;
+//    }
+//}
+//
+////MARK: FinderOptionProtocol
+//public protocol FinderOptionProtocol {
+//    ///Vertex Type
+//    associatedtype Vertex: Hashable;
+//
+//    ///Return exact cost from v1 to v2
+//    func exactCost(from v1: Vertex, to v2: Vertex) -> Int
+//
+//    ///heuristic
+//    func heuristic(from v1: Vertex, to v2: Vertex) -> Int
+//
+//    ///Return successor vertexs around vertex
+//    func successors(around vertex: Vertex) -> [Vertex]
+//}
 
 

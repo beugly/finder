@@ -8,179 +8,339 @@
 
 import Foundation
 
-
-//MARK: FinderDijkstra
-public struct FinderDijkstra<Option> where Option: FinderOptionProtocol {
-    public let start, goal: Option.Vertex, option: Option;
-    public init(start: Option.Vertex, goal: Option.Vertex, option: Option) {
-        self.start = start;
-        self.goal = goal;
-        self.option = option;
-    }
-}
-extension FinderDijkstra: FinderOneToOne{}
-extension FinderDijkstra: FinderProtocol {
-    public func expandSuccessors(around element: FinderElement<Option.Vertex>, into heap: inout FinderHeap<Option.Vertex>) {
-        let vertex = element.vertex;
-        let _successors = option.successors(of: vertex, from: element.parent);
-        for succssor in _successors {
-            let g = element.g + option.exactCost(from: vertex, to: succssor);
-            if let visited = heap.element(of: succssor) {
-                guard !visited.isClosed && g < visited.g else {
-                    continue;
-                }
-                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: visited.h);
-                heap.update(newElement: ele);
-            }
-            else {
-                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: 0);
-                heap.insert(element: ele);
-            }
-        }
-    }
-}
-
-//MARK: FinderGreedyBest
-public struct FinderGreedyBest<Option> where Option: FinderOptionProtocol {
-    public let start, goal: Option.Vertex, option: Option;
-    public init(start: Option.Vertex, goal: Option.Vertex, option: Option) {
-        self.start = start;
-        self.goal = goal;
-        self.option = option;
-    }
-}
-extension FinderGreedyBest: FinderOneToOne{}
-extension FinderGreedyBest: FinderProtocol {
-    public func expandSuccessors(around element: FinderElement<Option.Vertex>, into heap: inout FinderHeap<Option.Vertex>) {
-        let vertex = element.vertex;
-        let _successors = option.successors(of: vertex, from: element.parent);
-        for succssor in _successors {
-            guard let _ = heap.element(of: succssor) else {
-                continue;
-            }
-            let h = option.heuristic(from: vertex, to: goal);
-            let ele = FinderElement(vertex: succssor, parent: vertex, g: 0, h: h);
-            heap.insert(element: ele);
-        }
-    }
-}
-
-
-//MARK: FinderAStar
-public struct FinderAStar<Option> where Option: FinderOptionProtocol {
-    public let start, goal: Option.Vertex, option: Option;
-    public init(start: Option.Vertex, goal: Option.Vertex, option: Option) {
-        self.start = start;
-        self.goal = goal;
-        self.option = option;
-    }
-}
-extension FinderAStar: FinderOneToOne{}
-extension FinderAStar: FinderProtocol {
-    public func expandSuccessors(around element: FinderElement<Option.Vertex>, into heap: inout FinderHeap<Option.Vertex>) {
-        let vertex = element.vertex;
-        let _successors = option.successors(of: vertex, from: element.parent);
-        for succssor in _successors {
-            let g = element.g + option.exactCost(from: vertex, to: succssor);
-            if let visited = heap.element(of: succssor) {
-                guard !visited.isClosed && g < visited.g else {
-                    continue;
-                }
-                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: visited.h);
-                heap.update(newElement: ele);
-            }
-            else {
-                let h = option.heuristic(from: vertex, to: goal);
-                let ele = FinderElement(vertex: succssor, parent: vertex, g: g, h: h);
-                heap.insert(element: ele);
-            }
-        }
-    }
-}
-
-
 //MARK: FinderBFS
-public class FinderBFS<Option> where Option: FinderOptionProtocol {
-    public let starts: [Option.Vertex];
-    public let goal: Option.Vertex;
-    public let option: Option;
-    fileprivate var _starts: [Option.Vertex];
-    public init(starts: [Option.Vertex], goal: Option.Vertex, option: Option) {
-        self.starts = starts;
-        self.goal = goal;
-        self.option = option;
-        self._starts = starts;
+///FinderArray<FinderSuccessorsProtocol>.find()
+public struct FinderBFS<Vertex: Hashable> {
+    
+    ///heap
+    fileprivate var array: [Element];
+    
+    ///visited list
+    fileprivate var visitedList: [Vertex: Element];
+    
+    ///current index
+    fileprivate var currentIndex: Int = 0;
+    
+    ///init
+    fileprivate init() {
+        self.array = [];
+        self.visitedList = [:];
+    }
+}
+extension FinderBFS: FinderSequence {
+    public typealias Element = (vertex: Vertex, parent: Vertex?);
+    
+    public mutating func insert(_ newElement: Element) {
+        array.append(newElement);
+        self.visitedList[newElement.vertex] = newElement;
+    }
+    
+    public mutating func popBest() -> Element? {
+        guard currentIndex < array.count else {
+            return nil;
+        }
+        let e = array[currentIndex];
+        currentIndex += 1;
+        return e;
+    }
+    
+    public mutating func update(_ newElement: Element) -> Element? {
+        let vertex = newElement.vertex;
+        guard let index = (array.index{ vertex == $0.vertex; }) else {
+            return nil;
+        }
+        array[index] = newElement;
+        let old = visitedList[vertex];
+        visitedList[vertex] = newElement;
+        return old;
+    }
+    
+    public func element(of vertex: Vertex) -> Element? {
+        return visitedList[vertex];
     }
 }
 extension FinderBFS {
-    ///static find
-    public static func find(from vertexs: [Option.Vertex], to vertex: Option.Vertex, option: Option) -> [[Option.Vertex]] {
-        var result: [[Option.Vertex]] = [];
-        let f = FinderBFS.init(starts: vertexs, goal: vertex, option: option);
-        let _ = f.find{
-            result.append($0);
-        }
+    ///backtrace
+    /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex]
+    func backtrace(of vertex: Vertex) -> [Vertex] {
+        var result = [vertex];
+        var e: Element? = element(of: vertex);
+        repeat{
+            guard let parent = e?.parent else {
+                break;
+            }
+            result.append(parent);
+            e = element(of: parent);
+        }while true
         return result;
     }
 }
-extension FinderBFS: FinderProtocol {
-    public typealias Heap = FinderArray<Option.Vertex>;
-
-    public func expandSuccessors(around element: Heap.Element, into heap: inout Heap) {
-        let vertex = element.vertex;
-        let _successors = option.successors(of: vertex, from: element.parent);
-        var i = 0;
-        for succssor in _successors {
-            i += 1;
-            guard let _ = heap.element(of: succssor) else {
-                continue;
-            }
-            let g = element.g + i;
-            let ele = Heap.Element(vertex: succssor, parent: vertex, g: g, h: 0);
-            heap.insert(element: ele);
-        }
-    }
-    
-    ///find
-    public func find(findOne: ([Option.Vertex]) -> Void) -> Heap{
-        self._starts = starts;
-        let origin = Heap.Element(vertex: goal, parent: .none, g: 0, h: 0);
-        var heap = Heap();
-        heap.insert(element: origin);
+extension FinderBFS {
+    public static func find<S>(from v1: Vertex, to v2: Vertex, successors: S) -> [Vertex]?
+        where S: FinderSuccessorsProtocol, S.Vertex == Vertex
+    {
+        var result: [Vertex]? = nil;
+        var engine = FinderBFS<S.Vertex>();
+        engine.insert((v2, nil));
+        
         repeat {
-            //get best element
-            guard let element = heap.next() else {
+            guard let element = engine.popBest() else {
                 break;
             }
-
-            //check state
+            
             let vertex = element.vertex;
-            if let i = _starts.index(of: vertex) {
-                _starts.remove(at: i);
-                let result: [Option.Vertex] = heap.backtrace(of: vertex)
-                findOne(result);
-                if _starts.isEmpty {
-                    break;
+            if vertex == v1 {
+                result = engine.backtrace(of: vertex);
+                break;
+            }
+            
+            for successor in successors.successors(around: vertex) {
+                if engine.element(of: successor) == nil {
+                    engine.insert((successor, vertex));
                 }
             }
-
-            //expand successors
-            expandSuccessors(around: element, into: &heap);
         }while true
-        return heap;
+        return result;
     }
+    
+    
+    public static func find<S>(from vertexs: [Vertex], to vertex: Vertex, successors: S) -> [[Vertex]]
+        where S: FinderSuccessorsProtocol, S.Vertex == Vertex
+    {
+        var result: [[Vertex]] = [];
+        
+        ///one
+        if vertexs.count == 1 {
+            let v1 = vertexs[0];
+            if let r = find(from: v1, to: vertex, successors: successors) {
+                result.append(r);
+            }
+            return result;
+        }
+        
+        ///more
+        var vertexs = vertexs;
+        var engine = FinderBFS<S.Vertex>();
+        engine.insert((vertex, nil));
+        
+        repeat {
+            guard let element = engine.popBest() else {
+                break;
+            }
+            
+            let v = element.vertex;
+            if let i = vertexs.index(of: v) {
+                let r = engine.backtrace(of: v);
+                result.append(r);
+                vertexs.remove(at: i);
+            }
+            if vertexs.isEmpty {
+                break;
+            }
+            
+            for successor in successors.successors(around: v) {
+                if engine.element(of: successor) == nil {
+                    engine.insert((successor, v));
+                }
+            }
+        }while true
+        return result;
+    }
+    
+    
+    
+//    public static func findJPS<S>(from v1: Vertex, to v2: Vertex, successors: S) -> [Vertex]?
+//        where S: FinderSuccessorsProtocol & FinderUniformCostProtocol & FinderOptionProtocol, S.Vertex == Vertex
+//    {
+//        
+//        if !successors.jumpable {
+//            return find(from: v1, to: v2, successors: successors);
+//        }
+//        
+//        var result: [Vertex]? = nil;
+//        var engine = FinderHeap<Vertex>();
+//        let origin = FinderElement(vertex: v2, parent: nil, g: 0, h: 0);
+//        engine.insert(origin);
+//        
+//        repeat {
+//            guard let element = engine.popBest() else {
+//                break;
+//            }
+//            
+//            let vertex = element.vertex;
+//            if vertex == v1 {
+//                result = engine.backtrace(of: vertex);
+//                break;
+//            }
+//            
+//            for successor in successors.successors(around: vertex) {
+//                guard let successor = successors.jump(vertex: successor, from: vertex) else {
+//                    continue;
+//                }
+//                let g = element.g + successors.heuristic(from: vertex, to: successor);
+//                if let old = engine.element(of: successor) {
+//                    if !old.isClosed && old.g > g {
+//                        let ele = FinderElement(vertex: successor, parent: vertex, g: g, h: old.h);
+//                        let _ = engine.update(ele);
+//                    }
+//                }
+//                else {
+//                    let h = successors.heuristic(from: successor, to: v1);
+//                    let ele = FinderElement(vertex: successor, parent: vertex, g: g, h: h);
+//                    engine.insert(ele);
+//                }
+//            }
+//        }while true
+//        return result;
+//    }
+//    
+//    
+//    
+//    public static func findJPS<S>(from vertexs: [Vertex], to vertex: Vertex, successors: S) -> [[Vertex]]
+//        where S: FinderSuccessorsProtocol & FinderUniformCostProtocol & FinderOptionProtocol, S.Vertex == Vertex
+//    {
+//        
+//        if !successors.jumpable {
+//            return find(from: vertexs, to: vertex, successors: successors);
+//        }
+//        
+//        var result: [[Vertex]] = [];
+//        
+//        ///one
+//        if vertexs.count == 1 {
+//            let v1 = vertexs[0];
+//            if let r = findJPS(from: v1, to: vertex, successors: successors) {
+//                result.append(r);
+//            }
+//            return result;
+//        }
+//        
+//        ///more
+//        var vertexs = vertexs;
+//        var engine = FinderHeap<Vertex>();
+//        let origin = FinderElement(vertex: vertex, parent: nil, g: 0, h: 0);
+//        engine.insert(origin);
+//        
+//        repeat {
+//            guard let element = engine.popBest() else {
+//                break;
+//            }
+//            
+//            let v = element.vertex;
+//            if let i = vertexs.index(of: v) {
+//                let r = engine.backtrace(of: v);
+//                result.append(r);
+//                vertexs.remove(at: i);
+//            }
+//            if vertexs.isEmpty {
+//                break;
+//            }
+//            
+//            for successor in successors.successors(around: v) {
+//                guard let successor = successors.jump(vertex: successor, from: vertex) else {
+//                    continue;
+//                }
+//                let g = element.g + successors.heuristic(from: vertex, to: successor);
+//                if let old = engine.element(of: successor) {
+//                    if !old.isClosed && old.g > g {
+//                        let ele = FinderElement(vertex: successor, parent: v, g: g, h: old.h);
+//                        let _ = engine.update(ele);
+//                    }
+//                }
+//                else {
+//                    let ele = FinderElement(vertex: successor, parent: v, g: g, h: 0);
+//                    engine.insert(ele);
+//                }
+//            }
+//        }while true
+//        return result;
+//    }
 }
 
 
+
+
+
+
+
+
+//MARK: FinderHeap
+///A finder heap
+public struct FinderHeap<Vertex: Hashable> {
+    
+    ///heap
+    fileprivate var heap: PriorityQueue<Element>;
+    
+    ///visited list
+    fileprivate var visitedList: [Vertex: Element];
+    
+    ///init
+    public init() {
+        self.heap = PriorityQueue<Element>.init(isOrderedBefore: {
+            return $0.f < $1.f ? true : ($0.h < $1.h);
+        });
+        self.visitedList = [:];
+    }
+}
+extension FinderHeap: FinderSequence {
+    public typealias Element = FinderElement<Vertex>;
+    
+    public mutating func insert(_ newElement: Element) {
+        self.heap.insert(newElement);
+        self.visitedList[newElement.vertex] = newElement;
+    }
+    
+    public mutating func popBest() -> Element? {
+        guard let e = heap.popBest() else {
+            return nil;
+        }
+        visitedList[e.vertex]?.isClosed = true;
+        return e;
+    }
+    
+    public mutating func update(_ newElement: Element) -> Element? {
+        let vertex = newElement.vertex;
+        guard let index = (heap.index{ vertex == $0.vertex; }) else {
+            return nil;
+        }
+        heap.updateElement(newElement, atIndex: index);
+        let old = visitedList[vertex];
+        visitedList[vertex] = newElement;
+        return old;
+    }
+    
+    public func element(of vertex: Vertex) -> Element? {
+        return visitedList[vertex];
+    }
+}
+extension FinderHeap {
+    ///backtrace
+    /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex]
+    func backtrace(of vertex: Vertex) -> [Vertex] {
+        var result = [vertex];
+        var e: Element? = element(of: vertex);
+        repeat{
+            guard let parent = e?.parent else {
+                break;
+            }
+            result.append(parent);
+            e = element(of: parent);
+        }while true
+        return result;
+    }
+}
+
 //MARK: FinderElement
 public struct FinderElement<Vertex: Hashable> {
-    ///properties
-    public let vertex: Vertex, parent: Vertex?,     ///vertex, parent vertex
-    g, h, f: Int;                                   ///exact cost, h: estimate cost, f: g + h
+    ///vertex, parent vertex
+    public let vertex: Vertex, parent: Vertex?;
     
+    ///g: exact cost, h: estimate cost, f: g + h
+    public let g, h, f: Int;
+
     ///is closed
     public fileprivate(set) var isClosed: Bool;
-    
+
     ///init
     public init(vertex: Vertex, parent: Vertex?, g: Int, h: Int, isClosed: Bool = false){
         self.vertex = vertex;
@@ -198,106 +358,13 @@ public func ==<Vertex: Hashable>(lsh: FinderElement<Vertex>, rsh: FinderElement<
 public func <<Vertex: Hashable>(lsh: FinderElement<Vertex>, rsh: FinderElement<Vertex>) -> Bool{
     return lsh.f < rsh.f ? true : (lsh.h < rsh.h);
 }
-
-
-//MARK: FinderHeap
-public struct FinderHeap<T: Hashable> {
-    ///Open list
-    internal fileprivate(set) var openList: PriorityQueue<Element>;
-    
-    ///Visited list - [Vertex: Element]
-    internal fileprivate(set) var visitList: [T: Element];
-    
-    ///Init
-    public init(){
-        self.visitList = [:];
-        self.openList = PriorityQueue<Element>(minimum: 2);
+extension FinderElement: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return "vertex: \(vertex), parent: \(parent), f: \(f), g: \(g), h: \(h), isClosed: \(isClosed)";
     }
-}
-extension FinderHeap: FinderOpenListProtocol {
-    public typealias Element = FinderElement<T>;
-    
-    public mutating func next() -> Element? {
-        guard let element = openList.popBest() else {
-            return .none;
-        }
-        visitList[element.vertex]?.isClosed = true;
-        return element;
-    }
-    ///return visited element of vertex
-    public func element(of vertex: T) -> Element? {
-        return visitList[vertex];
-    }
-}
-extension FinderHeap {
-    ///Insert a element into 'Self'.
-    mutating public func insert(element: Element) {
-        openList.insert(element);
-        visitList[element.vertex] = element;
-    }
-    
-    ///Update element
-    mutating public func update(newElement: Element) {
-        let vertex = newElement.vertex;
-        guard let index = (openList.index{$0.vertex == vertex}) else {
-            return;
-        }
-        openList.updateElement(newElement, atIndex: index);
-        visitList[vertex] = newElement;
+    public var debugDescription: String {
+        return description;
     }
 }
 
-//MARK: FinderArray
-public struct FinderArray<T: Hashable> {
-    ///Open list
-    internal fileprivate(set) var openList: [Element];
-    
-    ///Visited list - [Vertex: Element]
-    internal fileprivate(set) var visitList: [T: Element];
-    
-    ///current index
-    fileprivate var currentIndex = 0;
-    
-    ///Init
-    public init(){
-        self.visitList = [:];
-        self.openList = [];
-    }
-}
-extension FinderArray: FinderOpenListProtocol {
-    ///Element Type
-    public typealias Element = FinderElement<T>;
-    
-    public mutating func next() -> Element? {
-        guard currentIndex < openList.count else {
-            return nil;
-        }
-        
-        let ele = openList[currentIndex];
-        visitList[ele.vertex]?.isClosed = true;
-        currentIndex += 1;
-        return ele;
-    }
-    ///return visited element of vertex
-    public func element(of vertex: T) -> Element? {
-        return visitList[vertex];
-    }
-}
-extension FinderArray {
-    ///Insert a element into 'Self'.
-    mutating public func insert(element: Element) {
-        openList.append(element);
-        visitList[element.vertex] = element;
-    }
-    
-    ///Update element
-    mutating public func update(newElement: Element) {
-        let vertex = newElement.vertex;
-        guard let index = (openList.index{$0.vertex == vertex}) else {
-            return;
-        }
-        openList[index] = newElement;
-        visitList[vertex] = newElement;
-    }
-}
 
