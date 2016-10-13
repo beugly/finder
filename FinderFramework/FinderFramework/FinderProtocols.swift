@@ -39,7 +39,6 @@ public protocol FinderSequence{
     func element(of vertex: Vertex) -> Element?
 }
 
-
 //MARK: FinderProtocol
 public protocol FinderProtocol {
     /// A type that can represent the vertex to associate with `element`
@@ -48,97 +47,77 @@ public protocol FinderProtocol {
     /// A type that can represent the element to associate with `vertex`
     associatedtype Element = FinderElement<Vertex>;
     
-    /// A type that can represent the 'target'.
+    /// A type that can represent the target vertex or [target vertex]
     associatedtype Target = Vertex;
     
     /// Make element of 'vertex' whose parent is 'element'
     /// - Parameters: 
     ///   - vertex: The vertex to associate with `element`
     ///   - parent: The element of parent vertex
-    ///   - target: The target Vertex or [Vertex]
+    ///   - target: The target vertex or [target vertex]
     /// - Returns: The element of vertex
     func makeElementOf(_ vertex: Vertex, parent: Element, target: Target) -> Element
-}
-
-//MARK: FinderExactCostProtocol
-public protocol FinderExactCostProtocol: FinderProtocol {
     
-    /// Return exact cost from 'v1' to 'v2'
+    /// Revise exist 'element'
     /// - Parameters: 
-    ///   - v1: from vertex
-    ///   - v2: to vertex
-    func exactCost(from v1: Vertex, to v2: Vertex) -> Int
-    
-    /// Make element of 'existElement'
-    func makeElementOf(_ existElement: Element, parent: Element) -> Element?
+    ///   - element: The existElement
+    ///   - parent: The parent element
+    /// - Returns: revised element of exist 'element'
+    func reviseExist(_ element: Element, parent: Element) -> Element?
 }
-
-//MARK: FinderHeuristicProtocol
-public protocol FinderHeuristicProtocol: FinderProtocol {
-    /// Heuristic function
-    func heuristic(from v1: Vertex, to v2: Vertex) -> Int
-    
-    /// Make element of 'vertex' whose parent is 'element'
-    /// Target must be Vertex
-    /// - Parameters:
-    ///   - vertex: The vertex to associate with `element`
-    ///   - parent: The element of parent vertex
-    ///   - target: The target vertex
-    /// - Returns: The element of vertex
-    func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element
-}
-
-
-//MARK: extension FinderProtocol: FinderExactCostProtocol
-extension FinderProtocol where Self: FinderExactCostProtocol, Element == FinderElement<Vertex> {
-    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element {
-        let parentVertex = parent.vertex;
-        let g = exactCost(from: parentVertex, to: vertex);
-        let ele = Element(vertex: vertex, parent: parentVertex, g: g, h: 0);
-        return ele;
+extension FinderProtocol {
+    public func reviseExist(_ element: Element, parent: Element) -> Element? {
+        return nil;
     }
-    
-    public func makeElementOf(_ existElement: Element, parent: Element) -> Element? {
-        guard !existElement.isClosed else {
-            return nil;
-        }
-        let vertex = existElement.vertex;
+}
+extension FinderProtocol where Element == FinderElement<Vertex> {
+    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Target) -> Element {
         let parentVertex = parent.vertex;
-        let g = exactCost(from: parentVertex, to: vertex);
-        
-        guard g < existElement.g else {
-            return nil;
-        }
-        
-        let ele = FinderElement(vertex: vertex, parent: parentVertex, g: g, h: existElement.h);
+        let ele = Element(vertex: vertex, parent: parentVertex, g: 0, h: 0);
         return ele;
     }
 }
-
-//MARK: extension FinderProtocol: FinderHeuristicProtocol
-extension FinderProtocol where Self: FinderHeuristicProtocol, Element == FinderElement<Vertex> {
-    /// Make element of 'vertex' whose parent is 'element'
-    /// - Parameters:
-    ///   - vertex: The vertex to associate with `element`
-    ///   - parent: The element of parent vertex
-    ///   - target: The target vertex
-    /// - Returns: The element of vertex
-    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element {
+//MARK: extension FinderProtocol: FinderHeuristic
+extension FinderProtocol where Self: FinderHeuristic, Element == FinderElement<Vertex> {
+    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Target) -> Element {
         let parentVertex = parent.vertex;
         let h = heuristic(from: vertex, to: target);
         let ele = Element(vertex: vertex, parent: parentVertex, g: 0, h: h);
         return ele;
     }
 }
-
-
+//MARK: extension FinderProtocol: FinderExactCosting
+extension FinderProtocol where Self: FinderExactCosting, Element == FinderElement<Vertex> {
+    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Target) -> Element {
+        let parentVertex = parent.vertex;
+        let g = exactCost(from: parentVertex, to: vertex);
+        let ele = Element(vertex: vertex, parent: parentVertex, g: g, h: 0);
+        return ele;
+    }
+    
+    public func reviseExist(_ element: Element, parent: Element) -> Element? {
+        guard !element.isClosed else {
+            return nil;
+        }
+        let vertex = element.vertex;
+        let parentVertex = parent.vertex;
+        let g = exactCost(from: parentVertex, to: vertex);
+        
+        guard g < element.g else {
+            return nil;
+        }
+        
+        let ele = FinderElement(vertex: vertex, parent: parentVertex, g: g, h: element.h);
+        return ele;
+    }
+}
 //MARK: extension FinderProtocol: FinderExactCostProtocol & FinderHeuristicProtocol
 extension FinderProtocol
     where
-    Self: FinderExactCostProtocol & FinderHeuristicProtocol,
+    Self: FinderExactCosting & FinderHeuristic,
     Element == FinderElement<Vertex>
 {
-    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Vertex) -> Element {
+    public func makeElementOf(_ vertex: Vertex, parent: Element, target: Target) -> Element {
         let parentVertex = parent.vertex;
         let g = exactCost(from: parentVertex, to: vertex);
         let h = heuristic(from: vertex, to: target);
@@ -146,6 +125,20 @@ extension FinderProtocol
         return ele;
     }
 }
+
+//MARK: FinderExactCosting
+public protocol FinderExactCosting: FinderProtocol {
+    /// - Returns: exatc cost from 'v1' to 'v2'. used by g value.
+    func exactCost(from v1: Vertex, to v2: Vertex) -> Int
+}
+
+//MARK: FinderHeuristic
+public protocol FinderHeuristic: FinderProtocol {
+    /// - Returns: huristic cost from 'vertex' to 'target'. used by h value.
+    func heuristic(from vertex: Vertex, to target: Target) -> Int
+}
+
+
 
 
 
@@ -190,21 +183,6 @@ public protocol FinderSuccessorsProtocol {
 //    public func isValid(of vertex: Self.Vertex) -> Bool {
 //        return cost(of: vertex) != nil;
 //    }
-//}
-//
-////MARK: FinderOptionProtocol
-//public protocol FinderOptionProtocol {
-//    ///Vertex Type
-//    associatedtype Vertex: Hashable;
-//
-//    ///Return exact cost from v1 to v2
-//    func exactCost(from v1: Vertex, to v2: Vertex) -> Int
-//
-//    ///heuristic
-//    func heuristic(from v1: Vertex, to v2: Vertex) -> Int
-//
-//    ///Return successor vertexs around vertex
-//    func successors(around vertex: Vertex) -> [Vertex]
 //}
 
 

@@ -48,7 +48,7 @@ private func testBuild(){
         sortArray.append(Int(arc4random()));
     }
     var queue = PQ.init(minimum: 2)
-    queue.build(newSource: sortArray);
+    queue.build(sortArray);
     sortArray.sort(by: {$0 > $1})
     while !queue.isEmpty {
         let e1 = queue.popBest()!;
@@ -61,7 +61,7 @@ private func testBuild(){
 private func testReplace(){
     let arr = [0, 2, 3, 1, 9, 6, 8, 7];
     var queue = PQ.init(minimum: 2)
-    queue.build(newSource: arr);
+    queue.build(arr);
     print(queue.source);
     queue.updateElement(-1, atIndex: queue.index(of: 9)!);
     print(queue.source);

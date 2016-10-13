@@ -76,7 +76,7 @@ extension PriorityQueue{
     }
     
     ///Build
-    mutating public func build(newSource: Source){
+    mutating public func build(_ newSource: Source){
         self.source = newSource;
         guard !source.isEmpty else {
             return;
