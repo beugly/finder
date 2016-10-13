@@ -17,6 +17,23 @@ public protocol _FinderProtocol: FinderProtocol {
     
     func search(vertex: Vertex, target: inout Target) -> (found: Bool, isComplete: Bool)
 }
+extension _FinderProtocol where Target == Vertex {
+    public func search(vertex: Vertex, target: inout Target) -> (found: Bool, isComplete: Bool) {
+        guard vertex == target else {
+            return (false, false);
+        }
+        return (true, true);
+    }
+}
+extension _FinderProtocol where Target == [Vertex] {
+    public func search(vertex: Vertex, target: inout Target) -> (found: Bool, isComplete: Bool) {
+        guard let i = target.index(of: vertex) else {
+            return (false, false);
+        }
+        target.remove(at: i);
+        return (true, target.isEmpty);
+    }
+}
 extension _FinderProtocol where Element == FinderElement<Vertex> {
     func find<S: FinderSuccessorsProtocol>(target: Target, from origin: Vertex, successors: S) where S.Vertex == Vertex {
         var target = target;
