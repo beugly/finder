@@ -11,56 +11,50 @@ import Foundation
 //MARK: FinderAstar
 /// A astar search
 public struct FinderAstar<T: Hashable> {
-    public func exactCost(from v1: Vertex, to v2: Vertex) -> Int {
-        return 0;
-    }
-    public func heuristic(from vertex: Vertex, to target: Vertex) -> Int {
-        return 0;
+    public func successors(around e: Element) -> [(element: Element, isOpened: Bool)] {
+        return [];
     }
 }
 extension FinderAstar: FinderProtocol{
     public typealias Vertex = T;
+    public typealias Element = FinderElement<Vertex>;
 }
-extension FinderAstar: FinderHeuristic{}
-extension FinderAstar: FinderExactCosting{}
-
 
 //MARK: FinderGreedyBFS
 /// A greedy best first search
 public struct FinderGreedyBFS<T: Hashable> {
-    public func heuristic(from vertex: Vertex, to target: Vertex) -> Int {
-        return 0;
+    public func successors(around e: Element) -> [(element: Element, isOpened: Bool)] {
+        return [];
     }
 }
 extension FinderGreedyBFS: FinderProtocol{
     public typealias Vertex = T;
+    public typealias Element = FinderElement<Vertex>;
 }
-extension FinderGreedyBFS: FinderHeuristic{}
-
 
 //MARK: FinderDijkstra
 /// A dijkstra search
 public struct FinderDijkstra<T: Hashable> {
-    public func exactCost(from v1: Vertex, to v2: Vertex) -> Int {
-        return 0;
+    public func successors(around e: Element) -> [(element: Element, isOpened: Bool)] {
+        return [];
     }
 }
 extension FinderDijkstra: FinderProtocol{
     public typealias Vertex = T;
+    public typealias Element = FinderElement<Vertex>;
 }
-extension FinderDijkstra: FinderExactCosting{}
-
 
 //MARK: FinderBreadthFirst
 /// A dijkstra search
-public struct FinderBreadthFirst<T: Hashable> {}
+public struct FinderBreadthFirst<T: Hashable> {
+    public func successors(around e: Element) -> [(element: Element, isOpened: Bool)] {
+        return [];
+    }
+}
 extension FinderBreadthFirst: FinderProtocol{
     public typealias Vertex = T;
+    public typealias Element = FinderElement<Vertex>;
 }
-
-
-
-
 
 
 //MARK: FinderHeap
@@ -112,42 +106,87 @@ extension FinderHeap: FinderSequence {
         return visitedList[vertex];
     }
 }
-extension FinderHeap {
-    ///backtrace
-    /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex]
-    func backtrace(of vertex: Vertex) -> [Vertex] {
-        var result = [vertex];
-        var e: Element? = element(of: vertex);
-        repeat{
-            guard let parent = e?.parent else {
-                break;
-            }
-            result.append(parent);
-            e = element(of: parent);
-        }while true
-        return result;
+
+//MARK: FinderArray
+public struct FinderArray<Vertex: Hashable> {
+
+    ///heap
+    fileprivate var array: [Element];
+
+    ///visited list
+    fileprivate var visitedList: [Vertex: Element];
+
+    ///current index
+    fileprivate var currentIndex: Int = 0;
+
+    ///init
+    fileprivate init() {
+        self.array = [];
+        self.visitedList = [:];
+    }
+}
+extension FinderArray: FinderSequence {
+    public typealias Element = FinderElement<Vertex>;
+
+    public mutating func insert(_ newElement: Element) {
+        array.append(newElement);
+        self.visitedList[newElement.vertex] = newElement;
+    }
+
+    public mutating func popBest() -> Element? {
+        guard currentIndex < array.count else {
+            return nil;
+        }
+        let e = array[currentIndex];
+        currentIndex += 1;
+        return e;
+    }
+
+    public mutating func update(_ newElement: Element) -> Element? {
+        let vertex = newElement.vertex;
+        guard let index = (array.index{ vertex == $0.vertex; }) else {
+            return nil;
+        }
+        array[index] = newElement;
+        let old = visitedList[vertex];
+        visitedList[vertex] = newElement;
+        return old;
+    }
+
+    public func element(of vertex: Vertex) -> Element? {
+        return visitedList[vertex];
     }
 }
 
 //MARK: FinderElement
 public struct FinderElement<Vertex: Hashable> {
-    ///vertex, parent vertex
-    public let vertex: Vertex, parent: Vertex?;
+    ///vertex, h
+    public let vertex: Vertex, h: Int;
     
-    ///g: exact cost, h: estimate cost, f: g + h
-    public let g, h, f: Int;
+    ///parent vertex
+    public private(set) var parent: Vertex?;
+    
+    ///g: exact cost, f: g + h
+    public var g, f: Int;
 
     ///is closed
     public fileprivate(set) var isClosed: Bool;
 
     ///init
-    public init(vertex: Vertex, parent: Vertex?, g: Int, h: Int, isClosed: Bool = false){
+    public init(vertex: Vertex, parent: Vertex?, g: Int = 0, h: Int = 0, isClosed: Bool = false){
         self.vertex = vertex;
         self.parent = parent;
         self.g = g;
         self.h = h;
         self.f = g + h;
         self.isClosed = isClosed;
+    }
+    
+    ///update
+    mutating func update(parent: Vertex?, g: Int) {
+        self.parent = parent;
+        self.g = g;
+        self.f = h + g;
     }
 }
 extension FinderElement: Comparable {}
@@ -165,5 +204,3 @@ extension FinderElement: CustomStringConvertible, CustomDebugStringConvertible {
         return description;
     }
 }
-
-
