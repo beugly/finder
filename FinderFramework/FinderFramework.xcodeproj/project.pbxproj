@@ -19,6 +19,7 @@
 		BA4CA1D91D9BA2D200603232 /* FinderImpl2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4CA1D81D9BA2D200603232 /* FinderImpl2D.swift */; };
 		BA57D5061D2F8ED500023631 /* FinderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA57D5051D2F8ED500023631 /* FinderImpl.swift */; };
 		BAE326C91DAE054A005B3890 /* temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE326C81DAE054A005B3890 /* temp.swift */; };
+		BAE326CD1DB0DA61005B3890 /* FinderSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE326CC1DB0DA61005B3890 /* FinderSequence.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		BA4CA1D81D9BA2D200603232 /* FinderImpl2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl2D.swift; sourceTree = "<group>"; };
 		BA57D5051D2F8ED500023631 /* FinderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderImpl.swift; sourceTree = "<group>"; };
 		BAE326C81DAE054A005B3890 /* temp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = temp.swift; sourceTree = "<group>"; };
+		BAE326CC1DB0DA61005B3890 /* FinderSequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderSequence.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,11 +112,11 @@
 		1B2FA2111C4024310050F1F8 /* finder */ = {
 			isa = PBXGroup;
 			children = (
+				BAE326CE1DB0DAE1005B3890 /* temp */,
 				1B2FA2141C40246A0050F1F8 /* PriorityQueue.swift */,
 				655D72291CA39A3B00673E3F /* FinderProtocols.swift */,
 				BA57D5051D2F8ED500023631 /* FinderImpl.swift */,
-				BA4CA1D81D9BA2D200603232 /* FinderImpl2D.swift */,
-				BAE326C81DAE054A005B3890 /* temp.swift */,
+				BAE326CC1DB0DA61005B3890 /* FinderSequence.swift */,
 			);
 			name = finder;
 			sourceTree = "<group>";
@@ -135,6 +137,15 @@
 				1B2FA2251C4024F30050F1F8 /* TestArrow.swift */,
 			);
 			name = common;
+			sourceTree = "<group>";
+		};
+		BAE326CE1DB0DAE1005B3890 /* temp */ = {
+			isa = PBXGroup;
+			children = (
+				BA4CA1D81D9BA2D200603232 /* FinderImpl2D.swift */,
+				BAE326C81DAE054A005B3890 /* temp.swift */,
+			);
+			name = temp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -251,6 +262,7 @@
 				BA57D5061D2F8ED500023631 /* FinderImpl.swift in Sources */,
 				BA4CA1D91D9BA2D200603232 /* FinderImpl2D.swift in Sources */,
 				1B2FA2191C40246A0050F1F8 /* PriorityQueue.swift in Sources */,
+				BAE326CD1DB0DA61005B3890 /* FinderSequence.swift in Sources */,
 				BAE326C91DAE054A005B3890 /* temp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

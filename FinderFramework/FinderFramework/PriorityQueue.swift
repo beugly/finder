@@ -9,24 +9,32 @@
 import Foundation
 
 
-///MARK: PriorityQueue
+//MARK: PriorityQueue
+/// minimum - isOrderedBefore: $0 < $1
+/// maximum - isOrderedBefore: $0 > $1
+/// forkCount - fork count, heap: forkCount = 2
 public struct PriorityQueue<Element> {
-    ///Source Type
+    /// A type that can represent the data source
     public typealias Source = [Element];
     
-    ///source
+    /// source
     public fileprivate(set) var source: Source = [];
     
-    ///is order before
+    /// is order before
     let iob: (Element, Element) -> Bool;
     
-    ///fork count
+    /// fork count
     let forkCount: Int;
     
-    ///Init
-    public init(isOrderedBefore: @escaping (Element, Element) -> Bool, forkCount: Int = 2){
+    /// Init
+    public init(isOrderedBefore: @escaping (Element, Element) -> Bool, forkCount: Int){
         self.iob = isOrderedBefore;
         self.forkCount = forkCount;
+    }
+    
+    /// init heap
+    public init(heap isOrderedBefore: @escaping (Element, Element) -> Bool) {
+        self.init(isOrderedBefore: isOrderedBefore, forkCount: 2);
     }
 }
 //MARK: PriorityQueue.heap where T: Comparable
@@ -48,18 +56,20 @@ extension PriorityQueue where Element: Comparable {
 //MARK: extension PriorityQueue
 extension PriorityQueue{
     
-    ///Preview min OR max element
+    /// Optimal element preview
     public var preview: Element? {
         return source.first;
     }
     
-    ///Insert element
+    /// Inserts the given element into the sequence unconditionally.
+    /// - Parameter newElement: An element to insert into the sequence
     mutating public func insert(_ newElement: Element) {
         source.append(newElement);
         shift(up: source.count - 1);
     }
     
-    ///Pop and remove best element
+    /// Pop the optimal element
+    /// - Returns: the best element if the sequence is not empty; othewise, 'nil'
     mutating public func popBest() -> Element? {
         guard !source.isEmpty else {return nil;}
         guard source.count > 1 else{return source.removeLast();}
@@ -69,14 +79,27 @@ extension PriorityQueue{
         return first;
     }
     
-    ///Replace element at index
-    mutating public func updateElement(_ element: Element, atIndex index: Int) {
+    /// Inserts the given element into the sequence at index.
+    /// - Parameters:
+    ///     - element: An element to insert into the sequence
+    ///     - index: position index
+    /// - Returns: element equal to `element` if the sequence already contained
+    ///   such a element; otherwise, `nil`.
+    @discardableResult
+    mutating public func updateElement(_ element: Element, atIndex index: Int) -> Element? {
+        guard index < source.count else {
+            return nil;
+        }
+        let old = source[index];
         source[index] = element;
         shift(auto: index);
+        return old;
     }
     
-    ///Build
-    mutating public func build(_ newSource: Source){
+    /// Build priority queue
+    /// - Parameters: 
+    ///     - newSource: data source
+    mutating public func build(_ newSource: Source) {
         self.source = newSource;
         guard !source.isEmpty else {
             return;
@@ -91,7 +114,7 @@ extension PriorityQueue{
         }
     }
 }
-//MARK: extension PriorityQueue: shifting func
+//MARK: extension PriorityQueue: shifting function
 extension PriorityQueue {
     ///Shift up at index
     mutating func shift(up index: Int){
@@ -143,12 +166,16 @@ extension PriorityQueue {
         iob(source[index], source[pIndex]) ? shift(up: index) : shift(down: index);
     }
     
-    ///parent index of index
+    /// Return parent index
+    /// - Parameter index: child index
+    /// - Returns: parent index of child index
     func parentIndexOf(_ index: Int) -> Int{
         return (index - 1) / forkCount;
     }
     
-    ///child index of index
+    /// Return minimum child index
+    /// - Parameter index: parent index
+    /// - Returns: minimum child index of parent index
     func childIndexOf(_ index: Int) -> Int {
         return index * forkCount + 1;
     }
