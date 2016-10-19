@@ -4,5 +4,3 @@ import UIKit
 import SpriteKit;
 import FinderFramework;
 
-
-

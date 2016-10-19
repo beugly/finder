@@ -8,6 +8,15 @@
 
 import Foundation
 
+
+public protocol FinderOptionProtocol {
+    /// A type that can represent the vertex to associate with `element`
+    associatedtype Vertex: Hashable;
+    
+    /// return neighbors
+    func neighbors(around vertex: Vertex) -> [Vertex]
+}
+
 //MARK: FinderSuccessorsProtocol
 public protocol FinderSuccessorsProtocol {
     /// A type that can represent the vertex to associate with `element`
@@ -28,7 +37,22 @@ public protocol FinderHeuristic: FinderSuccessorsProtocol {
 public protocol FinderJumpable: FinderSuccessorsProtocol, FinderHeuristic {
     /// - Returns: jump vertex
     func jump(vertex: Vertex, from parent: Vertex) -> Vertex?
+    
+    
+    ///Return successors around vertex whose parent vertex is 'parent'
+    func findSuccessors(around vertex: Vertex, parent: Vertex?) -> [Vertex]
 }
+
+
+
+public protocol FinderExactCosting: FinderSuccessorsProtocol{
+    /// - Returns: exact cost from 'v1' to 'v2'.
+    func exactCost(from v1: Vertex, to v2: Vertex) -> Int
+}
+
+
+
+
 
 
 

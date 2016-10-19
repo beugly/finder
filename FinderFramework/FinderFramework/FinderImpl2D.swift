@@ -8,23 +8,26 @@
 
 import Foundation
 
-////MARK: FinderVertex2D
-//public protocol FinderVertex2D {
-//    var x: Int {get}
-//    var y: Int {get}
-//    init(x: Int, y: Int)
+//public struct FinderVertex2D{
+//    
+//    fileprivate var x, y: Int;
+//    
+//    public init(x: Int, y: Int){
+//        self.x = x;
+//        self.y = y;
+//    }
 //}
 //
-////MARK: FinderCost2D
-//public enum FinderCostModel2D {
+////MARK: FinderHeuristic2D
+//public enum FinderHeuristic2D {
 //    case Manhattan, Euclidean, Octile, Chebyshev, None
 //}
-//extension FinderCostModel2D {
-//    ///return cost from v1 to v2
-//    public func cost<T: FinderVertex2D>(from v1: T, to v2: T) -> Int {
-//        let dx = CGFloat(abs(v1.x - v2.x));
-//        let dy = CGFloat(abs(v1.y - v2.y));
-//        let h: CGFloat!;
+//extension FinderHeuristic2D {
+//    /// Return huristic cost
+//    public func huristic(dx: Int, dy: Int) -> CGFloat {
+//        let dx = CGFloat(dx);
+//        let dy = CGFloat(dy);
+//        var h: CGFloat;
 //        switch self{
 //        case .Manhattan:
 //            h = dx + dy;
@@ -38,60 +41,127 @@ import Foundation
 //        case .None:
 //            h = 0;
 //        }
-//        return Int(h * 10);
+//        return h;
 //    }
 //}
 //
-//public enum FinderSearchModel2D {
+//
+////MARK: FinderExpandModel2D
+//public enum FinderExpandModel2D {
 //    case Straight, Diagonal
 //}
-//extension FinderSearchModel2D {
-//    func neighborsOfOrigin() -> [(x: Int, y: Int)] {
+//extension FinderExpandModel2D {
+//    ///Return neighbors
+//    public func neighbors(around x: Int, y: Int) -> [(x: Int, y: Int)] {
 //        switch self {
 //        case .Straight:
-//            return [(-1, 0), (0, 1), (1, 0), (0, -1)];
+//            return [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)];
 //        case .Diagonal:
-//            return [(-1, 0), (0, 1), (1, 0), (0, -1), (-1, 1), (-1, -1), (1, -1), (1, 1)];
+//            return [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1), (x - 1, y + 1), (x - 1, y - 1), (x + 1, y - 1), (x + 1, y + 1)];
 //        }
 //    }
 //}
 //
 //
-//
-////MARK: FinderOption2DProtocol
-//public protocol FinderOption2DProtocol: FinderOptionProtocol {
-//    ///vertex type
-//    associatedtype Vertex: FinderVertex2D, Hashable;
-//    
-//    ///cost model
-//    var costModel: FinderCostModel2D {get}
-//    
-//    ///search model
-//    var searchModel: FinderSearchModel2D {get}
-//    
-//    ///use jump
-//    var jump: Bool{get}
-//    
-//    func validateOf(x: Int, y: Int) -> Bool
+//public protocol FinderDataSource2D {
+//    ///return cost
+//    func costOf(x: Int, y: Int) -> Int?
 //}
-//extension FinderOption2DProtocol {
-//    func neighbors(around vertex: Vertex) -> [Vertex] {
-//        var ns: [Vertex] = [];
-//        let offsets = searchModel.neighborsOfOrigin();
-//        for offset in offsets {
-//            let x = vertex.x + offset.x;
-//            let y = vertex.y + offset.y;
-//            guard validateOf(x: x, y: y) else {
-//                continue;
+//
+//
+//public struct FinderOption2D<Source: FinderDataSource2D>{
+//    
+//    let source: Source;
+//    
+//    let model: FinderExpandModel2D;
+//    
+//    let h: FinderHeuristic2D;
+//    
+//    
+//    public typealias Vertex = FinderVertex2D;
+//    
+//    public init(source: Source, model: FinderExpandModel2D = .Straight, huristic: FinderHeuristic2D = .Manhattan) {
+//        self.source = source;
+//        self.model = model;
+//        self.h = huristic;
+//    }
+//    
+//    
+//    ///neighbors
+//    public func neighbors(around vertex: Vertex) -> [(vertex: Vertex, cost: Int)]{
+//        var array: [(vertex: Vertex, cost: Int)] = [];
+//        //检测是否可以通过角落
+//        for n in model.neighbors(around: vertex.x, y: vertex.y) {
+//            if let cost = source.costOf(x: n.x, y: n.y) {
+//                var c = cost * 10;
+//                if n.x != vertex.x && n.y != vertex.y{
+//                    c = cost * 14;
+//                }
+//                let v = Vertex(x: n.x, y: n.y);
+//                array.append((v, c));
 //            }
-//            
-//            let v = Vertex(x: x, y: y);
-//            ns.append(v);
 //        }
-//        return ns;
+//        return array;
 //    }
 //    
-//    public func successors(of vertex: Vertex, from parent: Vertex?) -> [Vertex] {
-//        return neighbors(around: vertex);
+//    ///successors, return jumpablexxx 忽略cost，cost ＝ 1
+//    public func successors(around vertex: Vertex, from: Vertex?) -> [(vertex: Vertex, cost: Int)] {
+//        var array: [(vertex: Vertex, cost: Int)] = [];
+//        //检测是否可以通过角落
+//        for n in model.neighbors(around: vertex.x, y: vertex.y) {
+//            let v = Vertex(x: n.x, y: n.y);
+//            if let vertex = jumable(vertex: v, from: vertex){
+//                let g = Int(FinderHeuristic2D.Octile.huristic(dx: 0, dy: 0) * 10);
+//                array.append((vertex, g));
+//            }
+//        }
+//        return array;
+//
+//    }
+//    
+//    public func jumable(vertex: Vertex, from v: Vertex) -> Vertex? {
+//        var x = vertex.x;
+//        var y = vertex.y;
+//        let dx = x - v.x > 0 ? 1 : -1;
+//        let dy = y - v.y > 0 ? 1 : -1;
+//        repeat{
+//            x += dx;
+//            y += dy;
+//            if source.costOf(x: x, y: y) == nil {
+//                x -= dx;
+//                y -= dy;
+//            }
+//        }while true
+//        let vertex = Vertex(x: x, y: y);
+//        return vertex;
 //    }
 //}
+//
+///**
+// 
+// source: costof(vertex) -> Int?
+// 
+// huristic(vertex, vertex)
+// 
+// astar cost -> cost || rate * cost; heuristic -> heristic
+// greedy heristic
+// dijxx cost -> cost || rate * cost;
+// bfs cost -> 1 || rate
+// 
+// 
+// jps cost -> huristic + g; huristic? -> heuristic
+// */
+//
+//
+//public protocol FinderDataSource {
+//    /// A type that can represent the vertex to associate with `element`
+//    associatedtype Vertex;
+//    
+//    ///neighbors
+//    func neighbors(around: Vertex) -> [(vertex: Vertex, cost: Int)]
+//    
+//    
+//}
+
+
+

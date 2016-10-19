@@ -12,8 +12,11 @@ import Foundation
 //MARK: FinderSequence
 /// A finder sequence
 public protocol FinderSequence{
+    /// A type that can represent the vertex to associate with `element`
+    associatedtype Vertex: Hashable;
+    
     /// A type that can represent the element to associate with `vertex`
-    associatedtype Element: FinderElementProtocol;
+    associatedtype Element = FinderElement<Vertex>;
     
     /// Inserts the given element into the sequence unconditionally.
     /// - Parameter newElement: An element to insert into the sequence
@@ -31,19 +34,23 @@ public protocol FinderSequence{
     mutating func update(_ newElement: Element) -> Element?
     
     /// Return the element to associate with `vertex`
-    mutating func value(of vertex: Element.Vertex) -> (element: Element, isClosed: Bool)?
+    func value(of vertex: Vertex) -> (element: Element, isClosed: Bool)?
 }
-
-//MARK: FinderElementProtocol
-public protocol FinderElementProtocol {
-    /// A type that can represent the vertex to associate with `element`
-    associatedtype Vertex: Hashable;
-    
-    ///vertex
-    var vertex: Vertex {get}
-    
-    ///parent vertex
-    var parent: Vertex? {get}
+extension FinderSequence where Element == FinderElement<Vertex> {
+    /// Backtrace
+    /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex]
+    public func backtrace(of vertex: Vertex) -> [Vertex] {
+        var result = [vertex];
+        var v: Element? = value(of: vertex)?.element;
+        repeat{
+            guard let parent = v?.parent else {
+                break;
+            }
+            result.append(parent);
+            v = value(of: parent)?.element;
+        }while true
+        return result;
+    }
 }
 
 //MARK: FinderHeap
@@ -80,6 +87,7 @@ extension FinderHeap: FinderSequence {
         return e;
     }
     
+    @discardableResult
     public mutating func update(_ newElement: Element) -> Element? {
         let vertex = newElement.vertex;
         guard let index = (heap.index{ vertex == $0.vertex; }) else {
@@ -136,6 +144,7 @@ extension FinderArray: FinderSequence {
         return e;
     }
     
+    @discardableResult
     public mutating func update(_ newElement: Element) -> Element? {
         let vertex = newElement.vertex;
         guard let index = (array.index{ vertex == $0.vertex; }) else {
@@ -199,22 +208,6 @@ public struct FinderRecord<Key: Hashable, Value> {
         return closedList[forKey] ?? openedList[forKey];
     }
 }
-extension FinderRecord where Value: FinderElementProtocol, Key == Value.Vertex {
-    /// Backtrace
-    /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex]
-    public func backtrace(of vertex: Value.Vertex) -> [Value.Vertex] {
-        var result = [vertex];
-        var v: Value? = value(isClosed: vertex);
-        repeat{
-            guard let parent = v?.parent else {
-                break;
-            }
-            result.append(parent);
-            v = value(isClosed: vertex);
-        }while true
-        return result;
-    }
-}
 
 //MARK: FinderElement
 public struct FinderElement<Vertex: Hashable> {
@@ -243,7 +236,6 @@ public struct FinderElement<Vertex: Hashable> {
         self.f = h + g;
     }
 }
-extension FinderElement: FinderElementProtocol {}
 extension FinderElement: Comparable {}
 public func ==<Vertex: Hashable>(lsh: FinderElement<Vertex>, rsh: FinderElement<Vertex>) -> Bool{
     return lsh.vertex == rsh.vertex;
