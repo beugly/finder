@@ -26,12 +26,12 @@ private func testNormal(){
     var count = 4000;
     let i = count;
     repeat{
-        queue.insert(count);
+        queue.enqueue(count);
         count -= 1;
     }while count > 0;
     var a = 0;
     repeat{
-        let e = queue.popBest()!;
+        let e = queue.dequeue()!;
 //        print("current:", e, "last:", a, "current-last=", e - a);
         a = e;
     }
@@ -51,7 +51,7 @@ private func testBuild(){
     queue.build(sortArray);
     sortArray.sort(by: {$0 > $1})
     while !queue.isEmpty {
-        let e1 = queue.popBest()!;
+        let e1 = queue.dequeue()!;
         let e2 = sortArray.removeLast();
         print("\(e1)-\(e2)=\(e1 - e2)  count:\(queue.count)");
     }
@@ -62,12 +62,12 @@ private func testReplace(){
     let arr = [0, 2, 3, 1, 9, 6, 8, 7];
     var queue = PQ.init(minimum: 2)
     queue.build(arr);
-    print(queue.source);
-    queue.updateElement(-1, atIndex: queue.index(of: 9)!);
-    print(queue.source);
+    print(queue.elements);
+    queue.update(-1, at: queue.index(of: 9)!);
+    print(queue.elements);
     while !queue.isEmpty
     {
-        let e1 = queue.popBest()!;
+        let e1 = queue.dequeue()!;
         print(e1);
     }
 

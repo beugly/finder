@@ -26,28 +26,28 @@ public protocol FinderSequence{
     /// - Returns: the best element if the sequence is not empty; othewise, 'nil'
     mutating func popBest() -> Element?
     
-    /// Inserts the given element into the sequence unconditionally.
-    /// - Parameter newElement: An element to insert into the sequence
+    /// Updates the given element.
+    /// - Parameter newElement: the new element
     /// - Returns: element equal to `newElement` if the sequence already contained
     ///   such a element; otherwise, `nil`.
     @discardableResult
     mutating func update(_ newElement: Element) -> Element?
     
     /// Return the element to associate with `vertex`
-    func value(of vertex: Vertex) -> (element: Element, isClosed: Bool)?
+    func element(of vertex: Vertex) -> (element: Element, isClosed: Bool)?
 }
 extension FinderSequence where Element == FinderElement<Vertex> {
     /// Backtrace
     /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex]
     public func backtrace(of vertex: Vertex) -> [Vertex] {
         var result = [vertex];
-        var v: Element? = value(of: vertex)?.element;
+        var v: Element? = element(of: vertex)?.element;
         repeat{
             guard let parent = v?.parent else {
                 break;
             }
             result.append(parent);
-            v = value(of: parent)?.element;
+            v = element(of: parent)?.element;
         }while true
         return result;
     }
@@ -75,12 +75,12 @@ extension FinderHeap: FinderSequence {
     public typealias Element = FinderElement<Vertex>;
     
     public mutating func insert(_ newElement: Element) {
-        heap.insert(newElement);
+        heap.enqueue(newElement);
         record.openValue(newElement, forKey: newElement.vertex);
     }
     
     public mutating func popBest() -> Element? {
-        guard let e = heap.popBest() else {
+        guard let e = heap.dequeue() else {
             return nil;
         }
         record.closeValue(e, forKey: e.vertex);
@@ -93,11 +93,11 @@ extension FinderHeap: FinderSequence {
         guard let index = (heap.index{ vertex == $0.vertex; }) else {
             return nil;
         }
-        heap.updateElement(newElement, atIndex: index);
+        heap.update(newElement, at: index);
         return record.openValue(newElement, forKey: vertex);
     }
     
-    public func value(of vertex: Vertex) -> (element: Element, isClosed: Bool)? {
+    public func element(of vertex: Vertex) -> (element: Element, isClosed: Bool)? {
         if let e = record.value(isClosed: vertex) {
             return (e, true);
         }
@@ -154,7 +154,7 @@ extension FinderArray: FinderSequence {
         return record.openValue(newElement, forKey: vertex);
     }
     
-    public func value(of vertex: Vertex) -> (element: Element, isClosed: Bool)? {
+    public func element(of vertex: Vertex) -> (element: Element, isClosed: Bool)? {
         if let e = record.value(isClosed: vertex) {
             return (e, true);
         }
