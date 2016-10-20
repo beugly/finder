@@ -24,23 +24,23 @@ extension FinderBreadthFirst {
     private static func makeSequence(origin: Vertex) -> S {
         var array = S();
         let element = Element(vertex: origin, parent: nil, g: 0, h: 0);
-        array.insert(element);
+        array.push(element);
         return array;
     }
     private static func expanding(around vertex: Vertex, array: inout S, option: Option){
         for neighbor in option.neighbors(around: vertex) {
-            if array.record.value(isRecord: neighbor) != nil {
+            if array.element(of: neighbor) != nil {
                 continue;
             }
             let ele = Element(vertex: neighbor, parent: vertex, g: 0, h: 0);
-            array.insert(ele);
+            array.push(ele);
         }
     }
     
     public func find(from start: Vertex, to goal: Vertex) -> [Vertex]?{
         var array = FinderBreadthFirst.makeSequence(origin: start);
         repeat {
-            guard let element = array.popBest() else {
+            guard let element = array.pop() else {
                 break;
             }
             let vertex = element.vertex;
@@ -59,7 +59,7 @@ extension FinderBreadthFirst {
         var result: [[Vertex]] = [];
         
         repeat {
-            guard let element = array.popBest() else {
+            guard let element = array.pop() else {
                 break;
             }
             let vertex = element.vertex;

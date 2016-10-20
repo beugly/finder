@@ -27,11 +27,11 @@ public protocol PriorityQueueProtocol {
     mutating func dequeue() -> Element?
     
     /**
-        Updates the element stored in the priority queue at the given index
-        - Parameters: 
-            - element: the new element
-            - index: the index to found the old element
-        - Returns: the old element at index, or 'nil' if it is not exist at index
+     Updates the element stored in the priority queue at the given index
+     - Parameters:
+     - element: the new element
+     - index: the index to found the old element
+     - Returns: the old element at index, or 'nil' if it is not exist at index
      */
     @discardableResult
     mutating func update(_ element: Element, at index: Int) -> Element?
@@ -78,30 +78,14 @@ public struct PriorityQueue<Element> {
         self.init(isOrderedBefore: isOrderedBefore, forkCount: 2);
     }
 }
-//MARK: PriorityQueue.heap where T: Comparable
-extension PriorityQueue where Element: Comparable {
-    ///Return minimum
-    public init(minimum forkCount: Int = 2){
-        self.init(isOrderedBefore: {
-            return $0 < $1;
-            }, forkCount: forkCount);
-    }
-    
-    ///Return maximum
-    public init(maximum forkCount: Int = 2){
-        self.init(isOrderedBefore: {
-            return $0 > $1;
-            }, forkCount: forkCount);
-    }
-}
-extension PriorityQueue: PriorityQueueProtocol{
-    mutating public func enqueue(_ newElement: Element) {
+extension PriorityQueue: PriorityQueueProtocol {
+    public mutating func enqueue(_ newElement: Element) {
         elements.append(newElement);
         shift(up: elements.count - 1);
     }
     
     @discardableResult
-    mutating public func update(_ element: Element, at index: Int) -> Element? {
+    public mutating func update(_ element: Element, at index: Int) -> Element? {
         guard index < elements.count else {
             return nil;
         }
@@ -112,7 +96,7 @@ extension PriorityQueue: PriorityQueueProtocol{
     }
     
     @discardableResult
-    mutating public func remove(at index: Int) -> Element? {
+    public mutating func remove(at index: Int) -> Element? {
         let c = elements.count;
         guard index < c else {
             return nil;
@@ -230,4 +214,20 @@ extension PriorityQueue: Collection {
     public var endIndex: Int{return elements.endIndex;}
     public subscript(index: Int) -> Element {return elements[index];}
     public func index(after i: Int) -> Int {return i + 1;}
+}
+//MARK: PriorityQueue.heap where T: Comparable
+extension PriorityQueue where Element: Comparable {
+    ///Return minimum
+    public init(minimum forkCount: Int = 2){
+        self.init(isOrderedBefore: {
+            return $0 < $1;
+            }, forkCount: forkCount);
+    }
+    
+    ///Return maximum
+    public init(maximum forkCount: Int = 2){
+        self.init(isOrderedBefore: {
+            return $0 > $1;
+            }, forkCount: forkCount);
+    }
 }
