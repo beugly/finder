@@ -142,6 +142,7 @@ extension FinderArray: FinderSequence {
             return nil;
         }
         let e = array[currentIndex];
+//        record[e.vertex]?.isClosed = true;
         currentIndex += 1;
         return e;
     }

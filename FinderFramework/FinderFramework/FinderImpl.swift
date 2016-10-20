@@ -97,6 +97,7 @@ extension FinderBFS: FinderProtocol, FinderManyToOne {
     }
     
     public func makeElement(vertex: S.Vertex, cost: Int, parent: S.Element, target: S.Vertex) -> S.Element {
+        //set isClosed = true
         return S.Element(vertex: vertex, parent: parent.vertex, g: 0, h: 0, isClosed: true);
     }
     
