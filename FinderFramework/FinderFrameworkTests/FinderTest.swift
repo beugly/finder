@@ -20,13 +20,18 @@ public func pathFinderTest() {
 
 
 typealias F = FinderAstar<FinderOption2D<FinderSource2D>>;
+//typealias F = FinderDijkstra<FinderOption2D<FinderSource2D>>;
+//typealias F = FinderGreedyBest<FinderOption2D<FinderSource2D>>;
+//typealias F = FinderBFS<FinderOption2D<FinderSource2D>>;
 
-private func _pathFinder(markPath: Bool = true) {
-//    let markRecord = true;
+private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
     let _size = 50;
     let userDiagnal = true;
     var source = FinderSource2D(columns: _size, rows: _size);
-    let hinders:[(Int, Int)] = [(3, 3), (2, 3), (1, 3), (0, 3), (4, 3), (5, 3), (6, 3)];
+    var hinders:[(Int, Int)] = [];
+    for i in 0...10{
+        hinders.append((i, 3));
+    }
     for hinder in hinders {
         source.source[hinder.0, hinder.1] = nil;
     }
@@ -41,32 +46,37 @@ private func _pathFinder(markPath: Bool = true) {
     let start = FinderVertex2D(x: _size >> 1, y: _size >> 1);
     let goal = FinderVertex2D(x: 0, y: 0);
     
-    guard let result = finder.find(from: start, to: goal) else {
+    var record: [F.Vertex: F.Element]?;
+    
+    guard let result = (finder.find(from: start, to: goal){record = $0.record}) else {
         return;
     }
     
-    if !markPath {
+    if !markRecord{
         return;
     }
     
     var printMap = Array2D(columns: _size, rows: _size, initialValue: "✅");
-//    if markVisited{
-//        let visited = getVisited()
-//        visited.forEach{
-//            let point = $0.point;
-//            guard let parentpoint = $0.backward else {return;}
-//            let arrow = TestArrow.getArrow(point.x, y1: point.y, x2: parentpoint.x, y2: parentpoint.y).description;
-//            printMap[point.x , point.y] = arrow;
-//        }
-//    }
+    if let record = record, markRecord{
+        for re in record{
+            let e = re.value;
+            if let p = e.parent {
+                let v = e.vertex;
+                let arrow = TestArrow.getArrow(v.x, y1: v.y, x2: p.x, y2: p.y).description;
+                printMap[v.x, v.y] = arrow;
+            }
+        }
+    }
 
     for hinder in hinders{
         printMap[hinder.0, hinder.1] = "❌";
     }
     
-    let pathIcon = "📍";
-    for r in result {
-        printMap[r.x, r.y] = pathIcon;
+    if markPath{
+        let pathIcon = "📍";
+        for r in result {
+            printMap[r.x, r.y] = pathIcon;
+        }
     }
     
     printMap[start.x, start.y] = "🚹";

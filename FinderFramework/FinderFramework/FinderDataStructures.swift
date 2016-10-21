@@ -73,7 +73,7 @@ public struct FinderHeap<Vertex: Hashable> {
     ///init
     public init() {
         self.heap = PriorityQueue<Element>{
-            $0.f < $1.f ? true : ($0.h < $1.h);
+            $0.f < $1.f;
         };
         self.record = [:]
     }

@@ -24,12 +24,13 @@ extension FinderAstar: FinderProtocol, FinderOneToOne {
 extension FinderAstar: _FinderProtocol {}
 
 
-public struct FinderGreedyBest<Option: FinderOptionProtocol> {
+public struct FinderGreedyBest<T: FinderOptionProtocol> {
     public let option: Option;
     
 }
 extension FinderGreedyBest: FinderProtocol, FinderOneToOne {
     public typealias S = FinderHeap<Option.Vertex>;
+    public typealias Option = T;
     
     public func successors(around element: S.Element) -> [(vertex: S.Vertex, cost: Int)] {
         let vertex = element.vertex;
@@ -66,12 +67,13 @@ extension FinderDijkstra: FinderProtocol, FinderOneToOne {
 }
 extension FinderDijkstra: _FinderProtocol {}
 
-public struct FinderBFS<Option: FinderOptionProtocol> {
+public struct FinderBFS<T: FinderOptionProtocol> {
      public let option: Option;
     
 }
 extension FinderBFS: FinderProtocol, FinderOneToOne, FinderManyToOne {
     public typealias S = FinderArray<Option.Vertex>;
+    public typealias Option = T;
     
     public func successors(around element: S.Element) -> [(vertex: S.Vertex, cost: Int)] {
         let vertex = element.vertex;

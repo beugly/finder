@@ -75,7 +75,7 @@ public protocol FinderOneToOne: FinderProtocol {
     /**
      Finder from start to goal
      */
-    func find(from start: Vertex, to goal: Vertex) -> [Vertex]?
+    func find(from start: Vertex, to goal: Vertex, completion: ((S) -> Void)?) -> [Vertex]?
 }
 
 
@@ -84,7 +84,7 @@ public protocol FinderManyToOne: FinderProtocol, FinderOneToOne {
     /**
      Finder from starts to goal
      */
-    func find(from starts: [Vertex], to goal: S.Vertex) -> [[Vertex]]
+    func find(from starts: [Vertex], to goal: S.Vertex, completion: ((S) -> Void)?) -> [[Vertex]]
 }
 
 //MARK: FinderOptionProtocol
@@ -157,17 +157,16 @@ extension FinderOneToOne where Element == FinderElement<Vertex> {
     }
 }
 extension FinderOneToOne where S.Vertex == Vertex, S.Element == Element, Element == FinderElement<Vertex> {
-    public func find(from start: Vertex, to goal: Vertex) -> [Vertex]? {
+    public func find(from start: Vertex, to goal: Vertex, completion: ((S) -> Void)? = nil) -> [Vertex]? {
         var sequence = _makeSequenceBy(origin: start);
         repeat {
             guard let element = sequence.pop() else {
                 break;
             }
             
-//            print(element.vertex, element.parent);
-            
             let vertex = element.vertex;
             if vertex == goal{
+                completion?(sequence);
                 return sequence.backtrace(of: vertex).reversed();
             }
             
@@ -178,6 +177,7 @@ extension FinderOneToOne where S.Vertex == Vertex, S.Element == Element, Element
     
     ///expanding
     fileprivate func _expanding(around element: Element, sequence: inout S, target: Vertex){
+        //use for in because forEach or map too slow
         for successor in successors(around: element) {
             let v = successor.vertex;
             if let old = sequence.element(of: v) {
@@ -218,7 +218,7 @@ extension FinderManyToOne {
     }
 }
 extension FinderManyToOne where S.Vertex == Vertex, S.Element == Element, Element == FinderElement<Vertex> {
-    public func find(from starts: [Vertex], to goal: S.Vertex) -> [[Vertex]] {
+    public func find(from starts: [Vertex], to goal: S.Vertex, completion: ((S) -> Void)? = nil) -> [[Vertex]] {
         var sequence = _makeSequenceBy(origin: goal);
         var vertexs = starts;
         var result: [[Vertex]] = [];
@@ -240,6 +240,7 @@ extension FinderManyToOne where S.Vertex == Vertex, S.Element == Element, Elemen
             
             _expanding(around: element, sequence: &sequence, target: goal);
         }while true
+        completion?(sequence);
         return result;
     }
 }
