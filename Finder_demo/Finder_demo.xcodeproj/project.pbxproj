@@ -19,6 +19,8 @@
 		1B91619B1DBA650300D13DBC /* Finder_demoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B91619A1DBA650300D13DBC /* Finder_demoUITests.swift */; };
 		1B9161AA1DBA654E00D13DBC /* FinderIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9161A91DBA654E00D13DBC /* FinderIcon.swift */; };
 		1B9161AD1DBA693B00D13DBC /* FinderGS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9161AC1DBA693B00D13DBC /* FinderGS.swift */; };
+		1B9161B21DBA786600D13DBC /* FinderGroundTileSet.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B9161B11DBA786600D13DBC /* FinderGroundTileSet.sks */; };
+		1B9161B41DBA792600D13DBC /* FinderScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B9161B31DBA792600D13DBC /* FinderScene.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		1B91619C1DBA650400D13DBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1B9161A91DBA654E00D13DBC /* FinderIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderIcon.swift; sourceTree = "<group>"; };
 		1B9161AC1DBA693B00D13DBC /* FinderGS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderGS.swift; sourceTree = "<group>"; };
+		1B9161B11DBA786600D13DBC /* FinderGroundTileSet.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FinderGroundTileSet.sks; sourceTree = "<group>"; };
+		1B9161B31DBA792600D13DBC /* FinderScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FinderScene.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,9 +113,6 @@
 			children = (
 				1B9161A81DBA653400D13DBC /* finder */,
 				1B9161741DBA650300D13DBC /* AppDelegate.swift */,
-				1B9161761DBA650300D13DBC /* GameScene.sks */,
-				1B9161781DBA650300D13DBC /* Actions.sks */,
-				1B91617A1DBA650300D13DBC /* GameScene.swift */,
 				1B91617C1DBA650300D13DBC /* GameViewController.swift */,
 				1B91617E1DBA650300D13DBC /* Main.storyboard */,
 				1B9161811DBA650300D13DBC /* Assets.xcassets */,
@@ -142,8 +143,8 @@
 		1B9161A81DBA653400D13DBC /* finder */ = {
 			isa = PBXGroup;
 			children = (
+				1B9161B01DBA784900D13DBC /* file */,
 				1B9161AB1DBA68B900D13DBC /* temp */,
-				1B9161A91DBA654E00D13DBC /* FinderIcon.swift */,
 			);
 			name = finder;
 			sourceTree = "<group>";
@@ -151,9 +152,22 @@
 		1B9161AB1DBA68B900D13DBC /* temp */ = {
 			isa = PBXGroup;
 			children = (
-				1B9161AC1DBA693B00D13DBC /* FinderGS.swift */,
+				1B9161761DBA650300D13DBC /* GameScene.sks */,
+				1B91617A1DBA650300D13DBC /* GameScene.swift */,
+				1B9161781DBA650300D13DBC /* Actions.sks */,
+				1B9161A91DBA654E00D13DBC /* FinderIcon.swift */,
 			);
 			name = temp;
+			sourceTree = "<group>";
+		};
+		1B9161B01DBA784900D13DBC /* file */ = {
+			isa = PBXGroup;
+			children = (
+				1B9161AC1DBA693B00D13DBC /* FinderGS.swift */,
+				1B9161B11DBA786600D13DBC /* FinderGroundTileSet.sks */,
+				1B9161B31DBA792600D13DBC /* FinderScene.sks */,
+			);
+			name = file;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,10 +277,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B9161B21DBA786600D13DBC /* FinderGroundTileSet.sks in Resources */,
 				1B9161801DBA650300D13DBC /* Main.storyboard in Resources */,
 				1B9161771DBA650300D13DBC /* GameScene.sks in Resources */,
 				1B9161821DBA650300D13DBC /* Assets.xcassets in Resources */,
 				1B9161851DBA650300D13DBC /* LaunchScreen.storyboard in Resources */,
+				1B9161B41DBA792600D13DBC /* FinderScene.sks in Resources */,
 				1B9161791DBA650300D13DBC /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
