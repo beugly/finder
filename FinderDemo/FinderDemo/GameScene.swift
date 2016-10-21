@@ -12,7 +12,7 @@ class GameScene: SKScene {
     
     
     
-    override func didMoveToView(view: SKView) {
+    override func didMove(to view: SKView) {
     }
     
 //    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -35,7 +35,7 @@ class GameScene: SKScene {
 //        }
 //    }
    
-    override func update(currentTime: CFTimeInterval) {
+    override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
     }
 }

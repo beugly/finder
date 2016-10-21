@@ -8,6 +8,6 @@
       location = "group:FinderFramework/FinderFramework.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:FinderDemo/FinderDemo.xcodeproj">
+      location = "group:Finder_demo/Finder_demo.xcodeproj">
    </FileRef>
 </Workspace>

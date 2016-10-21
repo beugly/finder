@@ -12,12 +12,6 @@ import SpriteKit
 class GameViewController: UIViewController {
 
     
-    weak var gameScene: GameScene!;
-    weak var finderMap: FinderMap!;
-    
-    @IBOutlet weak var isMultiGoals: UISwitch!;
-    @IBOutlet weak var allowDiagoanl: UISwitch!;
-    
     override func viewDidLoad() {
         super.viewDidLoad();
         
@@ -28,32 +22,9 @@ class GameViewController: UIViewController {
         
         let gs = GameScene();
         gs.size = self.view.bounds.size;
-        gs.scaleMode = .AspectFill;
+        gs.scaleMode = .aspectFill;
         skView.presentScene(gs);
-        self.gameScene = gs;
         
-        let mp = FinderMap();
-        mp.findCallBack = self.find;
-        mp.position = CGPoint(x: nodeSize, y: nodeSize);
-        gs.addChild(mp);
-        self.finderMap = mp;
-        
-        findModelChanged();
-        goalsChanged();
-    }
-    
-    @IBAction func findModelChanged(sender: UISwitch? = .None) {
-        self.finderMap.model = !allowDiagoanl.on ? .Straight : .Diagonal;
-        print(self.finderMap.model);
-    }
-    
-    @IBAction func goalsChanged(sender: AnyObject? = .None) {
-        self.finderMap.setGoalsType(!isMultiGoals.on, fmodel);
-        print(self.finderMap.isMutiGoal);
-    }
-    
-    private func find(){
-        print("start find path")
     }
     
     
@@ -73,15 +44,15 @@ class GameViewController: UIViewController {
     
     
     
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate : Bool {
         return true
     }
 
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .AllButUpsideDown
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return .allButUpsideDown
         } else {
-            return .All
+            return .all
         }
     }
 
@@ -90,7 +61,7 @@ class GameViewController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
 
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }
