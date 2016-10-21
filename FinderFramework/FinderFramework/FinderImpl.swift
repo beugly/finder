@@ -9,48 +9,43 @@
 import Foundation
 
 public struct FinderAstar<Option: FinderOptionProtocol> {
-    fileprivate let _option: Option;
+    public let option: Option;
     
 }
-extension FinderAstar: FinderProtocol {
+extension FinderAstar: FinderProtocol, FinderOneToOne {
     public typealias S = FinderHeap<Option.Vertex>;
     
-    public func successors(around element: S.Element) -> [(vertex: S.Vertex, cost: Int)] {
-        return [];
-    }
-    
     public func makeElement(vertex: S.Vertex, cost: Int, parent: S.Element, target: S.Vertex) -> S.Element {
-        let h = 0; // return h by option
+        let h = option.heuristic(from: vertex, to: target);
         let g = parent.g + cost;
         return S.Element(vertex: vertex, parent: parent.vertex, g: g, h: h);
     }
-    
-    public func update(exist element: S.Element, cost: Int, parent: S.Element) -> S.Element? {
-        let g = parent.g + cost;
-        guard g < element.g else {
-            return nil;
-        }
-        var element = element;
-        element.update(parent.vertex, g: g);
-        return element;
-    }
 }
+extension FinderAstar: _FinderProtocol {}
 
 
 public struct FinderGreedyBest<Option: FinderOptionProtocol> {
-    fileprivate let _option: Option;
+    public let option: Option;
     
 }
-extension FinderGreedyBest: FinderProtocol {
+extension FinderGreedyBest: FinderProtocol, FinderOneToOne {
     public typealias S = FinderHeap<Option.Vertex>;
     
     public func successors(around element: S.Element) -> [(vertex: S.Vertex, cost: Int)] {
-        return [];
+        let vertex = element.vertex;
+        var array: [(vertex: S.Vertex, cost: Int)] = [];
+        for neighbor in option.neighbors(around: vertex){
+            guard let cost = option.isValidOf(neighbor) else {
+                continue;
+            }
+            array.append((neighbor, cost));
+        }
+        return array;
     }
     
     public func makeElement(vertex: S.Vertex, cost: Int, parent: S.Element, target: S.Vertex) -> S.Element {
-        let h = 0; // return h by option
-        return S.Element(vertex: vertex, parent: parent.vertex, g: 0, h: h);
+        let h = option.heuristic(from: vertex, to: target);
+        return S.Element(vertex: vertex, parent: parent.vertex, g: 0, h: h, isClosed: true);
     }
     
     public func update(exist element: S.Element, cost: Int, parent: S.Element) -> S.Element? {
@@ -59,50 +54,40 @@ extension FinderGreedyBest: FinderProtocol {
 }
 
 public struct FinderDijkstra<Option: FinderOptionProtocol> {
-    fileprivate let _option: Option;
-    
+     public let option: Option;
 }
-extension FinderDijkstra: FinderProtocol {
+extension FinderDijkstra: FinderProtocol, FinderOneToOne {
     public typealias S = FinderHeap<Option.Vertex>;
-    
-    public func successors(around element: S.Element) -> [(vertex: S.Vertex, cost: Int)] {
-        return [];
-    }
     
     public func makeElement(vertex: S.Vertex, cost: Int, parent: S.Element, target: S.Vertex) -> S.Element {
         let g = parent.g + cost;
         return S.Element(vertex: vertex, parent: parent.vertex, g: g, h: 0);
     }
-    
-    public func update(exist element: S.Element, cost: Int, parent: S.Element) -> S.Element? {
-        let g = parent.g + cost;
-        guard g < element.g else {
-            return nil;
-        }
-        var element = element;
-        element.update(parent.vertex, g: g);
-        return element;
-    }
 }
+extension FinderDijkstra: _FinderProtocol {}
 
 public struct FinderBFS<Option: FinderOptionProtocol> {
-    fileprivate let _option: Option;
+     public let option: Option;
     
 }
-extension FinderBFS: FinderProtocol, FinderManyToOne {
+extension FinderBFS: FinderProtocol, FinderOneToOne, FinderManyToOne {
     public typealias S = FinderArray<Option.Vertex>;
     
     public func successors(around element: S.Element) -> [(vertex: S.Vertex, cost: Int)] {
-        return [];
+        let vertex = element.vertex;
+        var array: [(vertex: S.Vertex, cost: Int)] = [];
+        for neighbor in option.neighbors(around: vertex){
+            guard let _ = option.isValidOf(neighbor) else {
+                continue;
+            }
+            array.append((neighbor, 1));
+        }
+        return array;
     }
     
     public func makeElement(vertex: S.Vertex, cost: Int, parent: S.Element, target: S.Vertex) -> S.Element {
         //set isClosed = true
         return S.Element(vertex: vertex, parent: parent.vertex, g: 0, h: 0, isClosed: true);
-    }
-    
-    public func update(exist element: S.Element, cost: Int, parent: S.Element) -> S.Element? {
-        return nil;
     }
 }
 

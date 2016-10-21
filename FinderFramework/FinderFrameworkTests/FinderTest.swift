@@ -1,63 +1,55 @@
-////
-////  FinderTest.swift
-////  X_Framework
-////
-////  Created by xifanGame on 15/9/17.
-////  Copyright © 2015年 yeah. All rights reserved.
-////
 //
-//import UIKit
-//@testable import FinderFramework;
+//  FinderTest.swift
+//  X_Framework
 //
+//  Created by xifanGame on 15/9/17.
+//  Copyright © 2015年 yeah. All rights reserved.
 //
-////typealias PF2 = BreadthBestPathFinder<FinderPoint2D>
-//typealias PF2 = DijkstraPathFinder<FinderPoint2D>
-//typealias PF = AstarFinder<FinderPoint2D>
-////typealias PF = GreedyBestFinder<FinderPoint2D>
-//
-//
-//func pathFinderTest(markVisited: Bool = true, markPath: Bool = false, isDiagnal: Bool = false, multiGoals: Bool = false) {
-//    
-//    let size = 100;
-//    let mp = size - 1;
-//    var conf = Array2D<Int>(columns: size, rows: size, repeatValue: 1);
-//    var hinder = [FinderPoint2D]();
-////    for i in 10...49{
-////        if i < 30{
-////            hinder.append(FinderPoint2D(x: i, y: 15))
-////            conf[i, 15] = .None;
-////        }
-////        hinder.append(FinderPoint2D(x: 15, y: i));
-////        conf[15, i] = .None;
-////    }
-//    let h2d: FinderHeuristic2D = isDiagnal ? .Chebyshev : .Manhattan;
-//    let m: FinderModel = isDiagnal ? .Diagonal : .Straight;
-//    
-//
-//    var start = FinderPoint2D(x: size >> 1, y: size >> 1);
-//    let goals = [FinderPoint2D(x: 0, y: 0), FinderPoint2D(x: mp, y: 0), FinderPoint2D(x: 0, y: mp), FinderPoint2D(x: mp, y: mp)];
-//    let goal = goals[0];
-//    
-//    let source = TestFinderDataSource(conf: conf, m, h2d);
-//    let result: [FinderPoint2D: [FinderPoint2D]]!;
-//    let getVisited: (() -> [FinderElement<FinderPoint2D>])!
-//    if multiGoals {
-//        var finder = PF2(delegate: FinderDelegate<FinderPoint2D>());
-//        result = finder.find(from: goals, to: start, option: source);
-//        getVisited = {return finder.backtraceRecord();}
-//    }
-//    else{
-//        start = goals[3];
-////        start = FinderPoint2D(x: 30, y: 17)
-//        var finder = PF(delegate: FinderDelegate<FinderPoint2D>());
-//        result = finder.find(from: start, to: goal, option: source);
-//        getVisited = {return finder.backtraceRecord();}
-//    }
-//    
-//    
-//    guard markPath else {return;}
-//    
-//    var printMap = Array2D(columns: size, rows: size, repeatValue: "✅");
+
+import UIKit
+@testable import FinderFramework;
+
+
+
+
+
+
+public func pathFinderTest() {
+    _pathFinder();
+}
+
+
+typealias F = FinderAstar<FinderOption2D<FinderSource2D>>;
+
+private func _pathFinder(markPath: Bool = true) {
+//    let markRecord = true;
+    let _size = 50;
+    let userDiagnal = true;
+    var source = FinderSource2D(columns: _size, rows: _size);
+    let hinders:[(Int, Int)] = [(3, 3), (2, 3), (1, 3), (0, 3), (4, 3), (5, 3), (6, 3)];
+    for hinder in hinders {
+        source.source[hinder.0, hinder.1] = nil;
+    }
+    
+    let option = F.Option(source: source, useDiagonal: userDiagnal, huristic: .Manhattan);
+    let finder = F(option: option);
+    
+    
+    
+    
+    
+    let start = FinderVertex2D(x: _size >> 1, y: _size >> 1);
+    let goal = FinderVertex2D(x: 0, y: 0);
+    
+    guard let result = finder.find(from: start, to: goal) else {
+        return;
+    }
+    
+    if !markPath {
+        return;
+    }
+    
+    var printMap = Array2D(columns: _size, rows: _size, initialValue: "✅");
 //    if markVisited{
 //        let visited = getVisited()
 //        visited.forEach{
@@ -67,50 +59,50 @@
 //            printMap[point.x , point.y] = arrow;
 //        }
 //    }
-//    
-//    for hinderPoint in hinder{
-//        printMap[hinderPoint.x, hinderPoint.y] = "❌";
-//    }
-//    
-//    result.forEach{
-//        let _ = $0
-//        let ps = $1;
-//        ps.forEach{
-//            let p = $0;
-//            let arrow = "📍";
-//            printMap[p.x, p.y] = arrow;
-//        }
-//    }
-//    printMap[start.x, start.y] = "🚹";
-//    
-//    for g in goals{
-//        printMap[g.x , g.y] = "🚺";
-//        guard multiGoals else{break;}
-//    }
-//    
-//    print(printMap);
-//}
-//
-//struct TestFinderDataSource{
-//    let config: Array2D<Int>;
-//    
-//    let model: FinderModel;
-//    
-//    let heuristic:FinderHeuristic2D
-//    
-//    typealias Point = FinderPoint2D;
-//    
-//    init(conf: Array2D<Int>, _ model: FinderModel = .Straight, _ h2d: FinderHeuristic2D){
-//        self.config = conf;
-//        self.model = model;
-//        self.heuristic = h2d;
-//    }
-//}
-//extension TestFinderDataSource: FinderOption2DType{
-//    ///return calculate movement cost from f to t if it is validity(and exist)
-//    ///otherwise return nil
-//    func getCost(x: Int, y: Int) -> CGFloat? {
-//        guard x > -1 && x < self.config.columns && y > -1 && y < self.config.rows else {return .None;}
-//        return CGFloat(self.config[x, y]);
-//    }
-//}
+
+    for hinder in hinders{
+        printMap[hinder.0, hinder.1] = "❌";
+    }
+    
+    let pathIcon = "📍";
+    for r in result {
+        printMap[r.x, r.y] = pathIcon;
+    }
+    
+    printMap[start.x, start.y] = "🚹";
+    printMap[goal.x, goal.y] = "🚺";
+    
+    
+    _printMap(map: printMap);
+}
+
+
+
+private func _printMap(map: Array2D<String>) {
+    for r in 0..<map.rows {
+        var str = "";
+        for c in 0..<map.columns {
+            let v = map[c, r]
+            str += v;
+        }
+        print(str);
+    }
+}
+
+
+
+
+
+struct FinderSource2D {
+    var source: Array2D<Int?>;
+    init(columns: Int, rows: Int){
+        self.source = Array2D(columns: columns, rows: rows, initialValue: 1);
+    }
+    func costOf(x: Int, y: Int) -> Int? {
+        guard x > -1 && x < source.columns && y > -1 && y < source.rows else {
+            return nil;
+        }
+        return source[x, y];
+    }
+}
+extension FinderSource2D: FinderDataSource2D{}

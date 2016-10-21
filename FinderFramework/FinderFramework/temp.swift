@@ -8,6 +8,40 @@
 
 import Foundation
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public struct FinderBreadthFirst<T: FinderOptionProtocol> {
     let option: Option;
     public init(option: Option) {
