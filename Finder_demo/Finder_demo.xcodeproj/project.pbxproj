@@ -21,6 +21,9 @@
 		1B9161AD1DBA693B00D13DBC /* FinderGS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9161AC1DBA693B00D13DBC /* FinderGS.swift */; };
 		1B9161B21DBA786600D13DBC /* FinderGroundTileSet.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B9161B11DBA786600D13DBC /* FinderGroundTileSet.sks */; };
 		1B9161B41DBA792600D13DBC /* FinderScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B9161B31DBA792600D13DBC /* FinderScene.sks */; };
+		BA8221D81DBDBB0700AE9D39 /* FinderMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221D71DBDBB0700AE9D39 /* FinderMap.swift */; };
+		BA8221DB1DBDFB9800AE9D39 /* FinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221DA1DBDFB9800AE9D39 /* FinderView.swift */; };
+		BA8221DD1DBE0A9100AE9D39 /* FinderMapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221DC1DBE0A9100AE9D39 /* FinderMapDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +64,9 @@
 		1B9161AC1DBA693B00D13DBC /* FinderGS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderGS.swift; sourceTree = "<group>"; };
 		1B9161B11DBA786600D13DBC /* FinderGroundTileSet.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FinderGroundTileSet.sks; sourceTree = "<group>"; };
 		1B9161B31DBA792600D13DBC /* FinderScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FinderScene.sks; sourceTree = "<group>"; };
+		BA8221D71DBDBB0700AE9D39 /* FinderMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderMap.swift; sourceTree = "<group>"; };
+		BA8221DA1DBDFB9800AE9D39 /* FinderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderView.swift; sourceTree = "<group>"; };
+		BA8221DC1DBE0A9100AE9D39 /* FinderMapDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderMapDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				1B9161A81DBA653400D13DBC /* finder */,
+				1B9161AC1DBA693B00D13DBC /* FinderGS.swift */,
 				1B9161741DBA650300D13DBC /* AppDelegate.swift */,
 				1B91617C1DBA650300D13DBC /* GameViewController.swift */,
 				1B91617E1DBA650300D13DBC /* Main.storyboard */,
@@ -143,6 +150,7 @@
 		1B9161A81DBA653400D13DBC /* finder */ = {
 			isa = PBXGroup;
 			children = (
+				BA8221D91DBDBC6D00AE9D39 /* map */,
 				1B9161B01DBA784900D13DBC /* file */,
 				1B9161AB1DBA68B900D13DBC /* temp */,
 			);
@@ -163,11 +171,20 @@
 		1B9161B01DBA784900D13DBC /* file */ = {
 			isa = PBXGroup;
 			children = (
-				1B9161AC1DBA693B00D13DBC /* FinderGS.swift */,
 				1B9161B11DBA786600D13DBC /* FinderGroundTileSet.sks */,
 				1B9161B31DBA792600D13DBC /* FinderScene.sks */,
 			);
 			name = file;
+			sourceTree = "<group>";
+		};
+		BA8221D91DBDBC6D00AE9D39 /* map */ = {
+			isa = PBXGroup;
+			children = (
+				BA8221DA1DBDFB9800AE9D39 /* FinderView.swift */,
+				BA8221D71DBDBB0700AE9D39 /* FinderMap.swift */,
+				BA8221DC1DBE0A9100AE9D39 /* FinderMapDelegate.swift */,
+			);
+			name = map;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -310,6 +327,9 @@
 			files = (
 				1B9161AA1DBA654E00D13DBC /* FinderIcon.swift in Sources */,
 				1B9161AD1DBA693B00D13DBC /* FinderGS.swift in Sources */,
+				BA8221D81DBDBB0700AE9D39 /* FinderMap.swift in Sources */,
+				BA8221DD1DBE0A9100AE9D39 /* FinderMapDelegate.swift in Sources */,
+				BA8221DB1DBDFB9800AE9D39 /* FinderView.swift in Sources */,
 				1B91617B1DBA650300D13DBC /* GameScene.swift in Sources */,
 				1B91617D1DBA650300D13DBC /* GameViewController.swift in Sources */,
 				1B9161751DBA650300D13DBC /* AppDelegate.swift in Sources */,
@@ -555,6 +575,7 @@
 				1B9161A11DBA650400D13DBC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1B9161A21DBA650400D13DBC /* Build configuration list for PBXNativeTarget "Finder_demoTests" */ = {
 			isa = XCConfigurationList;
@@ -563,6 +584,7 @@
 				1B9161A41DBA650400D13DBC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1B9161A51DBA650400D13DBC /* Build configuration list for PBXNativeTarget "Finder_demoUITests" */ = {
 			isa = XCConfigurationList;
@@ -571,6 +593,7 @@
 				1B9161A71DBA650400D13DBC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

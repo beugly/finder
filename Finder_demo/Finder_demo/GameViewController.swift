@@ -12,6 +12,8 @@ import GameplayKit
 
 class GameViewController: UIViewController {
 
+    
+    private var finderMap: SKNode?;
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,6 +25,7 @@ class GameViewController: UIViewController {
                 
                 // Present the scene
                 view.presentScene(scene)
+                finderMap = (scene as? FinderGS)?.finderMap;
             }
             
             view.ignoresSiblingOrder = true
@@ -51,5 +54,9 @@ class GameViewController: UIViewController {
 
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+    
+    @IBAction func expanding(_ sender: UISlider) {
+        finderMap?.setScale(CGFloat(sender.value));
     }
 }
