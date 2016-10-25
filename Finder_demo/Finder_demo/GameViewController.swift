@@ -20,6 +20,7 @@ class GameViewController: UIViewController {
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
             if let scene = SKScene(fileNamed: "FinderScene") {
+                
                 // Set the scale mode to scale to fit the window
                 scene.scaleMode = .aspectFill
                 
@@ -54,6 +55,14 @@ class GameViewController: UIViewController {
 
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+    
+    @IBAction func startFind(_ sender: AnyObject) {
+        (finderMap as? FinderMap)?.find();
+    }
+    
+    @IBAction func setMap(_ sender: UISegmentedControl) {
+        finderSetting = FinderSetting(value: sender.selectedSegmentIndex);
     }
     
     @IBAction func expanding(_ sender: UISlider) {
