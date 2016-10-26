@@ -13,11 +13,10 @@ import SpriteKit
 import GameplayKit
 
 class FinderGS: SKScene {
-    var finderMap: FinderMap? = nil;
+    
     
     override func didMove(to view: SKView) {
-        self.finderMap = self.childNode(withName: "finderMap") as? FinderMap;
-        print(finderMap);
+        
     }
     
 }

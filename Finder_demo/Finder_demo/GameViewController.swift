@@ -26,7 +26,9 @@ class GameViewController: UIViewController {
                 
                 // Present the scene
                 view.presentScene(scene)
-                finderMap = (scene as? FinderGS)?.finderMap;
+                
+                finderMap = scene.childNode(withName: "finderMap");
+//                finderMap = (scene as? FinderGS)?.finderMap;
             }
             
             view.ignoresSiblingOrder = true
