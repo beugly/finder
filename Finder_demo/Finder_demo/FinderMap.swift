@@ -72,7 +72,7 @@ class FinderMap: FinderMapAbstract {
 }
 extension FinderMap {
     func find() {
-        let opt = FinderOption2D(source: self);
+        let opt = FinderOption2D(source: self, useDiagonal: true);
         let f = FinderAstar(option: opt);
         var dic: [FinderVertex2D: FinderElement<FinderVertex2D>] = [:];
         if let result = (f.find(from: start!, to: goal!) {
@@ -112,15 +112,15 @@ extension FinderMap {
         self.resultNode.removeAllChildren();
         var result = result;
         for v in record {
-            let item = FinderResultItem(data: v.value);
+            var ispath: Bool = false;
+            if let i = result.index(of: v.key) {
+                result.remove(at: i);
+                ispath = true;
+            }
+            let item = FinderResultItem.create(data: v.value, isPath: ispath);
             let pos = ground!.centerOfTile(atColumn: v.key.x, row: v.key.y);
             item.position = pos;
             resultNode.addChild(item);
-            item.alpha = 0.3;
-            if let i = result.index(of: v.key) {
-                result.remove(at: i);
-                item.alpha = 0.7;
-            }
         }
       
     }

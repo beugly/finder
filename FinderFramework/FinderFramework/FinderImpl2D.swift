@@ -8,6 +8,9 @@
 
 import Foundation
 
+/// FinderElement2D
+public typealias FinderElement2D = FinderElement<FinderVertex2D>;
+
 public struct FinderVertex2D{
     
     public var x, y: Int;

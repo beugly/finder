@@ -39,21 +39,21 @@ extension FinderIcon: CustomStringConvertible
     static func getIcon(_ x1: Int, y1: Int, x2: Int, y2: Int) -> FinderIcon{
         switch(x1 - x2, y1 - y2){
         case let (dx, dy) where dx == 0 && dy < 0:
-            return .t;
+            return .b;
         case let (dx, dy) where dx < 0 && dy < 0:
-            return .tl;
+            return .bl;
         case let (dx, dy) where dx < 0 && dy == 0:
             return .l;
         case let (dx, dy) where dx < 0 && dy > 0:
-            return .bl;
+            return .tl;
         case let (dx, dy) where dx == 0 && dy > 0:
-            return .b;
+            return .t;
         case let (dx, dy) where dx > 0 && dy > 0:
             return .br;
         case let (dx, dy) where dx > 0 && dy == 0:
             return .r;
         case let (dx, dy) where dx > 0 && dy < 0:
-            return .tr;
+            return .br;
         default:
             return .t;
         }

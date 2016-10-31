@@ -43,8 +43,8 @@ private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
     
     
     
-    let start = FinderVertex2D(x: _size >> 1, y: _size >> 1);
-    let goal = FinderVertex2D(x: 0, y: 0);
+    let start = FinderVertex2D(x: 19, y: 19);
+    let goal = FinderVertex2D(x: 14, y: 12);
     
     var record: [F.Vertex: F.Element]?;
     
