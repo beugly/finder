@@ -9,11 +9,11 @@
 import Foundation
 
 
-enum FinderIcon
+enum FinderDirection
 {
     case l, r, t, b, tl, tr, bl, br
 }
-extension FinderIcon: CustomStringConvertible
+extension FinderDirection: CustomStringConvertible
 {
     var description:String{
         switch self{
@@ -36,26 +36,28 @@ extension FinderIcon: CustomStringConvertible
         }
     }
     
-    static func getIcon(_ x1: Int, y1: Int, x2: Int, y2: Int) -> FinderIcon{
-        switch(x1 - x2, y1 - y2){
+    static func direction(from p1: (x: Int, y: Int), to p2: (x: Int, y: Int)) -> String {
+        var d: FinderDirection? = nil;
+        switch(p2.x - p1.x, p2.y - p1.y){
         case let (dx, dy) where dx == 0 && dy < 0:
-            return .b;
+            d = .b;
         case let (dx, dy) where dx < 0 && dy < 0:
-            return .bl;
+            d = .bl;
         case let (dx, dy) where dx < 0 && dy == 0:
-            return .l;
+            d = .l;
         case let (dx, dy) where dx < 0 && dy > 0:
-            return .tl;
+            d = .tl;
         case let (dx, dy) where dx == 0 && dy > 0:
-            return .t;
+            d = .t;
         case let (dx, dy) where dx > 0 && dy > 0:
-            return .br;
+            d = .br;
         case let (dx, dy) where dx > 0 && dy == 0:
-            return .r;
+            d = .r;
         case let (dx, dy) where dx > 0 && dy < 0:
-            return .br;
+            d = .br;
         default:
-            return .t;
+            d = nil;
         }
+        return d?.description ?? "";
     }
 }

@@ -29,7 +29,9 @@ extension FinderAstar: _FinderProtocol {}
 
 public struct FinderGreedyBest<T: FinderOptionProtocol> {
     public let option: Option;
-    
+    public init(option: Option) {
+        self.option = option;
+    }
 }
 extension FinderGreedyBest: FinderProtocol, FinderOneToOne {
     public typealias S = FinderHeap<Option.Vertex>;
@@ -58,7 +60,10 @@ extension FinderGreedyBest: FinderProtocol, FinderOneToOne {
 }
 
 public struct FinderDijkstra<Option: FinderOptionProtocol> {
-     public let option: Option;
+    public let option: Option;
+    public init(option: Option) {
+        self.option = option;
+    }
 }
 extension FinderDijkstra: FinderProtocol, FinderOneToOne {
     public typealias S = FinderHeap<Option.Vertex>;
@@ -71,8 +76,10 @@ extension FinderDijkstra: FinderProtocol, FinderOneToOne {
 extension FinderDijkstra: _FinderProtocol {}
 
 public struct FinderBFS<T: FinderOptionProtocol> {
-     public let option: Option;
-    
+    public let option: Option;
+    public init(option: Option) {
+        self.option = option;
+    }
 }
 extension FinderBFS: FinderProtocol, FinderOneToOne, FinderManyToOne {
     public typealias S = FinderArray<Option.Vertex>;

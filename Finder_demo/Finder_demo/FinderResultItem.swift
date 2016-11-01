@@ -24,7 +24,6 @@ class FinderResultItem: SKShapeNode {
             self.addChild(_lable!);
             
             _ghLable = SKLabelNode(fontNamed: "HelveticaNeue");
-            print(_ghLable?.fontName)
             _ghLable?.zPosition = 1;
             _ghLable?.fontColor = UIColor.black;
             _ghLable?.fontSize = 12;
@@ -33,11 +32,10 @@ class FinderResultItem: SKShapeNode {
         }
         let v = data.vertex;
         let p = data.parent ?? data.vertex;
-        let text = FinderIcon.getIcon(v.x, y1: v.y, x2: p.x, y2: p.y).description;
-        _lable?.text = text;
+        _lable?.text = FinderDirection.direction(from: (p.x, p.y), to: (v.x, v.y));
         
 //        _ghLable?.text = "\(data.g) \(data.h) \(data.f)";
-        _ghLable?.text = "\(data.g)";
+//        _ghLable?.text = "\(data.g)";
     }
     
     private static let _node = FinderResultItem(rectOf: CGSize(width: 58, height: 58));

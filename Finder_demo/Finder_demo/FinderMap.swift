@@ -11,9 +11,10 @@ import SpriteKit;
 import FinderFramework;
 
 
-var finderSetting: FinderSetting = .Start;
-
-class FinderMap: FinderMapAbstract {
+class FinderMap: SKNode {
+    
+    ///ground
+    var ground: SKTileMapNode? = nil;
     
     fileprivate var start: FinderVertex2D? = nil;
     fileprivate var goal: FinderVertex2D? = nil;
@@ -43,32 +44,6 @@ class FinderMap: FinderMapAbstract {
         let y = self.ground?.tileRowIndex(fromPosition: pos) ?? 0;
         return FinderVertex2D(x: x, y: y);
     }
-    
-    override func touchUp(atPoint pos: CGPoint) {
-        if !isDragging {
-            switch finderSetting {
-            case .Terrain:
-                toNextGroup(atPosition: pos);
-            case .Start:
-                print("start")
-            case .Goals:
-                print("goal")
-            }
-        }
-        super.touchUp(atPoint: pos);
-    }
-    
-    ///cost of
-    override func costOf(_ group: SKTileGroup) -> Int {
-        var terrain: Terrain;
-        if let n = group.name {
-            terrain = .init(name: n);
-        }
-        else {
-            terrain = .Land;
-        }
-        return terrain.cost;
-    }
 }
 extension FinderMap {
     func find() {
@@ -78,7 +53,7 @@ extension FinderMap {
         if let result = (f.find(from: start!, to: goal!) {
             dic = $0.record;
         }) {
-            showResult(result: result, record: dic);
+            showResult(path: result, record: dic);
         }
         
     }
@@ -106,11 +81,73 @@ extension FinderMap {
             }
         }
     }
+    
+    //to next group at column, row
+    func toNextGroup(atColumn c: Int, row r: Int) {
+        guard let _ground = ground else {
+            return;
+        }
+        var newGroup: SKTileGroup?;
+        if let g = _ground.tileGroup(atColumn: c, row: r) {
+            let groups = _ground.tileSet.tileGroups;
+            if let index = groups.index(of: g) {
+                newGroup = (index == groups.count - 1 ? nil : groups[index + 1]);
+            }
+        }
+        else {
+            newGroup = _ground.tileSet.tileGroups[0];
+        }
+        _ground.setTileGroup(newGroup, forColumn: c, row: r);
+    }
 }
-extension FinderMap {
-    func showResult(result: [FinderVertex2D], record: [FinderVertex2D: FinderElement<FinderVertex2D>]) {
+
+extension FinderMap: FinderDataSource2D {
+    func costOf(x: Int, y: Int) -> Int? {
+        guard let g = ground?.tileGroup(atColumn: x, row: y) else {
+            return nil;
+        }
+        var terrain: Terrain;
+        if let n = g.name {
+            terrain = .init(name: n);
+        }
+        else {
+            terrain = .Land;
+        }
+        return terrain.cost;
+    }
+}
+extension FinderMap: FinderMapProtocol {
+    func zoomTo(_ scale: CGFloat) {
+        self.setScale(scale);
+    }
+    
+    func setStarts(at positions: CGPoint...) {
+        print("setStarts")
+    }
+    
+    func setGoal(at position: CGPoint...) {
+        print("setGoal")
+    }
+    
+    func setTerrain(at position: CGPoint) {
+        guard let cr = getColumnAndRow(at: position) else {
+            return;
+        }
+        toNextGroup(atColumn: cr.column, row: cr.row);
+    }
+    
+    private func getColumnAndRow(at position: CGPoint) -> (column: Int, row: Int)? {
+        guard let _ground = ground else {
+            return nil;
+        }
+        let c = _ground.tileColumnIndex(fromPosition: position);
+        let r = _ground.tileRowIndex(fromPosition: position);
+        return (c, r);
+    }
+    
+    func showResult(path: [FinderVertex2D], record: [FinderVertex2D : FinderElement2D]) {
         self.resultNode.removeAllChildren();
-        var result = result;
+        var result = path;
         for v in record {
             var ispath: Bool = false;
             if let i = result.index(of: v.key) {
@@ -122,20 +159,10 @@ extension FinderMap {
             item.position = pos;
             resultNode.addChild(item);
         }
-      
+        
     }
 }
 
-enum FinderSetting {
-    case Start, Goals, Terrain
-    init(value: Int){
-        switch value {
-        case 0:
-            self = .Start;
-        case 1:
-            self = .Goals;
-        default:
-            self = .Terrain;
-        }
-    }
-}
+
+
+
