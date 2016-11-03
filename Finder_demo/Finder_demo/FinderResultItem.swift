@@ -23,11 +23,11 @@ class FinderResultItem: SKShapeNode {
             _lable?.fontSize = 26;
             self.addChild(_lable!);
             
-            _ghLable = SKLabelNode(fontNamed: "HelveticaNeue");
-            _ghLable?.zPosition = 1;
-            _ghLable?.fontColor = UIColor.black;
-            _ghLable?.fontSize = 12;
-            self.addChild(_ghLable!);
+//            _ghLable = SKLabelNode(fontNamed: "HelveticaNeue");
+//            _ghLable?.zPosition = 1;
+//            _ghLable?.fontColor = UIColor.black;
+//            _ghLable?.fontSize = 12;
+//            self.addChild(_ghLable!);
             
         }
         let v = data.vertex;

@@ -23,7 +23,6 @@
 		1B9161B41DBA792600D13DBC /* FinderScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B9161B31DBA792600D13DBC /* FinderScene.sks */; };
 		BA609D541DC83B0F00303C36 /* FinderMapProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA609D531DC83B0F00303C36 /* FinderMapProtocol.swift */; };
 		BA8221DF1DBF2B8B00AE9D39 /* FinderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221DE1DBF2B8B00AE9D39 /* FinderModels.swift */; };
-		BA8221E51DC0811200AE9D39 /* FinderAbstracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221E41DC0811200AE9D39 /* FinderAbstracts.swift */; };
 		BA8221E91DC08C4F00AE9D39 /* FinderMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221E81DC08C4F00AE9D39 /* FinderMap.swift */; };
 		BA8221ED1DC0ADDF00AE9D39 /* FinderResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221EC1DC0ADDF00AE9D39 /* FinderResultItem.swift */; };
 /* End PBXBuildFile section */
@@ -68,7 +67,6 @@
 		1B9161B31DBA792600D13DBC /* FinderScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FinderScene.sks; sourceTree = "<group>"; };
 		BA609D531DC83B0F00303C36 /* FinderMapProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderMapProtocol.swift; sourceTree = "<group>"; };
 		BA8221DE1DBF2B8B00AE9D39 /* FinderModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderModels.swift; sourceTree = "<group>"; };
-		BA8221E41DC0811200AE9D39 /* FinderAbstracts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderAbstracts.swift; sourceTree = "<group>"; };
 		BA8221E81DC08C4F00AE9D39 /* FinderMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderMap.swift; sourceTree = "<group>"; };
 		BA8221EC1DC0ADDF00AE9D39 /* FinderResultItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderResultItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -185,7 +183,6 @@
 		BA8221E61DC0880400AE9D39 /* supports */ = {
 			isa = PBXGroup;
 			children = (
-				BA8221E41DC0811200AE9D39 /* FinderAbstracts.swift */,
 				1B9161A91DBA654E00D13DBC /* FinderDirection.swift */,
 			);
 			name = supports;
@@ -345,7 +342,6 @@
 				1B9161AD1DBA693B00D13DBC /* FinderGS.swift in Sources */,
 				1B91617B1DBA650300D13DBC /* GameScene.swift in Sources */,
 				1B91617D1DBA650300D13DBC /* GameViewController.swift in Sources */,
-				BA8221E51DC0811200AE9D39 /* FinderAbstracts.swift in Sources */,
 				BA8221E91DC08C4F00AE9D39 /* FinderMap.swift in Sources */,
 				1B9161751DBA650300D13DBC /* AppDelegate.swift in Sources */,
 				BA609D541DC83B0F00303C36 /* FinderMapProtocol.swift in Sources */,
@@ -421,6 +417,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -470,6 +467,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

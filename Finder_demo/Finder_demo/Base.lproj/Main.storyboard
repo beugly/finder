@@ -18,29 +18,63 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GjR-W8-OJW">
-                                <frame key="frameInset" minX="291" minY="20" width="30" height="30"/>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LTK-kg-Ogr">
+                                <frame key="frameInset" minX="45" minY="28" width="95.15%" height="9.55%"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GjR-W8-OJW">
+                                        <frame key="frameInset" minX="229" minY="15" width="45" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.87236309051513672" green="0.91029125452041626" blue="0.48103237152099609" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" title="Find">
+                                            <color key="titleShadowColor" red="1" green="0.17943082917407693" blue="0.21207041043813513" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="startFind:" destination="BV1-FR-VrT" eventType="touchUpInside" id="NNa-CR-fW8"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zSq-fp-P0h">
+                                        <frame key="frameInset" minX="282" minY="21" width="22" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <action selector="helpHandle:" destination="BV1-FR-VrT" eventType="touchUpInside" id="Lfo-ak-a4c"/>
+                                        </connections>
+                                    </button>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="AV9-7L-Uo1">
+                                        <frame key="frameInset" minX="8" minY="15" width="213" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="set start"/>
+                                            <segment title="set goals"/>
+                                            <segment title="set terrain"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="setMap:" destination="BV1-FR-VrT" eventType="valueChanged" id="iYT-3l-HNS"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="pinch: zoom map tap-move: drag map" lineBreakMode="headTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vR4-0l-rBL">
+                                        <frame key="frameInset" minX="1" minY="69" width="191" height="142"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <color key="shadowColor" red="1" green="0.1794308292" blue="0.21207041039999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <size key="shadowOffset" width="1" height="1"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.93099099397659302" green="0.66347110271453857" blue="0.78223836421966553" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="igt-GO-pid">
+                                <frame key="frameInset" minX="11" minY="31" width="22" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.19151381207030005" green="1" blue="0.18170517551433518" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="find">
-                                    <color key="titleShadowColor" red="1" green="0.17943082917407693" blue="0.21207041043813513" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal">
+                                    <color key="titleColor" red="0.17376166582107544" green="0.09272129088640213" blue="0.045047201216220856" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="startFind:" destination="BV1-FR-VrT" eventType="touchUpInside" id="NNa-CR-fW8"/>
+                                    <action selector="hidderBar:" destination="BV1-FR-VrT" eventType="touchUpInside" id="Qjp-9S-tES"/>
                                 </connections>
                             </button>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="AV9-7L-Uo1">
-                                <frame key="frameInset" minX="41" minY="21" width="213" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="set start"/>
-                                    <segment title="set goals"/>
-                                    <segment title="set terrain"/>
-                                </segments>
-                                <connections>
-                                    <action selector="setMap:" destination="BV1-FR-VrT" eventType="valueChanged" id="iYT-3l-HNS"/>
-                                </connections>
-                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
@@ -48,6 +82,10 @@
                             <outletCollection property="gestureRecognizers" destination="oH2-EE-pB6" appends="YES" id="f5f-so-Pzp"/>
                         </connections>
                     </view>
+                    <connections>
+                        <outlet property="helpInfo" destination="vR4-0l-rBL" id="fM0-Cw-hvQ"/>
+                        <outlet property="optionBar" destination="LTK-kg-Ogr" id="nKg-ub-AjL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
                 <pinchGestureRecognizer id="oH2-EE-pB6">
@@ -56,7 +94,21 @@
                     </connections>
                 </pinchGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="32.799999999999997" y="38.23088455772114"/>
+            <point key="canvasLocation" x="-282.39999999999998" y="-403.44827586206901"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="cL4-Yf-wst">
+            <objects>
+                <viewController id="4Cc-TO-cDc" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Edl-fI-9kB">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0w1-or-kO1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-283" y="-404"/>
         </scene>
     </scenes>
 </document>

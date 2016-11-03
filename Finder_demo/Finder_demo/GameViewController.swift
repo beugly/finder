@@ -12,14 +12,17 @@ import GameplayKit
 
 class GameViewController: UIViewController {
 
-    private var _finderMap: FinderMapProtocol? = nil;
+    
+    
+    
+    private var _mapNode: SKNode? = nil;
     private var opt: FinderSetting = .Start;
     
 
     
     
     @IBAction func startFind(_ sender: AnyObject) {
-        (_finderMap as? FinderMap)?.find();
+        (_mapNode as? FinderMap)?.find();
         
         
     }
@@ -29,8 +32,14 @@ class GameViewController: UIViewController {
     }
     
     
+    private var _lastPitchScale: CGFloat = 1.0;
     @IBAction func onPinch(_ sender: UIPinchGestureRecognizer) {
-        _finderMap?.zoomTo(sender.scale);
+        if sender.state == .began {
+            sender.scale = _lastPitchScale;
+            return;
+        }
+        _lastPitchScale = sender.scale;
+        _mapNode?.setScale(_lastPitchScale);
     }
     
     
@@ -41,8 +50,17 @@ class GameViewController: UIViewController {
             return;
         }
         
-        if let pos = touches.first?.location(in: self.view) {
-            //set position
+        if !isDragging {
+            isDragging = true;
+        }
+        
+        if let pos = touches.first?.location(in: view),
+            let prePos = touches.first?.previousLocation(in: view)
+        {
+            let offsetx = pos.x - prePos.x;
+            let offsety = pos.y - prePos.y;
+            _mapNode?.position.x += offsetx;
+            _mapNode?.position.y -= offsety;
         }
     }
     
@@ -52,25 +70,35 @@ class GameViewController: UIViewController {
             return;
         }
         
-        if let pos = touches.first?.location(in: self.view) {
-            //set position
+        guard let _map = _mapNode, let _fmap = _map as? FinderMapProtocol else {
+            return;
+        }
+        
+        if let pos = touches.first?.location(in: _map) {
             switch opt {
             case .Start:
-                _finderMap?.setStarts(at: pos)
+                _fmap.setStarts(at: pos)
             case .Goals:
-                _finderMap?.setGoal(at: pos);
+                _fmap.setGoal(at: pos);
             case .Terrain:
-                _finderMap?.setTerrain(at: pos);
+                _fmap.setTerrain(at: pos);
             }
         }
     }
     
     
     
+    @IBOutlet weak var optionBar: UIView!
+    @IBAction func hidderBar(_ sender: UIButton) {
+        let _isHidden = !optionBar.isHidden;
+        optionBar.isHidden = _isHidden;
+    }
     
     
-    
-    
+    @IBAction func helpHandle(_ sender: AnyObject) {
+        helpInfo.isHidden = !helpInfo.isHidden;
+    }
+    @IBOutlet weak var helpInfo: UILabel!
     
     
     
@@ -90,8 +118,10 @@ class GameViewController: UIViewController {
                 // Present the scene
                 view.presentScene(scene)
                 
-                _finderMap = (scene as? FinderGS)?.finderMap;
+                _mapNode = (scene as? FinderGS)?.finderMap as? SKNode;
             }
+            
+            helpInfo.isHidden = true;
             
             view.ignoresSiblingOrder = true
             view.showsFPS = true
