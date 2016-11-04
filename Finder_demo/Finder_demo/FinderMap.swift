@@ -99,7 +99,8 @@ extension FinderMap {
         }
         _ground.setTileGroup(newGroup, forColumn: c, row: r);
         
-        print(newGroup?.rules.first?.tileDefinitions.first?.placementWeight)
+//        print(newGroup?.rules.first?.tileDefinitions.first?.placementWeight)
+        print(newGroup?.rules.first?.adjacency)
     }
 }
 

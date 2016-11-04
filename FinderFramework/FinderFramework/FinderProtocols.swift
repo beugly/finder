@@ -73,7 +73,9 @@ public protocol FinderOneToOne: FinderProtocol {
     func makeSequence() -> S
     
     /**
-     Finder from start to goal
+     * Attempts to find the optimal path between the two vertex indicated.
+     * If such a path exists, it is returned in start to end order.
+     * If it doesn't exist, the array returned will be nil.
      */
     func find(from start: Vertex, to goal: Vertex, completion: ((S) -> Void)?) -> [Vertex]?
 }
@@ -116,6 +118,21 @@ public protocol FinderOptionProtocol {
      - Returns: huristic cost from 'v1' to 'v2'.
      */
     func heuristic(from v1: Vertex, to v2: Vertex) -> Int
+    
+    
+    
+    
+    
+//    /**
+//     * Returns the estimated heuristic cost to reach the indicated 'target' vertex from 'current' vertex
+//     */
+//    func estimatedCost(from current: Vertex, to target: Vertex) -> CGFloat
+//
+//    
+//    /**
+//     * Returns the actual cost to reach the indicated 'target' vertex from 'current' vertex
+//     */
+//    func cost(from current: Vertex, to target: Vertex) -> Float
 }
 
 //MARK: FinderJumpable
