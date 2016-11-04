@@ -21,6 +21,7 @@
 		1B9161AD1DBA693B00D13DBC /* FinderGS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9161AC1DBA693B00D13DBC /* FinderGS.swift */; };
 		1B9161B21DBA786600D13DBC /* LandWaterMapTileSet.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B9161B11DBA786600D13DBC /* LandWaterMapTileSet.sks */; };
 		1B9161B41DBA792600D13DBC /* FinderScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1B9161B31DBA792600D13DBC /* FinderScene.sks */; };
+		BA5E703A1DCC81D000874B2A /* FinderIconNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5E70391DCC81D000874B2A /* FinderIconNode.swift */; };
 		BA609D541DC83B0F00303C36 /* FinderMapProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA609D531DC83B0F00303C36 /* FinderMapProtocol.swift */; };
 		BA8221DF1DBF2B8B00AE9D39 /* FinderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221DE1DBF2B8B00AE9D39 /* FinderModels.swift */; };
 		BA8221E91DC08C4F00AE9D39 /* FinderMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8221E81DC08C4F00AE9D39 /* FinderMap.swift */; };
@@ -65,6 +66,7 @@
 		1B9161AC1DBA693B00D13DBC /* FinderGS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderGS.swift; sourceTree = "<group>"; };
 		1B9161B11DBA786600D13DBC /* LandWaterMapTileSet.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LandWaterMapTileSet.sks; sourceTree = "<group>"; };
 		1B9161B31DBA792600D13DBC /* FinderScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FinderScene.sks; sourceTree = "<group>"; };
+		BA5E70391DCC81D000874B2A /* FinderIconNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderIconNode.swift; sourceTree = "<group>"; };
 		BA609D531DC83B0F00303C36 /* FinderMapProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderMapProtocol.swift; sourceTree = "<group>"; };
 		BA8221DE1DBF2B8B00AE9D39 /* FinderModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderModels.swift; sourceTree = "<group>"; };
 		BA8221E81DC08C4F00AE9D39 /* FinderMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinderMap.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				BA8221E81DC08C4F00AE9D39 /* FinderMap.swift */,
 				BA8221EC1DC0ADDF00AE9D39 /* FinderResultItem.swift */,
 				BA609D531DC83B0F00303C36 /* FinderMapProtocol.swift */,
+				BA5E70391DCC81D000874B2A /* FinderIconNode.swift */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				BA8221ED1DC0ADDF00AE9D39 /* FinderResultItem.swift in Sources */,
 				BA8221DF1DBF2B8B00AE9D39 /* FinderModels.swift in Sources */,
 				1B9161AD1DBA693B00D13DBC /* FinderGS.swift in Sources */,
+				BA5E703A1DCC81D000874B2A /* FinderIconNode.swift in Sources */,
 				1B91617B1DBA650300D13DBC /* GameScene.swift in Sources */,
 				1B91617D1DBA650300D13DBC /* GameViewController.swift in Sources */,
 				BA8221E91DC08C4F00AE9D39 /* FinderMap.swift in Sources */,

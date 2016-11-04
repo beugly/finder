@@ -98,6 +98,8 @@ extension FinderMap {
             newGroup = _ground.tileSet.tileGroups[0];
         }
         _ground.setTileGroup(newGroup, forColumn: c, row: r);
+        
+        print(newGroup?.rules.first?.tileDefinitions.first?.placementWeight)
     }
 }
 
@@ -117,9 +119,6 @@ extension FinderMap: FinderDataSource2D {
     }
 }
 extension FinderMap: FinderMapProtocol {
-    func zoomTo(_ scale: CGFloat) {
-        self.setScale(scale);
-    }
     
     func setStarts(at positions: CGPoint...) {
         print("setStarts")

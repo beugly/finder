@@ -24,7 +24,7 @@ class GameViewController: UIViewController {
     @IBAction func startFind(_ sender: AnyObject) {
         (_mapNode as? FinderMap)?.find();
         
-        
+        optionBar.isHidden = true;
     }
     
     @IBAction func setMap(_ sender: UISegmentedControl) {

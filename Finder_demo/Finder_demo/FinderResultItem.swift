@@ -14,8 +14,8 @@ class FinderResultItem: SKShapeNode {
     private var _lable: SKLabelNode? = nil;
     private var _ghLable: SKLabelNode? = nil;
     func update(by data: FinderElement2D, isPath: Bool) {
-        self.strokeColor = isPath ? UIColor.red : UIColor.black;
-        self.lineWidth = isPath ? 4 : 2;
+        self.strokeColor = UIColor.blue;
+        self.glowWidth = isPath ? 2 : 0;
         if _lable == nil{
             _lable = SKLabelNode();
             _lable?.horizontalAlignmentMode = .center;

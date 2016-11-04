@@ -13,9 +13,6 @@ import FinderFramework;
 
 protocol FinderMapProtocol: FinderDataSource2D {
     
-    ///zoom to
-    func zoomTo(_ scale: CGFloat)
-    
     ///set starts
     func setStarts(at positions: CGPoint...)
     
