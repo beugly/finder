@@ -29,22 +29,22 @@ private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
     let userDiagnal = true;
     var source = FinderSource2D(columns: _size, rows: _size);
     var hinders:[(Int, Int)] = [];
-    for i in 0...10{
+    for i in 0...30{
         hinders.append((i, 3));
     }
     for hinder in hinders {
         source.source[hinder.0, hinder.1] = nil;
     }
     
-    let option = F.Option(source: source, useDiagonal: userDiagnal, huristic: .Manhattan);
+    let option = FinderOption2D(source: source, useDiagonal: userDiagnal, huristic: .Manhattan);
     let finder = F(option: option);
     
     
     
     
     
-    let start = FinderVertex2D(x: 19, y: 19);
-    let goal = FinderVertex2D(x: 14, y: 12);
+    let start = FinderVertex2D(x: 0, y: 0);
+    let goal = FinderVertex2D(x: 10, y: 30);
     
     var record: [F.Vertex: F.Element]?;
     

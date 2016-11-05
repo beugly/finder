@@ -1,5 +1,5 @@
 //
-//  FinderDataStructrues.swift
+//  FinderSequence.swift
 //  FinderFramework
 //
 //  Created by xifangame on 16/10/14.
@@ -45,7 +45,8 @@ public protocol FinderSequence{
 }
 extension FinderSequence where Element == FinderElement<Vertex> {
     /// Backtrace
-    /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex]
+    /// - Returns: [vertex, parent vertex, parent vertex...,origin vertex], 
+    /// it is returned in 'vertex' to origin vertex order
     public func backtrace(of vertex: Vertex) -> [Vertex] {
         var result = [vertex];
         var v: Element? = element(of: vertex);
@@ -164,42 +165,4 @@ extension FinderArray: FinderSequence {
     }
 }
 
-//MARK: FinderElement
-public struct FinderElement<Vertex> {
-    ///vertex, h
-    public let vertex: Vertex, h: Int;
-    
-    ///parent vertex
-    public fileprivate(set) var parent: Vertex?;
-    
-    ///g: exact cost, f: g + h
-    public fileprivate(set) var g, f: Int;
-    
-    ///is closed
-    public internal(set) var isClosed: Bool;
-    
-    ///init
-    public init(vertex: Vertex, parent: Vertex?, g: Int, h: Int, isClosed: Bool = false){
-        self.vertex = vertex;
-        self.parent = parent;
-        self.g = g;
-        self.h = h;
-        self.f = g + h;
-        self.isClosed = isClosed;
-    }
-    
-    ///update
-    mutating func update(_ parent: Vertex?, g: Int) {
-        self.parent = parent;
-        self.g = g;
-        self.f = h + g;
-    }
-}
-extension FinderElement: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
-        return "vertex: \(vertex), parent: \(parent), f: \(f), g: \(g), h: \(h)";
-    }
-    public var debugDescription: String {
-        return description;
-    }
-}
+

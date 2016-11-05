@@ -8,26 +8,6 @@
 
 import Foundation
 
-/// FinderElement2D
-public typealias FinderElement2D = FinderElement<FinderVertex2D>;
-
-public struct FinderVertex2D{
-    
-    public var x, y: Int;
-    public let hashValue: Int;
-    
-    
-    public init(x: Int, y: Int){
-        self.x = x;
-        self.y = y;
-        self.hashValue = "\(x),\(y)".hashValue;
-    }
-}
-extension FinderVertex2D: Hashable {}
-public func ==(lsh: FinderVertex2D, rsh: FinderVertex2D) -> Bool {
-    return lsh.x == rsh.x && lsh.y == rsh.y;
-}
-
 //MARK: FinderHeuristic2D
 public enum FinderHeuristic2D {
     case Manhattan, Euclidean, Octile, Chebyshev, None
@@ -110,7 +90,7 @@ extension FinderOption2D: FinderOptionProtocol {
     }
     
     public func exactCostOf(_ vertex: Vertex, from parent: Vertex) -> Int? {
-        guard let cost = source.costOf(x: vertex.x, y: vertex.y) else {
+        guard let cost = source.costOf(x: Int(vertex.x), y: Int(vertex.y)) else {
             return nil;
         }
         
@@ -118,15 +98,15 @@ extension FinderOption2D: FinderOptionProtocol {
     }
     
     public func isValidOf(_ vertex: Vertex) -> Int? {
-        guard let cost = source.costOf(x: vertex.x, y: vertex.y) else {
+        guard let cost = source.costOf(x: Int(vertex.x), y: Int(vertex.y)) else {
             return nil;
         }
         return Int(cost * 10);
     }
     
     public func heuristic(from v1: Vertex, to v2: Vertex) -> Int {
-        let dx = v1.x - v2.x;
-        let dy = v1.y - v2.y;
+        let dx = Int(v1.x - v2.x);
+        let dy = Int(v1.y - v2.y);
         return Int(h.huristic(dx: dx, dy: dy) * 10);
     }
 }
