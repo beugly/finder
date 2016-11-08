@@ -11,23 +11,20 @@ import Foundation
 //MARK: FinderElement
 public struct FinderElement<Vertex> {
     
-    ///value type
-    public typealias T = Int;
-    
     ///vertex, h
-    public let vertex: Vertex, h: T;
+    public let vertex: Vertex, h: CGFloat;
     
     ///parent vertex
     public fileprivate(set) var parent: Vertex?;
     
     ///g: exact cost, f: g + h
-    public fileprivate(set) var g, f: T;
+    public fileprivate(set) var g, f: CGFloat;
     
     ///is closed
     public internal(set) var isClosed: Bool;
     
     ///init
-    public init(vertex: Vertex, parent: Vertex?, g: T, h: T, isClosed: Bool = false){
+    public init(vertex: Vertex, parent: Vertex?, g: CGFloat, h: CGFloat, isClosed: Bool = false){
         self.vertex = vertex;
         self.parent = parent;
         self.g = g;
@@ -37,7 +34,7 @@ public struct FinderElement<Vertex> {
     }
     
     ///update
-    mutating func update(_ parent: Vertex?, g: T) {
+    mutating func update(_ parent: Vertex?, g: CGFloat) {
         self.parent = parent;
         self.g = g;
         self.f = h + g;
@@ -51,8 +48,3 @@ extension FinderElement: CustomStringConvertible, CustomDebugStringConvertible {
         return description;
     }
 }
-
-//FinderElement2D
-public typealias FinderElement2D = FinderElement<FinderVertex2D>;
-//FinderElement3D
-public typealias FinderElement3D = FinderElement<FinderVertex3D>;
