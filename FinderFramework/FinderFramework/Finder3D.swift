@@ -36,3 +36,6 @@ extension FinderVertex3D: Hashable {}
 public func ==(lsh: FinderVertex3D, rsh: FinderVertex3D) -> Bool {
     return lsh.x == rsh.x && lsh.y == rsh.y && lsh.z == rsh.z;
 }
+
+
+////to be continue....

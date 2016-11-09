@@ -83,31 +83,27 @@ public struct FinderOption2D<Source: FinderGrid2DProtocol>{
     fileprivate let source: Source;
     
     ///expanding model
-    fileprivate let model: FinderGrid2DExpandModel;
+    fileprivate let expandModel: FinderGrid2DExpandModel;
     
     ///estimated cost
-    fileprivate let h: FinderHeuristic2D;
+    fileprivate let heuristic: FinderHeuristic2D;
     
     ///init
     public init(source: Source, expandModel: FinderGrid2DExpandModel = .Straight, huristic: FinderHeuristic2D = .Manhattan) {
         self.source = source;
-        self.model = expandModel;
-        self.h = huristic;
+        self.expandModel = expandModel;
+        self.heuristic = huristic;
     }
-    
 }
 extension FinderOption2D: FinderOptionProtocol {
-    
     public typealias Vertex = FinderVertex2D;
     
-    ///creat neighbors
-    private func createNeighbors(origin vertex: Vertex, neighborOffsets: [(Int, Int)]) -> [Vertex] {
+    // - Returns: neighbor vertexs around origin x, y
+    private func createNeighborsAround(_ originx: Int, _ originy: Int, originNeighbors: [(Int, Int)]) -> [Vertex] {
         var array: [Vertex] = [];
-        let originx = vertex.x;
-        let originy = vertex.y;
-        for n in neighborOffsets {
-            let x = originx + n.0;
-            let y = originy + n.1;
+        for o in originNeighbors {
+            let x = originx + o.0;
+            let y = originy + o.1;
             if let placementWeight = source.placementWeight(at: x, row: y) {
                 let neighbor = Vertex(x: x, y: y, placementWeight: placementWeight);
                 array.append(neighbor);
@@ -117,43 +113,57 @@ extension FinderOption2D: FinderOptionProtocol {
     }
     
     public func neighbors(around vertex: Vertex) -> [Vertex] {
-        let _straightOffsets = [(-1, 0), (0, 1), (1, 0), (0, -1)];
-        var array: [Vertex] = createNeighbors(origin: vertex, neighborOffsets: _straightOffsets);
-        
-        if model == .Diagonal {
-            let _diagonalNeighbors = [(-1, 1), (-1, -1), (1, -1), (1, 1)];
-            let diagonalNeighbors = createNeighbors(origin: vertex, neighborOffsets: _diagonalNeighbors);
-            array.append(contentsOf: diagonalNeighbors);
-        }
-        else if model == .DiagonalIfNoObstacles {
-            
-        }
-        else if model == .DiagonalIfAtMostOneObstacles {
-            
-        }
-        
-        
         let originx = vertex.x;
         let originy = vertex.y;
-        var neighborsDic: [Finder2DDirection: Vertex] = [:];
-        for (k, v) in Finder2DDirection.straightOffsets() {
-            let x = originx + v.0;
-            let y = originy + v.1;
+        var atMostObstacles = -1;
+        switch expandModel {
+        case .Straight:
+            return createNeighborsAround(originx, originy, originNeighbors: FinderGrid2DExpandModel.straightNeighbors);
+        case .Diagonal:
+            return createNeighborsAround(originx, originy, originNeighbors: FinderGrid2DExpandModel.allNeighbors);
+        case .DiagonalIfAtMostOneObstacles:
+            atMostObstacles = 1;
+        case .DiagonalIfNoObstacles:
+            atMostObstacles = 0;
+        }
+        
+        var straightNeighbors: [Vertex] = [];
+        var obstacleCounts: [Int] = [0, 0, 0, 0];
+        var i = 0;
+        for o in FinderGrid2DExpandModel.straightNeighbors {
+            let x = originx + o.0;
+            let y = originy + o.1;
             if let placementWeight = source.placementWeight(at: x, row: y) {
                 let neighbor = Vertex(x: x, y: y, placementWeight: placementWeight);
-                neighborsDic[k] = neighbor;
+                straightNeighbors.append(neighbor);
             }
+            else {
+                obstacleCounts[i] += 1;
+                var temp = i - 1;
+                if temp < 0 {
+                    temp = 3;
+                }
+                obstacleCounts[temp] += 1;
+            }
+            i += 1;
         }
-
         
-        
-        
-        
-        return array;
+        var _diagonalNeighbors: [Vertex] = [];
+        var j = 0;
+        for o in FinderGrid2DExpandModel.diagonalNeighbors {
+            let x = originx + o.0;
+            let y = originy + o.1;
+            if let placementWeight = source.placementWeight(at: x, row: y), obstacleCounts[j] <= atMostObstacles {
+                let neighbor = Vertex(x: x, y: y, placementWeight: placementWeight);
+                _diagonalNeighbors.append(neighbor);
+            }
+            j += 1;
+        }
+        return straightNeighbors + _diagonalNeighbors;
     }
     
     public func estimatedCost(from current: Vertex, to target: Vertex) -> CGFloat {
-        return h.huristic(from: current.x, y1: current.y, to: target.x, y2: target.y);
+        return heuristic.huristic(from: current.x, y1: current.y, to: target.x, y2: target.y);
     }
     
     public func cost(of current: Vertex, from parent: Vertex) -> CGFloat {
@@ -169,10 +179,21 @@ public enum FinderGrid2DExpandModel {
     DiagonalIfNoObstacles,          //diagonal if no obstacles
     DiagonalIfAtMostOneObstacles    //diagonal if at most one obstacles
     
-//    case .Straight:
-//    return [(-1, 0), (0, 1), (1, 0), (0, -1)];
-//    case .Diagonal:
-//    return [(-1, 0), (0, 1), (1, 0), (0, -1), (-1, 1), (-1, -1), (1, -1), (1, 1)];
+    fileprivate static let straightNeighbors = [(-1, 0), (0, 1), (1, 0), (0, -1)];
+    fileprivate static let diagonalNeighbors = [(-1, 1), (1, 1), (1, -1), (-1, -1)];
+    fileprivate static let allNeighbors = [(-1, 0), (0, 1), (1, 0), (0, -1), (-1, 1), (1, 1), (1, -1), (-1, -1)];
+    
+    ///- Returns neighbors around (0, 0)
+    public func neighborsAroundOrigin() -> [(Int, Int)]{
+        switch self {
+        case .Straight:
+            return FinderGrid2DExpandModel.straightNeighbors;
+        case .Diagonal:
+            return FinderGrid2DExpandModel.allNeighbors;
+        default:
+            return FinderGrid2DExpandModel.diagonalNeighbors;
+        }
+    }
 }
 
 //MARK: FinderHeuristic2D
@@ -210,6 +231,10 @@ extension Finder2DDirection {
         return [.Left: (-1, 0), .Top: (0, 1), .Right: (1, 0), .Buttom: (0, -1)];
     }
     static func diagonalOffsets() -> [Finder2DDirection: (Int, Int)] {
-        return [.LeftTop: (-1, 1), .RightTop: (1, 1), .LeftButtom: (-1, -1), .RightButtom: (1, -1)];
+        return [.LeftTop: (-1, 1), .RightTop: (1, 1), .RightButtom: (1, -1), .LeftButtom: (-1, -1)];
+    }
+    static func allOffsets() -> [Finder2DDirection: (Int, Int)] {
+        return [.Left: (-1, 0), .Top: (0, 1), .Right: (1, 0), .Buttom: (0, -1),
+                .LeftTop: (-1, 1), .RightTop: (1, 1), .LeftButtom: (-1, -1), .RightButtom: (1, -1)];
     }
 }
