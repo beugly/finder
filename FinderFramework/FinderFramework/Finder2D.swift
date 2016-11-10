@@ -11,6 +11,9 @@ import Foundation
 //FinderElement2D
 public typealias FinderElement2D = FinderElement<FinderVertex2D>;
 
+//FinderGrid2DOption
+public typealias FinderGrid2DOption = FinderOption2D<FinderGrid2D>;
+
 //MARK: FinderVertex2D
 public struct FinderVertex2D{
     
@@ -21,7 +24,7 @@ public struct FinderVertex2D{
     public let placementWeight: CGFloat;
     
     ///init
-    public init(x: Int, y: Int, placementWeight: CGFloat){
+    public init(x: Int, y: Int, placementWeight: CGFloat = 1){
         self.x = x;
         self.y = y;
         self.placementWeight = placementWeight;
@@ -46,33 +49,36 @@ public protocol FinderGrid2DProtocol {
 //MARK: FinderGrid2D
 public struct FinderGrid2D {
     
-    /// columns and rows
-    public let columns, rows: Int;
+    var columns: Int{
+        return source.columns;
+    }
+    
+    var rows: Int{
+        return source.rows;
+    }
     
     ///array
-    fileprivate var array: [CGFloat?]
+    fileprivate var source: FinderArray2D<CGFloat?>;
     
     ///init
     public init(columns: Int, rows: Int, initialValue: CGFloat? = nil) {
-        self.columns = columns;
-        self.rows = rows;
-        array = .init(repeating: initialValue, count: rows * columns)
+        source = .init(columns: columns, rows: rows, initialValue: initialValue);
     }
     
     ///set placement
     public mutating func setPlacementWeight(_ weight: CGFloat?, at column: Int, row: Int) {
-        guard column < columns && row < rows else {
+        guard column > -1 && column < source.columns && row > -1 && row < source.rows else {
             return;
         }
-        array[row * columns + column] = weight;
+        source[column, row] = weight;
     }
 }
 extension FinderGrid2D: FinderGrid2DProtocol {
     public func placementWeight(at column: Int, row: Int) -> CGFloat? {
-        guard column < columns && row < rows else {
+        guard column > -1 && column < source.columns && row > -1 && row < source.rows else {
             return nil;
         }
-        return array[row * columns + column];
+        return source[column, row];
     }
 }
 
@@ -115,7 +121,7 @@ extension FinderOption2D: FinderOptionProtocol {
     public func neighbors(around vertex: Vertex) -> [Vertex] {
         let originx = vertex.x;
         let originy = vertex.y;
-        var atMostObstacles = -1;
+        var atMostObstacles = 2;
         switch expandModel {
         case .Straight:
             return createNeighborsAround(originx, originy, originNeighbors: FinderGrid2DExpandModel.straightNeighbors);
@@ -127,7 +133,7 @@ extension FinderOption2D: FinderOptionProtocol {
             atMostObstacles = 0;
         }
         
-        var straightNeighbors: [Vertex] = [];
+        var _neighbors: [Vertex] = [];
         var obstacleCounts: [Int] = [0, 0, 0, 0];
         var i = 0;
         for o in FinderGrid2DExpandModel.straightNeighbors {
@@ -135,7 +141,7 @@ extension FinderOption2D: FinderOptionProtocol {
             let y = originy + o.1;
             if let placementWeight = source.placementWeight(at: x, row: y) {
                 let neighbor = Vertex(x: x, y: y, placementWeight: placementWeight);
-                straightNeighbors.append(neighbor);
+                _neighbors.append(neighbor);
             }
             else {
                 obstacleCounts[i] += 1;
@@ -148,18 +154,17 @@ extension FinderOption2D: FinderOptionProtocol {
             i += 1;
         }
         
-        var _diagonalNeighbors: [Vertex] = [];
         var j = 0;
         for o in FinderGrid2DExpandModel.diagonalNeighbors {
             let x = originx + o.0;
             let y = originy + o.1;
             if let placementWeight = source.placementWeight(at: x, row: y), obstacleCounts[j] <= atMostObstacles {
                 let neighbor = Vertex(x: x, y: y, placementWeight: placementWeight);
-                _diagonalNeighbors.append(neighbor);
+                _neighbors.append(neighbor);
             }
             j += 1;
         }
-        return straightNeighbors + _diagonalNeighbors;
+        return _neighbors;
     }
     
     public func estimatedCost(from current: Vertex, to target: Vertex) -> CGFloat {
@@ -182,18 +187,6 @@ public enum FinderGrid2DExpandModel {
     fileprivate static let straightNeighbors = [(-1, 0), (0, 1), (1, 0), (0, -1)];
     fileprivate static let diagonalNeighbors = [(-1, 1), (1, 1), (1, -1), (-1, -1)];
     fileprivate static let allNeighbors = [(-1, 0), (0, 1), (1, 0), (0, -1), (-1, 1), (1, 1), (1, -1), (-1, -1)];
-    
-    ///- Returns neighbors around (0, 0)
-    public func neighborsAroundOrigin() -> [(Int, Int)]{
-        switch self {
-        case .Straight:
-            return FinderGrid2DExpandModel.straightNeighbors;
-        case .Diagonal:
-            return FinderGrid2DExpandModel.allNeighbors;
-        default:
-            return FinderGrid2DExpandModel.diagonalNeighbors;
-        }
-    }
 }
 
 //MARK: FinderHeuristic2D
@@ -222,19 +215,28 @@ extension FinderHeuristic2D {
     }
 }
 
-//MARK: Finder2DDirection
-fileprivate enum Finder2DDirection {
-    case Left, Top, Right, Buttom, LeftTop, RightTop, LeftButtom, RightButtom
-}
-extension Finder2DDirection {
-    static func straightOffsets() -> [Finder2DDirection: (Int, Int)] {
-        return [.Left: (-1, 0), .Top: (0, 1), .Right: (1, 0), .Buttom: (0, -1)];
+//MARK: FinderArray2D
+public struct FinderArray2D<T> {
+    
+    /// columns and rows
+    public let columns, rows: Int;
+    
+    ///array
+    fileprivate var array: [T]
+    
+    ///init
+    public init(columns: Int, rows: Int, initialValue: T) {
+        self.columns = columns;
+        self.rows = rows;
+        array = .init(repeating: initialValue, count: rows * columns)
     }
-    static func diagonalOffsets() -> [Finder2DDirection: (Int, Int)] {
-        return [.LeftTop: (-1, 1), .RightTop: (1, 1), .RightButtom: (1, -1), .LeftButtom: (-1, -1)];
-    }
-    static func allOffsets() -> [Finder2DDirection: (Int, Int)] {
-        return [.Left: (-1, 0), .Top: (0, 1), .Right: (1, 0), .Buttom: (0, -1),
-                .LeftTop: (-1, 1), .RightTop: (1, 1), .LeftButtom: (-1, -1), .RightButtom: (1, -1)];
+    
+    public subscript(column: Int, row: Int) -> T {
+        set{
+            array[row * columns + column] = newValue;
+        }
+        get{
+            return array[row * columns + column];
+        }
     }
 }

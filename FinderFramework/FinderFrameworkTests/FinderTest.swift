@@ -19,24 +19,23 @@ public func pathFinderTest() {
 }
 
 
-typealias F = FinderAstar<FinderOption2D<FinderSource2D>>;
-//typealias F = FinderDijkstra<FinderOption2D<FinderSource2D>>;
-//typealias F = FinderGreedyBest<FinderOption2D<FinderSource2D>>;
-//typealias F = FinderBFS<FinderOption2D<FinderSource2D>>;
+typealias F = FinderAstar<FinderGrid2DOption>;
+//typealias F = FinderDijkstra<FinderGrid2DOption>;
+//typealias F = FinderGreedyBest<FinderGrid2DOption>;
+//typealias F = FinderBFS<FinderGrid2DOption>;
 
 private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
     let _size = 50;
-    let userDiagnal = true;
-    var source = FinderSource2D(columns: _size, rows: _size);
-    var hinders:[(Int, Int)] = [];
+    var source = FinderGrid2D(columns: _size, rows: _size, initialValue: 1);
+    var obstacles:[(Int, Int)] = [];
     for i in 0...30{
-        hinders.append((i, 3));
+        obstacles.append((i, 3));
     }
-    for hinder in hinders {
-        source.source[hinder.0, hinder.1] = nil;
+    for o in obstacles {
+        source.setPlacementWeight(nil, at: o.0, row: o.1);
     }
     
-    let option = FinderOption2D(source: source, useDiagonal: userDiagnal, huristic: .Manhattan);
+    let option = FinderGrid2DOption(source: source, expandModel: .Diagonal, huristic: .Manhattan);
     let finder = F(option: option);
     
     
@@ -46,9 +45,10 @@ private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
     let start = FinderVertex2D(x: 0, y: 0);
     let goal = FinderVertex2D(x: 10, y: 30);
     
-    var record: [F.Vertex: F.Element]?;
+    var record: [FinderVertex2D: FinderElement2D]?;
     
-    guard let result = (finder.find(from: start, to: goal){record = $0.record}) else {
+    let result = (finder.find(target: goal, from: start){record = $0.record});
+    if result.count == 0{
         return;
     }
     
@@ -56,8 +56,8 @@ private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
         return;
     }
     
-    var printMap = Array2D(columns: _size, rows: _size, initialValue: "✅");
-    if let record = record, markRecord{
+    var printMap = FinderArray2D(columns: _size, rows: _size, initialValue: "✅");
+    if let record = record {
         for re in record{
             let e = re.value;
             if let p = e.parent {
@@ -68,8 +68,8 @@ private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
         }
     }
 
-    for hinder in hinders{
-        printMap[hinder.0, hinder.1] = "❌";
+    for o in obstacles{
+        printMap[o.0, o.1] = "❌";
     }
     
     if markPath{
@@ -88,7 +88,7 @@ private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
 
 
 
-private func _printMap(map: Array2D<String>) {
+private func _printMap(map: FinderArray2D<String>) {
     for r in 0..<map.rows {
         var str = "";
         for c in 0..<map.columns {
@@ -98,21 +98,3 @@ private func _printMap(map: Array2D<String>) {
         print(str);
     }
 }
-
-
-
-
-
-struct FinderSource2D {
-    var source: Array2D<Int?>;
-    init(columns: Int, rows: Int){
-        self.source = Array2D(columns: columns, rows: rows, initialValue: 1);
-    }
-    func costOf(x: Int, y: Int) -> Int? {
-        guard x > -1 && x < source.columns && y > -1 && y < source.rows else {
-            return nil;
-        }
-        return source[x, y];
-    }
-}
-extension FinderSource2D: FinderDataSource2D{}

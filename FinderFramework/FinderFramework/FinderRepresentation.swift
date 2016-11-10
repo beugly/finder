@@ -104,13 +104,13 @@ extension FinderManyToOne where S.Vertex: Hashable, S.Element == FinderElement<S
 
 
 //MARK: FinderAstar
-public struct FinderAstar_<Option: FinderOptionProtocol> {
+public struct FinderAstar<Option: FinderOptionProtocol> {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
     }
 }
-extension FinderAstar_: FinderProtocol {
+extension FinderAstar: FinderProtocol {
     public typealias S = FinderHeap<Option.Vertex>;
     
     public func makeSequence() -> S {
@@ -143,13 +143,13 @@ extension FinderAstar_: FinderProtocol {
 }
 
 //MARK: FinderGreedyBest
-public struct FinderGreedyBest_<Option: FinderOptionProtocol> {
+public struct FinderGreedyBest<Option: FinderOptionProtocol> {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
     }
 }
-extension FinderGreedyBest_: FinderProtocol {
+extension FinderGreedyBest: FinderProtocol {
     public typealias S = FinderHeap<Option.Vertex>;
     
     public func makeSequence() -> S {
@@ -170,13 +170,13 @@ extension FinderGreedyBest_: FinderProtocol {
 
 
 //MARK: FinderDijkstra
-public struct FinderDijkstra_<Option: FinderOptionProtocol> {
+public struct FinderDijkstra<Option: FinderOptionProtocol> {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
     }
 }
-extension FinderDijkstra_: FinderProtocol {
+extension FinderDijkstra: FinderProtocol {
     public typealias S = FinderHeap<Option.Vertex>;
     
     public func makeSequence() -> S {
@@ -209,13 +209,13 @@ extension FinderDijkstra_: FinderProtocol {
 
 
 //MARK: FinderBFS
-public struct FinderBFS_<Option: FinderOptionProtocol> {
+public struct FinderBFS<Option: FinderOptionProtocol> {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
     }
 }
-extension FinderBFS_: FinderProtocol, FinderManyToOne {
+extension FinderBFS: FinderProtocol, FinderManyToOne {
     public typealias S = FinderArray<Option.Vertex>;
     
     public func makeSequence() -> S {
