@@ -11,7 +11,7 @@ import SpriteKit;
 import FinderFramework;
 
 
-protocol FinderMapProtocol: FinderDataSource2D {
+protocol FinderMapProtocol: FinderGrid2DProtocol {
     
     ///set starts
     func setStarts(at positions: CGPoint...)

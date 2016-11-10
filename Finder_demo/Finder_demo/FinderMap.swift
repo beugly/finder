@@ -47,15 +47,16 @@ class FinderMap: SKNode {
 }
 extension FinderMap {
     func find() {
-        let opt = FinderOption2D(source: self, useDiagonal: true);
+        let opt = FinderOption2D(source: self, expandModel: .DiagonalIfAtMostOneObstacles, huristic: .Manhattan);
         let f = FinderAstar(option: opt);
         var dic: [FinderVertex2D: FinderElement<FinderVertex2D>] = [:];
-        if let result = (f.find(from: start!, to: goal!) {
+        let result = f.find(target: goal!, from: start!) {
             dic = $0.record;
-        }) {
-            showResult(path: result, record: dic);
+        };
+        if result.isEmpty {
+            return;
         }
-        
+        showResult(path: result, record: dic);
     }
 }
 
@@ -72,7 +73,7 @@ extension FinderMap {
             }
         }
         
-        var cost: Int {
+        var cost: CGFloat {
             switch self {
             case .Water:
                 return 2;
@@ -104,9 +105,9 @@ extension FinderMap {
     }
 }
 
-extension FinderMap: FinderDataSource2D {
-    func costOf(x: Int, y: Int) -> Int? {
-        guard let g = ground?.tileGroup(atColumn: x, row: y) else {
+extension FinderMap: FinderGrid2DProtocol {
+    func placementWeight(at column: Int, row: Int) -> CGFloat? {
+        guard let g = ground?.tileGroup(atColumn: column, row: row) else {
             return nil;
         }
         var terrain: Terrain;
