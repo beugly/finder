@@ -14,8 +14,8 @@ import UIKit
 
 
 
-public func pathFinderTest() {
-    _pathFinder();
+public func pathFinderTest(_ flag: Bool) {
+    _pathFinder(!flag, !flag);
 }
 
 
@@ -23,19 +23,21 @@ typealias F = FinderAstar<FinderGrid2DOption>;
 //typealias F = FinderDijkstra<FinderGrid2DOption>;
 //typealias F = FinderGreedyBest<FinderGrid2DOption>;
 //typealias F = FinderBFS<FinderGrid2DOption>;
+//typealias F = FinderJPS<FinderGrid2DOption>;
 
-private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
-    let _size = 50;
+
+private func _pathFinder(_ markPath: Bool = false, _ markRecord:Bool = false) {
+    let _size = 80;
     var source = FinderGrid2D(columns: _size, rows: _size, initialValue: 1);
     var obstacles:[(Int, Int)] = [];
     for i in 0...30{
-        obstacles.append((i, 3));
+        obstacles.append((i, 30));
     }
     for o in obstacles {
         source.setPlacementWeight(nil, at: o.0, row: o.1);
     }
     
-    let option = FinderGrid2DOption(source: source, expandModel: .Diagonal, huristic: .Manhattan);
+    let option = FinderGrid2DOption(source: source, huristic: .Manhattan, expandModel: .Diagonal);
     let finder = F(option: option);
     
     
@@ -43,7 +45,7 @@ private func _pathFinder(markPath: Bool = true, markRecord:Bool = true) {
     
     
     let start = FinderVertex2D(x: 0, y: 0);
-    let goal = FinderVertex2D(x: 10, y: 30);
+    let goal = FinderVertex2D(x: 0, y: _size - 1);
     
     var record: [FinderVertex2D: FinderElement2D]?;
     

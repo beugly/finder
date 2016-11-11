@@ -35,11 +35,11 @@ class FinderFrameworkTests: XCTestCase {
         }
     }
     
-    fileprivate var testPerformance:Bool = false;
+    fileprivate var testPerformance:Bool = true;
     
     fileprivate func waitForTest()
     {
-        pathFinderTest();
+        pathFinderTest(testPerformance);
 //        priorityQueueTest();
     }
 }

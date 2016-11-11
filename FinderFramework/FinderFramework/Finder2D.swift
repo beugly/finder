@@ -46,42 +46,6 @@ public protocol FinderGrid2DProtocol {
     func placementWeight(at column: Int, row: Int) -> CGFloat?
 }
 
-//MARK: FinderGrid2D
-public struct FinderGrid2D {
-    
-    var columns: Int{
-        return source.columns;
-    }
-    
-    var rows: Int{
-        return source.rows;
-    }
-    
-    ///array
-    fileprivate var source: FinderArray2D<CGFloat?>;
-    
-    ///init
-    public init(columns: Int, rows: Int, initialValue: CGFloat? = nil) {
-        source = .init(columns: columns, rows: rows, initialValue: initialValue);
-    }
-    
-    ///set placement
-    public mutating func setPlacementWeight(_ weight: CGFloat?, at column: Int, row: Int) {
-        guard column > -1 && column < source.columns && row > -1 && row < source.rows else {
-            return;
-        }
-        source[column, row] = weight;
-    }
-}
-extension FinderGrid2D: FinderGrid2DProtocol {
-    public func placementWeight(at column: Int, row: Int) -> CGFloat? {
-        guard column > -1 && column < source.columns && row > -1 && row < source.rows else {
-            return nil;
-        }
-        return source[column, row];
-    }
-}
-
 //MARK: FinderOption2D
 public struct FinderOption2D<Source: FinderGrid2DProtocol>{
     
@@ -95,7 +59,7 @@ public struct FinderOption2D<Source: FinderGrid2DProtocol>{
     fileprivate let heuristic: FinderHeuristic2D;
     
     ///init
-    public init(source: Source, expandModel: FinderGrid2DExpandModel = .Straight, huristic: FinderHeuristic2D = .Manhattan) {
+    public init(source: Source, huristic: FinderHeuristic2D = .Manhattan, expandModel: FinderGrid2DExpandModel = .Straight) {
         self.source = source;
         self.expandModel = expandModel;
         self.heuristic = huristic;
@@ -105,7 +69,7 @@ extension FinderOption2D: FinderOptionProtocol {
     public typealias Vertex = FinderVertex2D;
     
     // - Returns: neighbor vertexs around origin x, y
-    private func createNeighborsAround(_ originx: Int, _ originy: Int, originNeighbors: [(Int, Int)]) -> [Vertex] {
+    fileprivate func createNeighborsAround(_ originx: Int, _ originy: Int, originNeighbors: [(Int, Int)]) -> [Vertex] {
         var array: [Vertex] = [];
         for o in originNeighbors {
             let x = originx + o.0;
@@ -176,6 +140,52 @@ extension FinderOption2D: FinderOptionProtocol {
         return current.x != parent.x && current.y != parent.y ? 1.4 * weight : weight;
     }
 }
+extension FinderOption2D: FinderJumpableOption {
+    public func jumpableNeighbors(around vertex: Vertex, parent: Vertex?) -> [Vertex] {
+        guard let parent = parent else {
+            return neighbors(around: vertex);
+        }
+        
+        let originx = vertex.x;
+        let originy = vertex.y;
+        
+        var _neighbors: [Vertex] = [];
+        let dx = originx - parent.x;
+        let dy = originy - parent.y;
+        
+//        if dx != 0 {
+//            let offsets = [-1, 1, dx > 0 ? 1 : -1];
+//            for o in offsets {
+////                if source.placementWeight(at: originx, row: originy + o)
+//            }
+//        }
+//        
+//        if dy != 0 {
+//            let offsets = [-1, 1, dy > 0 ? 1 : -1];
+//        }
+        
+        
+        return _neighbors;
+    }
+    
+    public func distance(from vertex: FinderVertex2D, to jumped: FinderVertex2D) -> CGFloat {
+        return FinderHeuristic2D.Octile.huristic(from: vertex.x, y1: vertex.y, to: jumped.x, y2: jumped.y);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //MARK: FinderGrid2DExpandModel
 public enum FinderGrid2DExpandModel {
@@ -212,6 +222,42 @@ extension FinderHeuristic2D {
             h = max(dx, dy);
         }
         return h;
+    }
+}
+
+//MARK: FinderGrid2D
+public struct FinderGrid2D {
+    
+    var columns: Int{
+        return source.columns;
+    }
+    
+    var rows: Int{
+        return source.rows;
+    }
+    
+    ///array
+    fileprivate var source: FinderArray2D<CGFloat?>;
+    
+    ///init
+    public init(columns: Int, rows: Int, initialValue: CGFloat? = nil) {
+        source = .init(columns: columns, rows: rows, initialValue: initialValue);
+    }
+    
+    ///set placement
+    public mutating func setPlacementWeight(_ weight: CGFloat?, at column: Int, row: Int) {
+        guard column > -1 && column < source.columns && row > -1 && row < source.rows else {
+            return;
+        }
+        source[column, row] = weight;
+    }
+}
+extension FinderGrid2D: FinderGrid2DProtocol {
+    public func placementWeight(at column: Int, row: Int) -> CGFloat? {
+        guard column > -1 && column < source.columns && row > -1 && row < source.rows else {
+            return nil;
+        }
+        return source[column, row];
     }
 }
 

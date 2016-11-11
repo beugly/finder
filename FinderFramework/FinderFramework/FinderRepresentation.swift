@@ -102,7 +102,6 @@ extension FinderManyToOne where S.Vertex: Hashable, S.Element == FinderElement<S
     }
 }
 
-
 //MARK: FinderAstar
 public struct FinderAstar<Option: FinderOptionProtocol> {
     public var option: Option;
@@ -234,5 +233,42 @@ extension FinderBFS: FinderProtocol, FinderManyToOne {
 }
 
 
-
+//MARK: FinderJPS
+public struct FinderJPS<Option: FinderJumpableOption> {
+    public var option: Option;
+    public init(option: Option) {
+        self.option = option;
+    }
+}
+extension FinderJPS: FinderProtocol {
+    public typealias S = FinderHeap<Option.Vertex>;
+    
+    public func makeSequence() -> S {
+        return S();
+    }
+    
+    public func expandSuccessors(around element: S.Element, into sequence: inout S, towards target: S.Vertex) {
+        let vertex = element.vertex;
+        for neighbor in option.jumpableNeighbors(around: vertex, parent: element.parent) {
+            let cost = option.distance(from: vertex, to: neighbor);
+            if var old = sequence.element(of: neighbor) {
+                if old.isClosed{
+                    continue;
+                }
+                
+                let g = element.g + cost;
+                if g >= old.g {
+                    continue;
+                }
+                old.update(vertex, g: g);
+                sequence.update(old);
+            }
+            else {
+                let h = option.estimatedCost(from: neighbor, to: target);
+                let e = S.Element(vertex: neighbor, parent: vertex, g: element.g + cost, h: h);
+                sequence.push(e);
+            }
+        }
+    }
+}
 

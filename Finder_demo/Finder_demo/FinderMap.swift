@@ -47,7 +47,7 @@ class FinderMap: SKNode {
 }
 extension FinderMap {
     func find() {
-        let opt = FinderOption2D(source: self, expandModel: .DiagonalIfAtMostOneObstacles, huristic: .Manhattan);
+        let opt = FinderOption2D(source: self, huristic: .Manhattan, expandModel: .DiagonalIfAtMostOneObstacles);
         let f = FinderAstar(option: opt);
         var dic: [FinderVertex2D: FinderElement<FinderVertex2D>] = [:];
         let result = f.find(target: goal!, from: start!) {
