@@ -11,7 +11,7 @@ import Foundation
 //MARK: FinderOptionProtocol
 public protocol FinderOptionProtocol {
     /// The vertex type
-    associatedtype Vertex: Hashable, FinderVertexProtocol;
+    associatedtype Vertex;
     
     /// -Returns: valid neighbors around 'vertex'
     func neighbors(around vertex: Vertex) -> [Vertex]

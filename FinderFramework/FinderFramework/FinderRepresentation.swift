@@ -103,7 +103,7 @@ extension FinderManyToOne where S.Vertex: Hashable, S.Element == FinderElement<S
 }
 
 //MARK: FinderAstar
-public struct FinderAstar<Option: FinderOptionProtocol> {
+public struct FinderAstar<Option: FinderOptionProtocol> where Option.Vertex: Hashable {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
@@ -142,7 +142,7 @@ extension FinderAstar: FinderProtocol {
 }
 
 //MARK: FinderGreedyBest
-public struct FinderGreedyBest<Option: FinderOptionProtocol> {
+public struct FinderGreedyBest<Option: FinderOptionProtocol> where Option.Vertex: Hashable {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
@@ -169,7 +169,7 @@ extension FinderGreedyBest: FinderProtocol {
 
 
 //MARK: FinderDijkstra
-public struct FinderDijkstra<Option: FinderOptionProtocol> {
+public struct FinderDijkstra<Option: FinderOptionProtocol> where Option.Vertex: Hashable {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
@@ -208,7 +208,7 @@ extension FinderDijkstra: FinderProtocol {
 
 
 //MARK: FinderBFS
-public struct FinderBFS<Option: FinderOptionProtocol> {
+public struct FinderBFS<Option: FinderOptionProtocol> where Option.Vertex: Hashable {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
@@ -234,7 +234,7 @@ extension FinderBFS: FinderProtocol, FinderManyToOne {
 
 
 //MARK: FinderJPS
-public struct FinderJPS<Option: FinderJumpableOption> {
+public struct FinderJPS<Option: FinderJumpableOption> where Option.Vertex: Hashable {
     public var option: Option;
     public init(option: Option) {
         self.option = option;
