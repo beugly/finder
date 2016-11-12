@@ -132,7 +132,7 @@ extension FinderOption2D: FinderOptionProtocol {
     }
     
     public func estimatedCost(from current: Vertex, to target: Vertex) -> CGFloat {
-        return heuristic.huristic(from: current.x, y1: current.y, to: target.x, y2: target.y);
+        return heuristic.estimatedCost(dx: current.x - target.x, dy: current.y - target.y);
     }
     
     public func cost(of current: Vertex, from parent: Vertex) -> CGFloat {
@@ -169,7 +169,7 @@ extension FinderOption2D: FinderJumpableOption {
     }
     
     public func distance(from vertex: FinderVertex2D, to jumped: FinderVertex2D) -> CGFloat {
-        return FinderHeuristic2D.Octile.huristic(from: vertex.x, y1: vertex.y, to: jumped.x, y2: jumped.y);
+        return FinderHeuristic2D.Octile.estimatedCost(dx: vertex.x - jumped.x, dy: vertex.y - jumped.y);
     }
 }
 
@@ -204,11 +204,14 @@ public enum FinderHeuristic2D {
     case Manhattan, Euclidean, Octile, Chebyshev
 }
 extension FinderHeuristic2D {
-    
-    /// Return huristic cost
-    public func huristic(from x1: Int, y1: Int, to x2: Int, y2: Int) -> CGFloat {
-        let dx = CGFloat(abs(x1 - x2));
-        let dy = CGFloat(abs(y1 - y2));
+    /// Return heuristic cost
+    public func estimatedCost(from x1: Int, y1: Int, to x2: Int, y2: Int) -> CGFloat {
+        return estimatedCost(dx: x1 - x2, dy: y1 - y2);
+    }
+    /// Return heuristic cost
+    public func estimatedCost(dx: Int, dy: Int) -> CGFloat{
+        let dx = CGFloat(abs(dx));
+        let dy = CGFloat(abs(dy));
         var h: CGFloat;
         switch self{
         case .Manhattan:
